@@ -1,0 +1,54 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf510
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Cambria;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue255;\red14\green14\blue255;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid1\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid101\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid2}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}}
+{\info
+{\author Anwar Haroon}
+{\*\company OIST}}\paperw12240\paperh15840\margl1134\margr1183\vieww22400\viewh16440\viewkind1\viewscale150
+\deftab720
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\ri0\sl360\slmult1
+
+\f0\b\fs24 \cf0 Stochastic calcium spikes models explanatory note\
+
+\b0 \
+\
+\ul Model Published in:\
+\ulnone \
+Anwar H, Hepburn I, Nedelescu H, Chen W, De Schutter E (2013) Stochastic calcium mechanisms cause dendritic calcium spike variability. J Neurosci (in press)\
+\
+\ul Scripts Authors: \
+\ulnone \
+Haroon Anwar: {\field{\*\fldinst{HYPERLINK "mailto:haroon.anwar@gmail.com"}}{\fldrslt \cf2 \ul \ulc2 haroon.anwar@gmail.com}}\
+Iain Hepburn: {\field{\*\fldinst{HYPERLINK "mailto:ihepburn@oist.jp"}}{\fldrslt \cf2 \ul \ulc2 ihepburn@oist.jp}}\
+\
+\ul Software Requirements:\
+\ulnone \
+These scripts run on STEPS 2.x, which can be found at {\field{\*\fldinst{HYPERLINK "http://steps.sourceforge.net"}}{\fldrslt \cf3 http://steps.sourceforge.net}}.\
+\
+\ul List of Meshes:\
+\ulnone \
+\pard\tx220\tx720\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\li720\fi-720\ri0\sl360\slmult1
+\ls1\ilvl0\cf0 {\listtext	\'95	}5 cylindrical meshes of lengths 10 \'b5m, 20 \'b5m, 40 \'b5m, 80 \'b5m and 160 \'b5m can be found in folder named 'meshes'. These cylindrical meshes can be used with scripts 1-9.\
+{\listtext	\'95	}A dendritic mesh (\'91chop_mesh.inp\'92) can also be found in folder named "meshes". This mesh can be used with scripts 10 and 11.  \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\ri0\sl360\slmult1
+\cf0 \
+\ul List of Scripts:\
+\ulnone \
+\pard\tx220\tx720\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\li720\fi-720\ri0\sl360\slmult1
+\ls2\ilvl0\cf0 {\listtext	1.	}The script \'91StochasticCaburst.py\'92 was used with all cylindrical meshes mentioned above to simulate calcium bursts shown in Figure 2A-C. The traces generated using this script were used for analysis shown in Figure 2 E, Figure 4 and Figure 8D-F.\
+{\listtext	2.	}The script \'91StochasticHH.py\'92 was used with all cylindrical meshes mentioned above to simulate HH spikes shown in Figure 2D. The traces generated using this script were used for analysis shown in Figure 2F, Figure 3.\
+{\listtext	3.	}The script \'91HybridCaburst_stochCaP.py\'92 was used cylindrical mesh of 10 \'b5m length to simulate calcium bursts shown in Figure 5A.\
+{\listtext	4.	}The script \'91HybridCaburst_stochCaT.py\'92 was used cylindrical mesh of 10 \'b5m length to simulate calcium bursts shown in Figure 5B.\
+{\listtext	5.	}The script \'91HybridCaburst_stochBK.py\'92 was used cylindrical mesh of 10 \'b5m length to simulate calcium bursts shown in Figure 5C.\
+{\listtext	6.	}The script \'91HybridCaburst_stochSK.py\'92 was used with cylindrical mesh of 10 \'b5m length to simulate calcium bursts shown in Figure 5D.\
+{\listtext	7.	}The script \'91StochasticCaburst_cluster.py\'92 was used with cylindrical mesh of 40 \'b5m length and variable number of CaP channels clustered with BK channels to simulate calcium bursts shown in Figure 6.\
+{\listtext	8.	}The script \'91HybridCaburst_detchannels.py\'92 was used with all cylindrical meshes mentioned above to simulate calcium bursts and their analysis shown in Figure 7.\
+{\listtext	9.	}The script \'91StochasticCaburst_wellmixed.py\'92 was used with all cylindrical meshes described above to simulate stochastic calcium bursts shown in Figure 8A-C. The races generated using this script were used for analysis in Figure 8D-F\
+{\listtext	10.	}The script \'91StochasticCaburst_dendrite.py\'92 was used with dendritic mesh (\'91chop_mesh.inp\'92) to simulate synaptically evoked dendritic calcium bursts shown in Figure 10C and Figure 11.\
+{\listtext	11.	}The script \'91StochasticCaburst_dendrite_ampa.py\'92 was used with dendritic mesh (\'91chop_mesh.inp\'92) to simulate dendritic calcium bursts shown in Figure 10D and Figure 12.\
+\pard\pardeftab720\li142\ri0
+
+\f1 \cf0 \
+}

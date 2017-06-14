@@ -23,7 +23,7 @@
 ###
 
 # Example: Well-mixed reaction system
-# http://steps.sourceforge.net/manual_3.0/well_mixed.html
+# http://steps.sourceforge.net/manual/well_mixed.html
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

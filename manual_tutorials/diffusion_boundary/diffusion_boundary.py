@@ -23,7 +23,7 @@
 ###
 
 # Example: Diffusion boundary
-# http://steps.sourceforge.net/manual_3.0/diffusion_boundary.html
+# http://steps.sourceforge.net/manual/diffusion_boundary.html
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

@@ -23,7 +23,7 @@
 ###
 
 # Example: Surface diffusion (with Tetexact)
-# http://steps.sourceforge.net/manual_3.0/surface_diffusion.html
+# http://steps.sourceforge.net/manual/surface_diffusion.html
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

@@ -25,7 +25,7 @@
 
 # Example: Hodgkin-Huxley Action Potential propagation model
 # Author Iain Hepburn
-# http://steps.sourceforge.net/manual_3.0/memb_pot.html
+# http://steps.sourceforge.net/manual/memb_pot.html
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #  
 

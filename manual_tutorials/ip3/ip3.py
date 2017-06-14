@@ -23,7 +23,7 @@
 ###
 
 # Example: Surface-Volume reaction system (IP3 model)
-# http://steps.sourceforge.net/manual_3.0/ip3.html
+# http://steps.sourceforge.net/manual/ip3.html
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

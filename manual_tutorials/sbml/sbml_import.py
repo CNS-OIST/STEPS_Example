@@ -23,7 +23,7 @@
 ###
 
 # Example: SBML import
-# http://steps.sourceforge.net/manual_3.0/sbml_importer.html
+# http://steps.sourceforge.net/manual/sbml_importer.html
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

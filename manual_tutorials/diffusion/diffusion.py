@@ -23,7 +23,7 @@
 ###
 
 # Example: Unbounded diffusion
-# http://steps.sourceforge.net/manual_3.0/diffusion.html
+# http://steps.sourceforge.net/manual/diffusion.html
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

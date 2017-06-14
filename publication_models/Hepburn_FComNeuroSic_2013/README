@@ -1,0 +1,30 @@
+------------------------------------
+Rallpacks implemented in STEPS. 
+Author: Iain Hepburn
+------------------------------------
+
+This is the updated version of the Rallpack tests for STEPS 2.1 (or later), and WILL NOT work on earlier versions of STEPS. This takes advantage of the direct connection between TetODE and E-Field that is available from STEPS 2.1.
+
+
+
+For more information about the Rallpacks a good place to start is http://www.genesis-sim.org/node/127 
+
+
+
+Prerequisites are Python, STEPS 2.1.0 (or later), and Python packages Numpy and Matplotlib. 
+
+
+
+
+Each module will run the Rallpack model, perform RMS tests printing results, and plot comparisons between STEPS and either the correct or the benchmark solutions. All models simply require one Python script to be run in any way, for example interactively in Python, e.g:
+
+$ python
+>>> import rallpack1
+>>> import rallpack3 
+
+or from a command prompt, e.g.:
+
+$ python rallpack1.py
+$ python rallpack3.py
+
+

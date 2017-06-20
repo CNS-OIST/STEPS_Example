@@ -1,3 +1,5 @@
 
 *debug_log*
 *.pyc
+*.pyc
+*.cp

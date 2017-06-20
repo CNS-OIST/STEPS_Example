@@ -109,7 +109,7 @@ barsDB = patchA_bars.intersection(patchB_bars)
 barsDB=list(barsDB)
 
 # Create the surface diffusion boundary
-diffb = stetmesh.SDiffBoundary('sdiffb', mesh, barsDB, (patchA, patchB))
+diffb = stetmesh.SDiffBoundary('sdiffb', mesh, barsDB, [patchA, patchB])
 
 # Find the central tri
 ctetidx = mesh.findTetByPoint([0.0, 0.0, 0.5e-6])

@@ -51,7 +51,7 @@ r.initialize(456)
 sim = ssolver.Tetexact(mdl, mesh, r)
 
 # Setup initial condition
-sim.setCompConc('cyt', 'Ca', 3.30657e-8)
+sim.setCompCount('cyt', 'Ca', 1)
 sim.setCompConc('cyt', 'IP3', 2.5e-6)
 sim.setCompConc('ER', 'Ca', 150e-6)
 sim.setPatchCount('memb', 'R', 16)

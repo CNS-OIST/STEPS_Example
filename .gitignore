@@ -4,3 +4,6 @@
 *.pyc
 *.cp
 *.cp
+*.pyc
+manual_tutorials/parallel/parallel_result/result.csv
+manual_tutorials/parallel/serial_result/result.csv

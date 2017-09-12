@@ -2,6 +2,7 @@
 
 """ Example of triangle directional dcst."""
 
+from __future__ import print_function
 import random
 import steps.model as smodel
 import steps.geom as sgeom
@@ -38,38 +39,38 @@ rng.initialize(int(time.time()%4294967295))
 
 solver = solv.Tetexact(model, mesh, rng)
 
-print "Set dcst from focus_tri to all neighbor tris to 0..."
+print("Set dcst from focus_tri to all neighbor tris to 0...")
 for tri in neigh_tris:
     solver.setTriDiffD(focus_tri, "D_a", 0, tri)
-    print solver.getTriDiffD(focus_tri, "D_a", tri)
+    print(solver.getTriDiffD(focus_tri, "D_a", tri))
 solver.setTriCount(focus_tri, "A", 10)
-print "Patch Count: ", solver.getPatchCount("patch", "A")
-print "tri Count: ", solver.getTriCount(focus_tri, "A")
+print("Patch Count: ", solver.getPatchCount("patch", "A"))
+print("tri Count: ", solver.getTriCount(focus_tri, "A"))
 solver.run(1)
-print "Patch Count: ", solver.getPatchCount("patch", "A")
-print "tri Count: ", solver.getTriCount(focus_tri, "A")
+print("Patch Count: ", solver.getPatchCount("patch", "A"))
+print("tri Count: ", solver.getTriCount(focus_tri, "A"))
 
-print "Set dcst from focus_tri to all neighbor tris to 1/10 of DCST..."
+print("Set dcst from focus_tri to all neighbor tris to 1/10 of DCST...")
 solver.reset()
 for tri in neigh_tris:
     solver.setTriDiffD(focus_tri, "D_a", DCST / 10, tri)
-    print solver.getTriDiffD(focus_tri, "D_a", tri)
+    print(solver.getTriDiffD(focus_tri, "D_a", tri))
 solver.setTriCount(focus_tri, "A", 10)
-print "Patch Count: ", solver.getPatchCount("patch", "A")
-print "tri Count: ", solver.getTriCount(focus_tri, "A")
+print("Patch Count: ", solver.getPatchCount("patch", "A"))
+print("tri Count: ", solver.getTriCount(focus_tri, "A"))
 solver.run(1)
-print "Patch Count: ", solver.getPatchCount("patch", "A")
-print "tri Count: ", solver.getTriCount(focus_tri, "A")
+print("Patch Count: ", solver.getPatchCount("patch", "A"))
+print("tri Count: ", solver.getTriCount(focus_tri, "A"))
 
-print "Set nondirectional dcst..."
+print("Set nondirectional dcst...")
 solver.reset()
 for tri in neigh_tris:
     solver.setTriDiffD(focus_tri, "D_a", DCST)
-    print solver.getTriDiffD(focus_tri, "D_a", tri)
+    print(solver.getTriDiffD(focus_tri, "D_a", tri))
 solver.setTriCount(focus_tri, "A", 10)
-print "Patch Count: ", solver.getPatchCount("patch", "A")
-print "tri Count: ", solver.getTriCount(focus_tri, "A")
+print("Patch Count: ", solver.getPatchCount("patch", "A"))
+print("tri Count: ", solver.getTriCount(focus_tri, "A"))
 solver.run(1)
-print "Patch Count: ", solver.getPatchCount("patch", "A")
-print "tri Count: ", solver.getTriCount(focus_tri, "A")
+print("Patch Count: ", solver.getPatchCount("patch", "A"))
+print("tri Count: ", solver.getTriCount(focus_tri, "A"))
 

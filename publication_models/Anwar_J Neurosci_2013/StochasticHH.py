@@ -44,6 +44,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
+from __future__ import print_function
 import math
 import time
 from random import *
@@ -206,8 +207,8 @@ inner_tets = gettets.getcyl(mesh, 1e-6, -200e-6, 200e-6)[0]
 for i in inner_tets: outer_tets.remove(i)
 assert(outer_tets.__len__() + inner_tets.__len__() == mesh.ntets)
 
-print outer_tets.__len__(), " tets in outer compartment"
-print inner_tets.__len__(), " tets in inner compartment"
+print(outer_tets.__len__(), " tets in outer compartment")
+print(inner_tets.__len__(), " tets in inner compartment")
 
 # Record voltage from the central tetrahedron
 cent_tet = mesh.findTetByPoint([0.0,0.0,0.0])
@@ -247,7 +248,7 @@ if cyl160:
     for t in maxztris: memb_tris.remove(t)
     
 else:
-    print 'Finding connecting triangles...'
+    print('Finding connecting triangles...')
     out_tris = set()
     for i in outer_tets:
             tritemp = mesh.getTetTriNeighb(i)
@@ -261,17 +262,17 @@ else:
     memb_tris = out_tris.intersection(in_tris)
     memb_tris = list(memb_tris)
 
-print len(memb_tris), " surface triangles."
+print(len(memb_tris), " surface triangles.")
 
 ########## Create a membrane as a surface mesh
 memb = sgeom.TmPatch('memb', mesh, memb_tris, cyto)
 memb.addSurfsys('ssys')
 
-print "Area: ", memb.getArea()
+print("Area: ", memb.getArea())
 
-print "Creating membrane.."
+print("Creating membrane..")
 membrane = sgeom.Memb('membrane', mesh, [memb])
-print "Membrane created."
+print("Membrane created.")
 
 # # # # # # # # # # # # # # # # # # # # # # # # SIMULATION  # # # # # # # # # # # # # # # # # # # # # #
 
@@ -280,10 +281,10 @@ r.initialize(7)
 
 sim = ssolver.Tetexact(mdl, mesh, r, True)
 
-print "Resetting simulation object.."
+print("Resetting simulation object..")
 sim.reset()
 
-print "Injecting molecules.."
+print("Injecting molecules..")
 
 sim.setTemp(TEMPERATURE+273.15)
 
@@ -306,28 +307,28 @@ sim.setPatchCount('memb', 'K_n2', round(K_ro*surfarea*K_facs[2]))
 sim.setPatchCount('memb', 'K_n3', round(K_ro*surfarea*K_facs[3]))
 sim.setPatchCount('memb', 'K_n4', round(K_ro*surfarea*K_facs[4]))
 
-print 'Leak', round(L_ro * surfarea)
+print('Leak', round(L_ro * surfarea))
 
-print 'Na_m0h0', round(Na_ro*surfarea*Na_facs[0])
-print 'Na_m1h0', round(Na_ro*surfarea*Na_facs[1])
-print 'Na_m2h0', round(Na_ro*surfarea*Na_facs[2])
-print 'Na_m3h0', round(Na_ro*surfarea*Na_facs[3])
-print 'Na_m0h1', round(Na_ro*surfarea*Na_facs[4])
-print 'Na_m1h1', round(Na_ro*surfarea*Na_facs[5])
-print 'Na_m2h1', round(Na_ro*surfarea*Na_facs[6])
-print 'Na_m3h1', round(Na_ro*surfarea*Na_facs[7])
+print('Na_m0h0', round(Na_ro*surfarea*Na_facs[0]))
+print('Na_m1h0', round(Na_ro*surfarea*Na_facs[1]))
+print('Na_m2h0', round(Na_ro*surfarea*Na_facs[2]))
+print('Na_m3h0', round(Na_ro*surfarea*Na_facs[3]))
+print('Na_m0h1', round(Na_ro*surfarea*Na_facs[4]))
+print('Na_m1h1', round(Na_ro*surfarea*Na_facs[5]))
+print('Na_m2h1', round(Na_ro*surfarea*Na_facs[6]))
+print('Na_m3h1', round(Na_ro*surfarea*Na_facs[7]))
 
-print 'K_n0', round(K_ro*surfarea*K_facs[0])
-print 'K_n1', round(K_ro*surfarea*K_facs[1])
-print 'K_n2', round(K_ro*surfarea*K_facs[2])
-print 'K_n3', round(K_ro*surfarea*K_facs[3])
-print 'K_n4', round(K_ro*surfarea*K_facs[4])
+print('K_n0', round(K_ro*surfarea*K_facs[0]))
+print('K_n1', round(K_ro*surfarea*K_facs[1]))
+print('K_n2', round(K_ro*surfarea*K_facs[2]))
+print('K_n3', round(K_ro*surfarea*K_facs[3]))
+print('K_n4', round(K_ro*surfarea*K_facs[4]))
 
-print "Targeted Injection: ", round(Na_ro*surfarea), "Na channels"
+print("Targeted Injection: ", round(Na_ro*surfarea), "Na channels")
 
-print "Targeted Injection: ", round(K_ro*surfarea), "K channels"
+print("Targeted Injection: ", round(K_ro*surfarea), "K channels")
 
-print "Targeted Injection: ", round(L_ro*surfarea), "Leak channels"
+print("Targeted Injection: ", round(L_ro*surfarea), "Leak channels")
 
 sim.setEfieldDT(EF_DT)
 
@@ -361,7 +362,7 @@ datfile2 = open(root+'data/' +  'StochasticHH/'+meshfile_ab+'/'+iter_n+'__'+dc +
 r.initialize(100*int(iter_n))
 
 for l in range(NTIMEPOINTS):
-    print "Tpnt: ", l
+    print("Tpnt: ", l)
 
     sim.run(TIMECONVERTER*l)
 

@@ -20,6 +20,7 @@
 
 ########################################################################     
 
+from __future__ import print_function
 import sys
 import os
 
@@ -53,7 +54,7 @@ idx = sys.argv[7]
 data_record = sys.argv[8:]
 
 if len(data_record) == 0: 
-    print "WARNING: Will not record any data"
+    print("WARNING: Will not record any data")
 
 datapath = path+'/'+dataid+'_'+ca_peak+'_'+ca_width+'_'+raf_number+'_'+pkc_number
 
@@ -1196,7 +1197,7 @@ def run_simulation():
     rng.initialize(int(idx)*100)
     
     for j in arange(NITER): 
-        print "Run number {0}".format(j)
+        print("Run number {0}".format(j))
         sim.reset()
         
         # initial conditions
@@ -1243,7 +1244,7 @@ def run_simulation():
         for i in range(ntpnts):
             
             sim.run(tpnts[i]) 
-            if not i%1000: print "idx:", idx, " percent done", (tpnts[i]/INT*100)
+            if not i%1000: print("idx:", idx, " percent done", (tpnts[i]/INT*100))
             
             Ca[j,i] = sim.getCompConc('vsys', 'Ca')
             

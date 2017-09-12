@@ -27,6 +27,7 @@
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+from __future__ import print_function
 import steps.model as smodel
 import steps.geom as stetmesh
 import steps.utilities.meshio as smeshio
@@ -133,7 +134,7 @@ res = pylab.zeros((NITER, ntpnts, patch_tris_n))
 
 # Run NITER number of iterations:
 for j in range(NITER):
-    if not j%10: print "Running iteration", j
+    if not j%10: print("Running iteration", j)
     sim.setTriCount(ctri_idx, 'A', NINJECT)
     for i in range(ntpnts):
         sim.run(tpnts[i])
@@ -147,7 +148,7 @@ res_mean = pylab.mean(res, axis = 0)
 
 def plotres(tidx):
     if (tidx >= INT/DT):
-        print "Time index is out of range."
+        print("Time index is out of range.")
         return
 
     pylab.scatter(trirads, res_mean[tidx], s=2)

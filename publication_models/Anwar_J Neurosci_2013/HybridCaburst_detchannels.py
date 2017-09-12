@@ -47,6 +47,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+from __future__ import print_function
 import math
 import time
 from random import *
@@ -328,8 +329,8 @@ inner_tets = gettets.getcyl(mesh_stoch, 1e-6, -200e-6, 200e-6)[0]
 for i in inner_tets: outer_tets.remove(i)
 assert(outer_tets.__len__() + inner_tets.__len__() == mesh_stoch.ntets)
 
-print outer_tets.__len__(), " tets in outer compartment"
-print inner_tets.__len__(), " tets in inner compartment"
+print(outer_tets.__len__(), " tets in outer compartment")
+print(inner_tets.__len__(), " tets in inner compartment")
 
 # Record voltage from the central tetrahedron
 cent_tet = mesh_stoch.findTetByPoint([0.0,0.0,0.0])
@@ -374,7 +375,7 @@ if cyl160:
     for t in maxztris: memb_tris.remove(t)
 
 else:
-    print 'Finding connecting triangles...'
+    print('Finding connecting triangles...')
     out_tris = set()
     for i in outer_tets:
             tritemp = mesh_stoch.getTetTriNeighb(i)
@@ -397,7 +398,7 @@ for i in inner_tets:
             submemb_tets.append(i)
             break
 
-print len(submemb_tets)
+print(len(submemb_tets))
 
 
 vol = 0.0
@@ -405,7 +406,7 @@ vol = 0.0
 for i in submemb_tets:
     vol = vol + mesh_stoch.getTetVol(i)
 
-print 'Volume of submembrane region is', vol
+print('Volume of submembrane region is', vol)
 
 
 submemb_tets_surftris = dict()
@@ -429,11 +430,11 @@ memb_det.addSurfsys('ssys_det')
 
 
 # For EField calculation
-print "Creating membrane.."
+print("Creating membrane..")
 membrane = sgeom.Memb('membrane', mesh_stoch, [memb_stoch], opt_file_name = './meshes/'+meshfile_ab+"_optimalidx")
-print "Membrane created."
+print("Membrane created.")
 
-print "Area: ", memb_stoch.getArea()
+print("Area: ", memb_stoch.getArea())
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # SIMULATION  # # # # # # # # # # # # # # # # # # # # # #
 
@@ -451,10 +452,10 @@ sim_det = ssolver.TetODE(mdl_det, mesh_det, r_dummy)
 
 sim_det.setTolerances(1.0e-7, 1.0e-7)
 
-print "Resetting simulation object.."
+print("Resetting simulation object..")
 sim_stoch.reset()
 
-print "Injecting molecules.."
+print("Injecting molecules..")
 
 sim_stoch.setTemp(TEMPERATURE+273.15)
 
@@ -462,11 +463,11 @@ sim_det.setCompConc('cyto_det', 'Ca_det', Ca_iconc)
 
 sim_stoch.setCompConc('cyto_stoch','Ca_stoch',Ca_iconc)
 
-print "Calcium concentration in stochastic simulation is: ", sim_stoch.getCompConc('cyto_stoch', 'Ca_stoch')
-print "No. of Ca molecules in stochastic simulation is: ", sim_stoch.getCompCount('cyto_stoch', 'Ca_stoch')
+print("Calcium concentration in stochastic simulation is: ", sim_stoch.getCompConc('cyto_stoch', 'Ca_stoch'))
+print("No. of Ca molecules in stochastic simulation is: ", sim_stoch.getCompCount('cyto_stoch', 'Ca_stoch'))
 
-print "Calcium concentration in deterministic simulation is: ", sim_det.getCompConc('cyto_det', 'Ca_det')
-print "No. of Ca molecules in deterministic simulation is: ", sim_det.getCompCount('cyto_det', 'Ca_det')
+print("Calcium concentration in deterministic simulation is: ", sim_det.getCompConc('cyto_det', 'Ca_det'))
+print("No. of Ca molecules in deterministic simulation is: ", sim_det.getCompCount('cyto_det', 'Ca_det'))
 
 sim_stoch.setCompConc('cyto_stoch', 'Mg', Mg_conc)
 
@@ -475,7 +476,7 @@ surfarea = sim_stoch.getPatchArea('memb_stoch')
 #Total pump is 1e-15 mol/cm2 ---> 1e-11 mol/m2
 #pumpnbs per unit area (im m2) is Total pump times AVOGADRO's NUMBER (1e-11 mol/m2 * 6.022e23 /mol )
 pumpnbs = 6.022141e12*surfarea
-print "Number of pump molecules: ", pumpnbs
+print("Number of pump molecules: ", pumpnbs)
 
 sim_stoch.setCompConc('cyto_stoch', 'iCBsf', iCBsf_conc)
 sim_stoch.setCompConc('cyto_stoch', 'iCBCaf', iCBCaf_conc)
@@ -566,7 +567,7 @@ datfile3 = open(root+'data/' +  'HybridCaburst_detchannels/'+meshfile_ab+'/'+ite
 r.initialize(10*int(iter_n))
 
 for l in range(NTIMEPOINTS):
-    print "Tpnt: ", l
+    print("Tpnt: ", l)
 
     #1) READ STOCHASTIC CA and 2) SET DETERMINISTIC CA
     for m in submemb_tets:

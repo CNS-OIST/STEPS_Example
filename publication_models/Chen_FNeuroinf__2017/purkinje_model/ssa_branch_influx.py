@@ -5,6 +5,7 @@
 #
 ##########################################################################
 
+from __future__ import print_function
 import steps
 import time
 import steps.rng as srng
@@ -108,7 +109,7 @@ next_influx_change_tpn = 0
 
 ############################################################################
 
-print "Simulating model, it will take a while..."
+print("Simulating model, it will take a while...")
 
 start_time = time.time()
 
@@ -125,7 +126,7 @@ for l in range(n_tpns):
 
     # need to change influx rate
     if l % update_tpns == 0:
-        print "update influx rates"
+        print("update influx rates")
         for r in range(len(rois)):
             sim.setROIReacK(rois[r], 'CaInflux', ca_influx_profile['Data'][next_influx_change_tpn][r + 1])
         next_influx_change_tpn += 1

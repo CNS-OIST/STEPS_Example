@@ -34,6 +34,7 @@
 # # # # # # # # # # # # # # # # # # # IMPORTS # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+from __future__ import print_function
 import steps.model as smodel
 import steps.geom as sgeom
 import steps.rng as srng
@@ -272,14 +273,14 @@ injverts = []
 for i in range(mesh.nverts):
 	if ((mesh.getVertex(i)[2] < (mesh.getBoundMin()[2]+0.1e-6))):
 		injverts.append(i)
-print "Found ", injverts.__len__(), "I_inject vertices"
+print("Found ", injverts.__len__(), "I_inject vertices")
 
 facetris = []
 for i in range(mesh.ntris):
 	tri = mesh.getTri(i) 
 	if ((tri[0] in injverts) and (tri[1] in injverts) and (tri[2] in injverts)):
 		facetris.append(i)
-print "Found ", facetris.__len__(), "triangles on bottom face"
+print("Found ", facetris.__len__(), "triangles on bottom face")
 
 memb_tris = list(mesh.getSurfTris()) 
 
@@ -404,7 +405,7 @@ res = numpy.zeros((N_timepoints, pot_n))
 
 # Run the simulation
 for l in range(N_timepoints):
-    print "\nTpnt: ", l,
+    print("\nTpnt: ", l,)
     
     sim.run(DT_sim*l)
     

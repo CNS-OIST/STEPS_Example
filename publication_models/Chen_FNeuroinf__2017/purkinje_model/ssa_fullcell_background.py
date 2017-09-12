@@ -5,6 +5,7 @@
 #
 ##########################################################################
 
+from __future__ import print_function
 import steps
 import time
 import steps.rng as srng
@@ -71,7 +72,7 @@ sim.setCompConc('cyto', 'PVMg', PVMg_conc)
 
 ############################################################################
 
-print "Simulating model, it will take a while..."
+print("Simulating model, it will take a while...")
 
 start_time = time.time()
 sim.run(SIM_TIME)

@@ -9,6 +9,7 @@
 # # # # # # # # # # # # # # # # # # # IMPORTS # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+from __future__ import print_function
 import steps.model as smodel
 import steps.geom as sgeom
 import steps.rng as srng
@@ -252,14 +253,14 @@ injverts = []
 for i in range(mesh.nverts):
 	if ((mesh.getVertex(i)[2] < (mesh.getBoundMin()[2]+0.1e-6))):
 		injverts.append(i)
-print "Found ", injverts.__len__(), "I_inject vertices"
+print("Found ", injverts.__len__(), "I_inject vertices")
 
 facetris = []
 for i in range(mesh.ntris):
 	tri = mesh.getTri(i) 
 	if ((tri[0] in injverts) and (tri[1] in injverts) and (tri[2] in injverts)):
 		facetris.append(i)
-print "Found ", facetris.__len__(), "triangles on bottom face"
+print("Found ", facetris.__len__(), "triangles on bottom face")
 
 memb_tris = list(mesh.getSurfTris()) 
 
@@ -384,7 +385,7 @@ res_I_K = numpy.zeros((N_timepoints, bins_n))
 
 # Run the simulation
 for l in range(N_timepoints):
-    print "\nTpnt: ", l,
+    print("\nTpnt: ", l,)
     
     sim.run(DT_sim*l)
     
@@ -412,7 +413,7 @@ tpnt = arange(0.0, N_timepoints*DT_sim, DT_sim)
 # Function to plot voltage along the axis
 def plotVz(tidx):
     if (tidx >= tpnt.size): 
-        print 'Time index out of range'
+        print('Time index out of range')
         return
     plot(results[1]*1e6, results[0][tidx], \
          label=str(1e3*tidx*DT_sim)+'ms', linewidth=3)
@@ -427,7 +428,7 @@ def plotVz(tidx):
 # Function to plot membrane currents along the axis
 def plotIz(tidx, plotstyles = ['-', '--']):
     if (tidx >= tpnt.size): 
-        print 'Time index out of range'
+        print('Time index out of range')
         return
     plot(results[4]*1e6, results[2][tidx], plotstyles[0],\
          label = 'Na: '+str(1e3*tidx*DT_sim)+'ms', linewidth=3)

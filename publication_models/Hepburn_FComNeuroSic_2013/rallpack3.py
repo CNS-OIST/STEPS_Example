@@ -5,6 +5,7 @@
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+from __future__ import print_function
 import steps.model as smodel
 import steps.geom as sgeom
 import steps.rng as srng
@@ -59,14 +60,14 @@ def stats(bench, cdata):
     
     time_diff/=nps    
 
-    print "Number of peaks", nps
-    print "Mean absolute peak time difference:", time_diff, 'ms'
+    print("Number of peaks", nps)
+    print("Mean absolute peak time difference:", time_diff, 'ms')
     
     
     rms = 0
         
     if len(bench) != len(cdata):
-        print "Warning: data different length tpnts", len(bench), len(cdata)
+        print("Warning: data different length tpnts", len(bench), len(cdata))
 
     nts = len(bench)
     for t in range(nts):
@@ -75,7 +76,7 @@ def stats(bench, cdata):
     rms/=nts
     rms=math.sqrt(rms)
     
-    print "Full root mean square:", rms, 'mV'
+    print("Full root mean square:", rms, 'mV')
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -330,7 +331,7 @@ corr_fac_vol = vol_mesh/vol_cyl
 
 RES_POT = zeros(( SIM_NTPNTS, POT_N))
 
-print "\nRunning simulation"    
+print("\nRunning simulation")
 
 for t in memb_tris: sim.setTriCount(t, 'Leak', 1)
 
@@ -355,7 +356,7 @@ sim.setMembCapac('membrane', 0.01/corr_fac_area)
 for v in minzverts: sim.setVertIClamp(v, Iinj/n_minzverts)
 
 for l in range(SIM_NTPNTS):
-    if not l%200: print "Sim time (ms): ", SIM_DT*l*1.0e3
+    if not l%200: print("Sim time (ms): ", SIM_DT*l*1.0e3)
     
     sim.run(SIM_DT*l)
     
@@ -394,9 +395,9 @@ v_benchmark_x0 = v_benchmark_x0[:-1]
 tpnt_benchmark = tpnt_benchmark[:-1]
 v_benchmark_x1000 = v_benchmark_x1000[:-1]
 
-print "\nComparison at 0um (ms):", 
+print("\nComparison at 0um (ms):",)
 stats(v_benchmark_x0, RES_POT[:,0])
-print "\nComparison at 1000um (ms):", 
+print("\nComparison at 1000um (ms):",)
 stats(v_benchmark_x1000, RES_POT[:,1])
 
 TPNTS = arange(0.0, SIM_NTPNTS*SIM_DT*1.0e3, SIM_DT*1.0e3)

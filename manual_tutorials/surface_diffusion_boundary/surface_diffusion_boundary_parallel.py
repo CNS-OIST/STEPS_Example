@@ -27,6 +27,7 @@
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+from __future__ import print_function
 import steps.model as smodel
 import steps.geom as stetmesh
 import steps.utilities.meshio as smeshio
@@ -167,7 +168,7 @@ res_B = pylab.zeros((NITER, ntpnts, len(patchB_tris)))
 
 # Run NITER number of iterations:
 for j in range(NITER):
-    print "Running iteration", j
+    print("Running iteration", j)
     sim.reset()
     sim.setTriCount(ctri_idx, 'X', NINJECT)
     sim.setSDiffBoundaryDiffusionActive('sdiffb', 'X', True)
@@ -190,7 +191,7 @@ res_B_mean = pylab.mean(res_B, axis = 0)
 def plotres(tidx):
     if steps.mpi.rank != 0: return
     if (tidx >= INT/DT):
-        print "Time index is out of range."
+        print("Time index is out of range.")
         return
     
     pylab.plot(trirads_A, res_A_mean[tidx], 'bo', label='patchA')

@@ -47,6 +47,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+from __future__ import print_function
 import math
 import time
 from random import *
@@ -347,8 +348,8 @@ inner_tets = gettets.getcyl(mesh_stoch, 1e-6, -200e-6, 200e-6)[0]
 
 for i in inner_tets: outer_tets.remove(i)
 
-print outer_tets.__len__(), " tets in outer compartment"
-print inner_tets.__len__(), " tets in inner compartment"
+print(outer_tets.__len__(), " tets in outer compartment")
+print(inner_tets.__len__(), " tets in inner compartment")
 
 # Record voltage from the central tetrahedron
 cent_tet = mesh_stoch.findTetByPoint([0.0,0.0,0.0])
@@ -439,7 +440,7 @@ if cyl160:
     for t in maxztris: memb_tris.remove(t)
     
 else:
-    print 'Finding connecting triangles...'
+    print('Finding connecting triangles...')
     out_tris = set()
     for i in outer_tets:
             tritemp = mesh_stoch.getTetTriNeighb(i)
@@ -464,7 +465,7 @@ for i in inner_tets:
             border_tets_vols+=mesh_stoch.getTetVol(i)
             break
 
-print "Border tet vols:", border_tets_vols
+print("Border tet vols:", border_tets_vols)
 
 ########## Create a membrane as a surface mesh
 
@@ -473,9 +474,9 @@ memb_stoch = sgeom.TmPatch('memb_stoch', mesh_stoch, memb_tris, cyto_stoch)
 memb_stoch.addSurfsys('ssys_stoch')
 
 # For EField calculation
-print "Creating membrane.."
+print("Creating membrane..")
 membrane = sgeom.Memb('membrane', mesh_stoch, [memb_stoch])
-print "Membrane created."
+print("Membrane created.")
 
 # # # # # # # # # # # # # # # SIMULATION  # # # # # # # # # # # # # # # # # # # # # #
 
@@ -486,19 +487,19 @@ r.initialize(int(time.time()%1000))
 r_dummy = srng.create_mt19937(512)
 r_dummy.initialize(int(time.time()%1000))
 
-print "Creating tetexact solver..."
+print("Creating tetexact solver...")
 sim_stoch = ssolver.Tetexact(mdl_stoch, mesh_stoch, r, True)
 
-print "Creating WM solver"
+print("Creating WM solver")
 sim_WM = ssolver.Wmdirect(mdl_WM, wmgeom, r_dummy)
 
 
-print "Resetting simulation objects.."
+print("Resetting simulation objects..")
 sim_stoch.reset()
 sim_WM.reset()
 
 
-print "Injecting molecules.."
+print("Injecting molecules..")
 
 sim_stoch.setTemp(TEMPERATURE+273.15)
 
@@ -524,7 +525,7 @@ pumpnbs = 6.022141e12*surfarea
 sim_WM.setPatchCount('ring0', 'Pump', pumpnbs)
 sim_WM.setPatchCount('ring0', 'CaPump', 0)
 
-print "Injected ", sim_WM.getPatchCount('ring0', 'Pump'), "pumps"
+print("Injected ", sim_WM.getPatchCount('ring0', 'Pump'), "pumps")
 
 sim_WM.setCompConc('shell0', 'iCBsf',    iCBsf_conc)
 sim_WM.setCompConc('shell0', 'iCBsCa',   iCBsCa_conc)
@@ -617,7 +618,7 @@ sim_WM.setPatchCount('ring0', 'CaP_m1' , round(CaP_ro*surfarea*CaP_m1_p))
 sim_WM.setPatchCount('ring0', 'CaP_m2' , round(CaP_ro*surfarea*CaP_m2_p))
 sim_WM.setPatchCount('ring0', 'CaP_m3' , round(CaP_ro*surfarea*CaP_m3_p))
 
-print "Injected  ", CaP_ro*surfarea, "CaP channels"
+print("Injected  ", CaP_ro*surfarea, "CaP channels")
 
 # CaT
 
@@ -629,7 +630,7 @@ sim_WM.setPatchCount('ring0', 'CaT_m0h1' , round(CaT_ro*surfarea*CaT_m0h1_p))
 sim_WM.setPatchCount('ring0', 'CaT_m1h1' , round(CaT_ro*surfarea*CaT_m1h1_p))
 sim_WM.setPatchCount('ring0', 'CaT_m2h1' , round(CaT_ro*surfarea*CaT_m2h1_p))
 
-print "Injected  ", CaT_ro*surfarea, "CaT channels"
+print("Injected  ", CaT_ro*surfarea, "CaT channels")
 
 # BK
 sim_WM.setPatchCount('ring0', 'BK_C0' , round(BK_ro*surfarea*BK_C0_p))
@@ -645,7 +646,7 @@ sim_WM.setPatchCount('ring0', 'BK_O3' , round(BK_ro*surfarea*BK_O3_p))
 sim_WM.setPatchCount('ring0', 'BK_O4' , round(BK_ro*surfarea*BK_O4_p))
 
 
-print "Injected  ", BK_ro*surfarea, "BK channels"
+print("Injected  ", BK_ro*surfarea, "BK channels")
 
 # SK
 sim_WM.setPatchCount('ring0', 'SK_C1' , round(SK_ro*surfarea*SK_C1_p))
@@ -771,10 +772,10 @@ sim_WM.setPatchSReacK('ring5', 'diff_PVMg_outward' ,(DPV*2*shell5_rmax)/((shell5
 
 
 
-print "Injected ", SK_ro*surfarea, "SK channels"
+print("Injected ", SK_ro*surfarea, "SK channels")
 
 sim_stoch.setPatchCount('memb_stoch', 'Leak', round(L_ro * surfarea))
-print "Injected  ", (L_ro * sim_stoch.getPatchArea('memb_stoch')), "Leak channels"
+print("Injected  ", (L_ro * sim_stoch.getPatchArea('memb_stoch')), "Leak channels")
 
 
 sim_stoch.setEfieldDT(EF_DT)
@@ -810,7 +811,7 @@ datfile3 = open(root+'data/' +  'StochasticCaburst_wellmixed/'+meshfile_ab+'/'+i
 
 
 for l in range(NTIMEPOINTS):
-    print "Tpnt: ", l
+    print("Tpnt: ", l)
     
     # IN this sim V should be constant everywhere
     V = sim_stoch.getTriV(memb_tris[0])

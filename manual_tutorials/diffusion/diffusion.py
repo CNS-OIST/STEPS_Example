@@ -27,6 +27,7 @@
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+from __future__ import print_function
 import math
 import numpy
 import pylab
@@ -76,7 +77,7 @@ def printtime(end_time):
 	min = totmin%60
 	hours = totmin/60
 	
-	print 'Simulation time: %d h, %d min, %d sec' %(hours, min, sec)
+	print('Simulation time: %d h, %d min, %d sec' %(hours, min, sec))
 
 ########################################################################
 
@@ -92,9 +93,9 @@ def gen_model():
 
 def gen_geom():
     
-    print "Loading mesh..."
+    print("Loading mesh...")
     mesh = smeshio.loadMesh('meshes/sphere_rad10_11Ktets')[0]
-    print "Mesh Loaded"
+    print("Mesh Loaded")
     
     # Find the total number of tetrahedrons in the mesh	
     ntets = mesh.countTets()
@@ -102,7 +103,7 @@ def gen_geom():
     comp = stetmesh.TmComp('cyto', mesh, range(ntets))
     comp.addVolsys('cytosolv')
     
-    print "Finding tetrahedron samples..."
+    print("Finding tetrahedron samples...")
     # Fetch the central tetrahedron index and store:
     ctetidx = mesh.findTetByPoint([0.0, 0.0, 0.0])
     tetidxs[0] = ctetidx
@@ -155,7 +156,7 @@ def gen_geom():
         # Store the radial distance (in microns):
         tetrads[i] = r*1.0e6
     
-    print "Tetrahedron samples found"
+    print("Tetrahedron samples found")
     
     return mesh
 
@@ -182,7 +183,7 @@ ctetidx = tmgeom.findTetByPoint([0.0, 0.0, 0.0])
 # Run NITER number of iterations:
 for i in range(NITER):
 	sim.reset()
-	print "Running iteration", i
+	print("Running iteration", i)
     # Inject all molecules into the central tet:
 	sim.setTetCount(ctetidx, 'A', NINJECT)
 	for j in range(ntpnts):
@@ -199,7 +200,7 @@ res_mean = numpy.mean(res, axis = 0)
 
 def plotres(tidx):
 	if (tidx >= INT/DT):
-		print "Time index is out of range."
+		print("Time index is out of range.")
 		return
 	
 	pylab.scatter(tetrads, res_mean[tidx], s=2)

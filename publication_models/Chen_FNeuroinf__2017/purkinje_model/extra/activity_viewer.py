@@ -1,3 +1,4 @@
+from __future__ import print_function
 from __future__ import unicode_literals
 import numpy as np
 from pylab import *
@@ -262,7 +263,7 @@ class TriActivitySeriesDisplay(QtGui.QMainWindow):
         if self.curr_tpn % self.fps == 0: self.time_text.setText("%f %s" % (self.series_data[self.curr_tpn][0], self.time_unit))
         for r in range(self.n_entries):
             color = getJetColor(self.series_data[self.curr_tpn][r+1], self.min_v, self.max_v)
-            #print self.roi_entries[r], " ", self.series_data[self.curr_tpn][r+1], " ", color
+            #print(self.roi_entries[r], " ", self.series_data[self.curr_tpn][r+1], " ", color)
             self.draw_parts[r].setColor(color)
         if self.curr_tpn < self.ntpns - 1:
             self.timer.singleShot(1000 / self.fps, self.nextTpn)

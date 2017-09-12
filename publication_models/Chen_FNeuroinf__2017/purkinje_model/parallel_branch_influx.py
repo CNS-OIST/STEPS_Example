@@ -6,6 +6,7 @@
 ##########################################################################
 
                                                                                                                                                   
+from __future__ import print_function
 import steps.mpi
 import steps.utilities.geom_decompose as gd
 import steps.rng as srng
@@ -119,8 +120,8 @@ next_influx_change_tpn = 0
 
 ############################################################################
 if steps.mpi.rank == 0:
-    print "Simulating model, it will take a while if running with small amount of processes..."
-    print "Note: You can monitor the current simulating time point and data in your result directory, but please do not write anything to the files yourself."
+    print("Simulating model, it will take a while if running with small amount of processes...")
+    print("Note: You can monitor the current simulating time point and data in your result directory, but please do not write anything to the files yourself.")
 
 start_time = time.time()
 

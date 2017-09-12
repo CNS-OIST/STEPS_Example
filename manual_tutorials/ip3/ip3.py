@@ -27,6 +27,7 @@
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+from __future__ import print_function
 import steps.model as smodel
 
 #########################
@@ -131,9 +132,9 @@ memb = swm.Patch('memb', wmgeom, ER, cyt)
 memb.addSurfsys('ssys')
 memb.setArea(0.4143e-12)
 
-print 'Inner compartment to memb is', memb.getIComp().getID()
+print('Inner compartment to memb is', memb.getIComp().getID())
 
-print 'Outer compartment to memb is', memb.getOComp().getID()
+print('Outer compartment to memb is', memb.getOComp().getID())
 
 #########################
 # RNG setup

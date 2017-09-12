@@ -27,6 +27,7 @@
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+from __future__ import print_function
 import steps.rng as srng
 import steps.solver as ssolver
 import steps.utilities.sbml as ssbml
@@ -91,9 +92,9 @@ def runSBMLmod(sbmlFile, time_end, time_dt, iter_n = 1, solver = 'Wmdirect', spe
     ylabel('Conc (M)')
     show()
 
-print "Running Biomodel 98 in deterministic solver..."
+print("Running Biomodel 98 in deterministic solver...")
 runSBMLmod('biomodel/BIOMD0000000098.xml', 10, 0.001, solver='Wmrk4',specs_plot={'Y':'blue', 'Z':'red'})
 
-print "\nRunning Biomodel 98 in well-mixed stochastic solver in reduced volume..."
+print("\nRunning Biomodel 98 in well-mixed stochastic solver in reduced volume...")
 runSBMLmod('biomodel/BIOMD0000000098.xml', 10, 0.001, solver='Wmdirect',specs_plot={'Y':'blue', 'Z':'red'}, vol_units = 1.0e-3, vol_def = 1.0e-18)
 

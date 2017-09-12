@@ -6,7 +6,10 @@
 ##########################################################################
 
 from extra.activity_viewer import *
-import cPickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 import steps.utilities.geom_decompose as gd
 import steps.utilities.meshio as meshio
 import steps.visual

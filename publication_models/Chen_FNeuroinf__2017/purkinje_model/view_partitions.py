@@ -5,7 +5,10 @@
 #
 ##########################################################################
 
-import cPickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 import steps.utilities.geom_decompose as gd
 import steps.utilities.meshio as meshio
 import steps.utilities.metis_support as metis

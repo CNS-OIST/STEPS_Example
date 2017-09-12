@@ -6,7 +6,10 @@
 ##########################################################################
 import sys
 import steps.utilities.morph_support as morph_support
-import cPickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 
 HOC_FILE = sys.argv[1]
 MORPH_FILE = sys.argv[2]

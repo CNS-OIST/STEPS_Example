@@ -15,7 +15,10 @@ from extra.constants import *
 from extra import data_presets
 import sys
 import os
-import cPickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 
 if len(sys.argv) == 2:
     RESULT_DIR = sys.argv[1]

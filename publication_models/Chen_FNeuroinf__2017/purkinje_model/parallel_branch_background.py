@@ -17,7 +17,10 @@ from extra.constants import *
 from steps.utilities import metis_support
 import sys
 import os
-import cPickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 
 if len(sys.argv) == 2:
     RESULT_DIR = sys.argv[1]

@@ -9,7 +9,10 @@ import steps.geom as sgeom
 import steps.utilities.meshio as meshio
 import steps.utilities.geom_decompose as gd
 import steps.utilities.morph_support as morph_support
-import cPickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 
 ########### MESH BRANCH MAPPING #################
 def getGeom(mesh_file_name, morph_file_name = None):

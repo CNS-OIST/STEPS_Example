@@ -64,7 +64,7 @@ ca_influx_profile = data_presets.genCaInfluxProfile(ca_curr_data, roi_areas, roi
 
 # load preset background calcium concerntrations
 ca_conc_preset_file = open(CA_CONC_PRESET, 'r')
-ca_conc_preset = cPickle.load(ca_conc_preset_file)
+ca_conc_preset = pickle.load(ca_conc_preset_file)
 ca_conc_preset_file.close()
 
 ########################### SIMULATION INITIALIZATION ###########################

@@ -16,5 +16,5 @@ MORPH_FILE = sys.argv[2]
 
 moprhdata = morph_support.hoc2morph(HOC_FILE)
 morph_file = open(MORPH_FILE, 'w')
-cPickle.dump(moprhdata, morph_file)
+pickle.dump(moprhdata, morph_file)
 morph_file.close()

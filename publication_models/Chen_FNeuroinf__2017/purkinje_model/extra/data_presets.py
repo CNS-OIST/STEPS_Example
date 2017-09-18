@@ -1,10 +1,12 @@
+from __future__ import absolute_import
+
 import sys
 import os
 import random
 import numpy as np
 from numpy import arange, sin, pi
 
-from constants import AVOGADRO, E_CHARGE
+from .constants import AVOGADRO, E_CHARGE
 
 def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
     return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)

@@ -32,7 +32,7 @@ def getGeom(mesh_file_name, morph_file_name = None):
     
     # morph file is a cPickled dictionary of branching data from NEURON .hoc file, neuron2morph.py for detail
     morph_file = open(morph_file_name, 'r')
-    morph = cPickle.load(morph_file)
+    morph = pickle.load(morph_file)
     
     # partition tetrahedrons based on branching
     branch_tets = morph_support.mapMorphTetmesh(morph, mesh)

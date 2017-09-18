@@ -98,7 +98,7 @@ g = gen_geom()
 try: os.mkdir(RESULT_DIR)
 except: pass
 
-summary_file = open(RESULT_DIR + "/result.csv", 'w', 0)
+summary_file = open(RESULT_DIR + "/result.csv", 'w', 1)
 summary_file.write("Simulation Time,A,B,C,D,E,F,G,H,I,J\n")
 
 ########################################################################

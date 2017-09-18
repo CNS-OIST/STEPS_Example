@@ -89,7 +89,7 @@ start_time = time.time()
 sim.run(SIM_TIME)
 time_cost = (time.time()  - start_time)
 
-proc_file = open(RESULT_DIR + '/proc_%i.csv' % (steps.mpi.rank), 'w', 0)
+proc_file = open(RESULT_DIR + '/proc_%i.csv' % (steps.mpi.rank), 'w', 1)
 proc_file.write("SimTime,CompTime,SyncTime,IdleTime,nIteration\n")
 proc_file.write("%f,%f,%f,%f,%i\n" % (time_cost, sim.getCompTime(), sim.getSyncTime(), sim.getIdleTime(), sim.getNIteration()))
 proc_file.close()

@@ -125,7 +125,7 @@ if steps.mpi.rank == 0:
     sim_result_dir = RESULT_DIR + "/%e_%s_%ihosts" % (MOLECULE_RATIO, MESHFILE, steps.mpi.nhosts)
     try: os.mkdir(sim_result_dir)
     except: pass
-    summary_file = open(sim_result_dir + "/result.csv", 'w', 0)
+    summary_file = open(sim_result_dir + "/result.csv", 'w', 1)
     summary_file.write("Simulation Time,")
 
 ########################################################################
@@ -144,7 +144,7 @@ sim.setCompCount('comp', 'J', N0J * MOLECULE_RATIO)
 start_time = time.time()
 sim.run(ENDTIME)
 end_time = (time.time()  - start_time)
-proc_file = open(sim_result_dir + "/proc_%i.csv" % (steps.mpi.rank), 'w', 0)
+proc_file = open(sim_result_dir + "/proc_%i.csv" % (steps.mpi.rank), 'w', 1)
 proc_file.write("SimTime,CompTime,SyncTime,IdleTime,nIteration\n")
 proc_file.write("%f,%f,%f,%f,%i\n" % (end_time, sim.getCompTime(), sim.getSyncTime(), sim.getIdleTime(), sim.getNIteration()))
 proc_file.close()

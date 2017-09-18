@@ -4,6 +4,7 @@
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
+from __future__ import print_function
 import steps.rng as srng
 import steps.solver as ssolver
 
@@ -68,7 +69,7 @@ for i in range (0, NITER):
         res_m[i,t,0] = sim.getCompConc('cyt', 'Ca')*1e6		
         res_m[i,t,1] = sim.getPatchCount('memb', 'Ropen')
 
-print "Ran ", NITER, "sim iterations "
+print("Ran ", NITER, "sim iterations ")
 
 # Numpy array manipulation
 mean_res = mean(res_m, 0)

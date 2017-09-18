@@ -2,6 +2,7 @@
 
 """ Example of directional dcst."""
 
+from __future__ import print_function
 import random
 import steps.model as smodel
 import steps.geom as sgeom
@@ -36,23 +37,23 @@ rng.initialize(int(time.time()%4294967295))
     
 solver = solv.Tetexact(model, mesh, rng)
 
-print "Set directonal dcst from comp1 to comp2, and from comp2 to comp1 to 0..."
+print("Set directonal dcst from comp1 to comp2, and from comp2 to comp1 to 0...")
 solver.setCompCount("comp1", "A", 100)
 solver.setCompCount("comp2", "A", 20)
 solver.setDiffBoundaryDcst("boundary", "A", 0)
-print "V1 Count: ", solver.getCompCount("comp1", "A")
-print "V2 Count: ", solver.getCompCount("comp2", "A")
+print("V1 Count: ", solver.getCompCount("comp1", "A"))
+print("V2 Count: ", solver.getCompCount("comp2", "A"))
 solver.run(1)
-print "V1 Count: ", solver.getCompCount("comp1", "A")
-print "V2 Count: ", solver.getCompCount("comp2", "A")
+print("V1 Count: ", solver.getCompCount("comp1", "A"))
+print("V2 Count: ", solver.getCompCount("comp2", "A"))
 
-print "Set directonal dcst from comp1 to comp2 to 1/10 of DCST, and 0 from comp2 to comp1..."
+print("Set directonal dcst from comp1 to comp2 to 1/10 of DCST, and 0 from comp2 to comp1...")
 solver.reset()
 solver.setCompCount("comp1", "A", 100)
 solver.setDiffBoundaryDcst("boundary", "A", DCST / 10, "comp2")
 solver.setDiffBoundaryDcst("boundary", "A", 0.0, "comp1")
-print "V1 Count: ", solver.getCompCount("comp1", "A")
-print "V2 Count: ", solver.getCompCount("comp2", "A")
+print("V1 Count: ", solver.getCompCount("comp1", "A"))
+print("V2 Count: ", solver.getCompCount("comp2", "A"))
 solver.run(1)
-print "V1 Count: ", solver.getCompCount("comp1", "A")
-print "V2 Count: ", solver.getCompCount("comp2", "A")
+print("V1 Count: ", solver.getCompCount("comp1", "A"))
+print("V2 Count: ", solver.getCompCount("comp2", "A"))

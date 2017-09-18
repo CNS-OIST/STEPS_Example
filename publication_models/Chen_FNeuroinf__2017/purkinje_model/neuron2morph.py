@@ -6,12 +6,15 @@
 ##########################################################################
 import sys
 import steps.utilities.morph_support as morph_support
-import cPickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 
 HOC_FILE = sys.argv[1]
 MORPH_FILE = sys.argv[2]
 
 moprhdata = morph_support.hoc2morph(HOC_FILE)
 morph_file = open(MORPH_FILE, 'w')
-cPickle.dump(moprhdata, morph_file)
+pickle.dump(moprhdata, morph_file)
 morph_file.close()

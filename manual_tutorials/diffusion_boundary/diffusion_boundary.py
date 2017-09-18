@@ -27,6 +27,7 @@
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+from __future__ import print_function
 import steps.model as smodel
 import steps.geom as sgeom
 import steps.rng as srng
@@ -151,7 +152,7 @@ for i in range(ntpnts):
 
 def plot_binned(t_idx, bin_n = 100):
     if (t_idx > tpnts.size):
-        print "Time index is out of range."
+        print("Time index is out of range.")
         return
     
     z_tets = numpy.zeros(ntets)  

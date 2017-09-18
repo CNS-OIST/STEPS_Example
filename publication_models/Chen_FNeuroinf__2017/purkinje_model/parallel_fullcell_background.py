@@ -6,6 +6,7 @@
 ##########################################################################
 
                                                                                                                                                   
+from __future__ import print_function
 import steps.mpi
 import steps.utilities.geom_decompose as gd
 import steps.rng as srng
@@ -16,7 +17,10 @@ from extra.constants import *
 from steps.utilities import metis_support
 import sys
 import os
-import cPickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 
 if len(sys.argv) == 2:
     RESULT_DIR = sys.argv[1]
@@ -79,7 +83,7 @@ sim.setCompConc('cyto', 'PVMg', PVMg_conc)
 
 ############################################################################
 if steps.mpi.rank == 0:
-    print "Simulating model, it will take a while if running with small amount of processes..."
+    print("Simulating model, it will take a while if running with small amount of processes...")
 
 start_time = time.time()
 sim.run(SIM_TIME)

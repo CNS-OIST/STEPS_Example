@@ -6,6 +6,7 @@
 ##########################################################################
 
                                                                                                                                                   
+from __future__ import print_function
 import steps.mpi
 import steps.utilities.geom_decompose as gd
 import steps.rng as srng
@@ -17,7 +18,10 @@ from extra import data_presets
 from steps.utilities import metis_support
 import sys
 import os
-import cPickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 
 if len(sys.argv) == 2:
     RESULT_DIR = sys.argv[1]
@@ -70,7 +74,7 @@ ca_influx_profile = data_presets.genCaInfluxProfile(ca_curr_data, roi_areas, roi
 
 # load preset background calcium concerntrations
 ca_conc_preset_file = open(CA_CONC_PRESET, 'r')
-ca_conc_preset = cPickle.load(ca_conc_preset_file)
+ca_conc_preset = pickle.load(ca_conc_preset_file)
 ca_conc_preset_file.close()
 
 if steps.mpi.rank == 0:
@@ -119,8 +123,8 @@ next_influx_change_tpn = 0
 
 ############################################################################
 if steps.mpi.rank == 0:
-    print "Simulating model, it will take a while if running with small amount of processes..."
-    print "Note: You can monitor the current simulating time point and data in your result directory, but please do not write anything to the files yourself."
+    print("Simulating model, it will take a while if running with small amount of processes...")
+    print("Note: You can monitor the current simulating time point and data in your result directory, but please do not write anything to the files yourself.")
 
 start_time = time.time()
 

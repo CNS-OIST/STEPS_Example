@@ -46,6 +46,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+from __future__ import print_function
 import math
 import time
 from random import *
@@ -345,7 +346,7 @@ tetgroups = tetp.blocksToGroups()
 
 inner_tets = range(mesh_stoch.ntets)
 
-print inner_tets.__len__(), " tets in inner compartment"
+print(inner_tets.__len__(), " tets in inner compartment")
 
 
 #Define geometrical constants for all (100) compartments with concentric shells
@@ -377,7 +378,7 @@ Comp_tetIDs = [None]*len(Length)
 
 for i in range(len(Length)):
     Comp_tetIDs[i] = tetgroups['EB'+str(int(CUBIT_IDs[i]))]
-    print len(Comp_tetIDs[i])
+    print(len(Comp_tetIDs[i]))
 
 
 Nannulis = []
@@ -478,9 +479,9 @@ memb_stoch = sgeom.TmPatch('memb_stoch', mesh_stoch, memb_tris, cyto_stoch)
 memb_stoch.addSurfsys('ssys_stoch')
 
 # For EField calculation
-print "Creating membrane.."
+print("Creating membrane..")
 membrane = sgeom.Memb('membrane', mesh_stoch, [memb_stoch], opt_file_name = './meshes/'+meshfile_ab+"_optimalidx")
-print "Membrane created."
+print("Membrane created.")
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # SIMULATION  # # # # # # # # # # # # # # # # # # # # # #
 
@@ -491,17 +492,17 @@ r.initialize(int(time.time()%1000))
 r_dummy = srng.create_mt19937(512)
 r_dummy.initialize(int(time.time()%1000))
 
-print "Creating tetexact solver..."
+print("Creating tetexact solver...")
 sim_stoch = ssolver.Tetexact(mdl_stoch, mesh_stoch, r, True)
 
-print "Creating WM solver"
+print("Creating WM solver")
 sim_WM = ssolver.Wmdirect(mdl_WM, wmgeom, r_dummy)
 
-print "Resetting simulation objects.."
+print("Resetting simulation objects..")
 sim_stoch.reset()
 sim_WM.reset()
 
-print "Injecting molecules.."
+print("Injecting molecules..")
 
 sim_stoch.setTemp(TEMPERATURE+273.15)
 
@@ -537,7 +538,7 @@ for i in range(len(Length)):
             sim_WM.setPatchCount('rings'+str(i)+str(j), 'CaP_m2' , round(CaP_ro*surfarea*CaP_m2_p))
             sim_WM.setPatchCount('rings'+str(i)+str(j), 'CaP_m3' , round(CaP_ro*surfarea*CaP_m3_p))
 
-            print "Injected  ", CaP_ro*surfarea, "CaP channels"
+            print("Injected  ", CaP_ro*surfarea, "CaP channels")
 
             # CaT
 
@@ -549,7 +550,7 @@ for i in range(len(Length)):
             sim_WM.setPatchCount('rings'+str(i)+str(j), 'CaT_m1h1' , round(CaT_ro*surfarea*CaT_m1h1_p))
             sim_WM.setPatchCount('rings'+str(i)+str(j), 'CaT_m2h1' , round(CaT_ro*surfarea*CaT_m2h1_p))
 
-            print "Injected  ", CaT_ro*surfarea, "CaT channels"
+            print("Injected  ", CaT_ro*surfarea, "CaT channels")
 
             # BK
             sim_WM.setPatchCount('rings'+str(i)+str(j), 'BK_C0' , round(BK_ro*surfarea*BK_C0_p))
@@ -565,7 +566,7 @@ for i in range(len(Length)):
             sim_WM.setPatchCount('rings'+str(i)+str(j), 'BK_O4' , round(BK_ro*surfarea*BK_O4_p))
 
 
-            print "Injected  ", BK_ro*surfarea, "BK channels"
+            print("Injected  ", BK_ro*surfarea, "BK channels")
 
             # SK
             sim_WM.setPatchCount('rings'+str(i)+str(j), 'SK_C1' , round(SK_ro*surfarea*SK_C1_p))
@@ -576,7 +577,7 @@ for i in range(len(Length)):
             sim_WM.setPatchCount('rings'+str(i)+str(j), 'SK_O1' , round(SK_ro*surfarea*SK_O1_p))
             sim_WM.setPatchCount('rings'+str(i)+str(j), 'SK_O2' , round(SK_ro*surfarea*SK_O2_p))
             
-            print "Injected ", SK_ro*surfarea, "SK channels"
+            print("Injected ", SK_ro*surfarea, "SK channels")
         
         else:
             #set the rate constants for diffusion (Diffusion is modeled as surface reaction here)
@@ -624,7 +625,7 @@ for i in range(len(Length)):
 surfarea = sim_stoch.getPatchArea('memb_stoch')
 #Compute the surface area for full mesh rather than individual compartments
 sim_stoch.setPatchCount('memb_stoch', 'Leak', round(L_ro * surfarea))
-print "Injected  ", (L_ro * sim_stoch.getPatchArea('memb_stoch')), "Leak channels"
+print("Injected  ", (L_ro * sim_stoch.getPatchArea('memb_stoch')), "Leak channels")
 
 
 sim_stoch.setEfieldDT(EF_DT)
@@ -660,7 +661,7 @@ datfile3 = open(root+'data/' +  'StochasticCaburst_dendrite/'+meshfile_ab+'/'+it
 
 btime = time.time()
 for l in range(NTIMEPOINTS):
-    print "Tpnt: ", l
+    print("Tpnt: ", l)
 
     if TIMECONVERTER*l in cp_times:
         sim_stoch.checkpoint(root+'data/' +  'StochasticCaburst_dendrite/'+meshfile_ab+'/'+iter_n+'__'+dc + '/checkpoint__sim_stoch__'+  str(TIMECONVERTER*l))

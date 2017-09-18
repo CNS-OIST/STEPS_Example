@@ -48,6 +48,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+from __future__ import print_function
 import math
 import time
 from random import *
@@ -360,8 +361,8 @@ inner_tets = gettets.getcyl(mesh, 1e-6, -200e-6, 200e-6)[0]
 for i in inner_tets: outer_tets.remove(i)
 assert(outer_tets.__len__() + inner_tets.__len__() == mesh.ntets)
 
-print outer_tets.__len__(), " tets in outer compartment"
-print inner_tets.__len__(), " tets in inner compartment"
+print(outer_tets.__len__(), " tets in outer compartment")
+print(inner_tets.__len__(), " tets in inner compartment")
 
 
 # Record voltage from the central tetrahedron
@@ -405,7 +406,7 @@ if cyl160:
     for t in maxztris: memb_tris.remove(t)
 
 else:
-    print 'Finding connecting triangles...'
+    print('Finding connecting triangles...')
     out_tris = set()
     for i in outer_tets:
             tritemp = mesh.getTetTriNeighb(i)
@@ -419,7 +420,7 @@ else:
     memb_tris = out_tris.intersection(in_tris)
     memb_tris = list(memb_tris)
 
-print len(memb_tris), " surface triangles."
+print(len(memb_tris), " surface triangles.")
 
 ########## Find the submembrane tets
 
@@ -434,14 +435,14 @@ for i in memb_tet_neighb:
     if i in inner_tets:
         submemb_tets.append(i)
 
-print len(submemb_tets)
+print(len(submemb_tets))
 
 vol = 0.0
 
 for i in submemb_tets:
     vol = vol + mesh.getTetVol(i)
 
-print 'Volume of submembrane region is', vol
+print('Volume of submembrane region is', vol)
 
 
 ########## Create a membrane as a surface mesh
@@ -452,11 +453,11 @@ else:
 
 memb.addSurfsys('ssys')
 
-print "Area: ", memb.getArea()
+print("Area: ", memb.getArea())
 
-print "Creating membrane.."
+print("Creating membrane..")
 membrane = sgeom.Memb('membrane', mesh, [memb], opt_file_name = './meshes/'+meshfile_ab+"_optimalidx")
-print "Membrane created."
+print("Membrane created.")
 
 # # # # # # # # # # # # # # # # # # # # # # # # SIMULATION  # # # # # # # # # # # # # # # # # # # # # #
 
@@ -467,7 +468,7 @@ sim = ssolver.Tetexact(mdl, mesh, r, True)
 
 sim.reset()
 
-print "Injecting molecules.."
+print("Injecting molecules..")
 
 sim.setTemp(TEMPERATURE+273.15)
 
@@ -477,8 +478,8 @@ if not cyl160:
     
 sim.setCompConc('cyto', 'Ca', Ca_iconc)
 
-print "Calcium concentration is: ", sim.getCompConc('cyto', 'Ca')
-print "No. of Ca molecules is: ", sim.getCompCount('cyto', 'Ca')
+print("Calcium concentration is: ", sim.getCompConc('cyto', 'Ca'))
+print("No. of Ca molecules is: ", sim.getCompCount('cyto', 'Ca'))
 sim.setCompConc('cyto', 'Mg', Mg_conc)
 
 surfarea = sim.getPatchArea('memb')
@@ -486,7 +487,7 @@ surfarea = sim.getPatchArea('memb')
 #Total pump is 1e-15 mol/cm2 ---> 1e-11 mol/m2
 #pumpnbs per unit area (im m2) is Total pump times AVOGADRO's NUMBER (1e-11 mol/m2 * 6.022e23 /mol )
 pumpnbs = 6.022141e12*surfarea
-print "Number of pump molecules: ", pumpnbs
+print("Number of pump molecules: ", pumpnbs)
 
 sim.setPatchCount('memb', 'Pump', round(pumpnbs))
 sim.setPatchCount('memb', 'CaPump', 0)
@@ -511,12 +512,12 @@ sim.setPatchCount('memb', 'CaP_m2' , round(CaP_ro*surfarea*CaP_m2_p))
 sim.setPatchCount('memb', 'CaP_m3' , round(CaP_ro*surfarea*CaP_m3_p))
 
 
-print "CaP_m0 ", round(CaP_ro*surfarea*CaP_m0_p)
-print "CaP_m1 ", round(CaP_ro*surfarea*CaP_m1_p)
-print "CaP_m2 ", round(CaP_ro*surfarea*CaP_m2_p)
-print "CaP_m3 ", round(CaP_ro*surfarea*CaP_m3_p)
+print("CaP_m0 ", round(CaP_ro*surfarea*CaP_m0_p))
+print("CaP_m1 ", round(CaP_ro*surfarea*CaP_m1_p))
+print("CaP_m2 ", round(CaP_ro*surfarea*CaP_m2_p))
+print("CaP_m3 ", round(CaP_ro*surfarea*CaP_m3_p))
 
-print "Targeted Injection: ", round(CaP_ro*surfarea), "CaP channels"
+print("Targeted Injection: ", round(CaP_ro*surfarea), "CaP channels")
 
 sim.setPatchCount('memb', 'CaT_m0h0' , round(CaT_ro*surfarea*CaT_m0h0_p))
 sim.setPatchCount('memb', 'CaT_m1h0' , round(CaT_ro*surfarea*CaT_m1h0_p))
@@ -525,14 +526,14 @@ sim.setPatchCount('memb', 'CaT_m0h1' , round(CaT_ro*surfarea*CaT_m0h1_p))
 sim.setPatchCount('memb', 'CaT_m1h1' , round(CaT_ro*surfarea*CaT_m1h1_p))
 sim.setPatchCount('memb', 'CaT_m2h1' , round(CaT_ro*surfarea*CaT_m2h1_p))
 
-print "m0h0", round(CaT_ro*surfarea*CaT_m0h0_p)
-print "m1h0", round(CaT_ro*surfarea*CaT_m1h0_p)
-print "m2h0", round(CaT_ro*surfarea*CaT_m2h0_p)
-print "m0h1", round(CaT_ro*surfarea*CaT_m0h1_p)
-print "m1h1", round(CaT_ro*surfarea*CaT_m1h1_p)
-print "m2h1", round(CaT_ro*surfarea*CaT_m2h1_p)
+print("m0h0", round(CaT_ro*surfarea*CaT_m0h0_p))
+print("m1h0", round(CaT_ro*surfarea*CaT_m1h0_p))
+print("m2h0", round(CaT_ro*surfarea*CaT_m2h0_p))
+print("m0h1", round(CaT_ro*surfarea*CaT_m0h1_p))
+print("m1h1", round(CaT_ro*surfarea*CaT_m1h1_p))
+print("m2h1", round(CaT_ro*surfarea*CaT_m2h1_p))
 
-print "Targeted Injection: ", round(CaT_ro*surfarea), "CaT channels"
+print("Targeted Injection: ", round(CaT_ro*surfarea), "CaT channels")
 
 sim.setPatchCount('memb', 'BK_C0' , round(BK_ro*surfarea*BK_C0_p))
 sim.setPatchCount('memb', 'BK_C1' , round(BK_ro*surfarea*BK_C1_p))
@@ -546,19 +547,19 @@ sim.setPatchCount('memb', 'BK_O2' , round(BK_ro*surfarea*BK_O2_p))
 sim.setPatchCount('memb', 'BK_O3' , round(BK_ro*surfarea*BK_O3_p))
 sim.setPatchCount('memb', 'BK_O4' , round(BK_ro*surfarea*BK_O4_p))
 
-print "BK_C0 ", round(BK_ro*surfarea*BK_C0_p)
-print "BK_C1 ", round(BK_ro*surfarea*BK_C1_p)
-print "BK_C2 ", round(BK_ro*surfarea*BK_C2_p)
-print "BK_C3 ", round(BK_ro*surfarea*BK_C3_p)
-print "BK_C4 ", round(BK_ro*surfarea*BK_C4_p)
+print("BK_C0 ", round(BK_ro*surfarea*BK_C0_p))
+print("BK_C1 ", round(BK_ro*surfarea*BK_C1_p))
+print("BK_C2 ", round(BK_ro*surfarea*BK_C2_p))
+print("BK_C3 ", round(BK_ro*surfarea*BK_C3_p))
+print("BK_C4 ", round(BK_ro*surfarea*BK_C4_p))
 
-print "BK_O0 ", round(BK_ro*surfarea*BK_O0_p)
-print "BK_O1 ", round(BK_ro*surfarea*BK_O1_p)
-print "BK_O2 ", round(BK_ro*surfarea*BK_O2_p)
-print "BK_O3 ", round(BK_ro*surfarea*BK_O3_p)
-print "BK_O4 ", round(BK_ro*surfarea*BK_O4_p)
+print("BK_O0 ", round(BK_ro*surfarea*BK_O0_p))
+print("BK_O1 ", round(BK_ro*surfarea*BK_O1_p))
+print("BK_O2 ", round(BK_ro*surfarea*BK_O2_p))
+print("BK_O3 ", round(BK_ro*surfarea*BK_O3_p))
+print("BK_O4 ", round(BK_ro*surfarea*BK_O4_p))
 
-print "Targeted Injection: ", round(BK_ro*surfarea), "BK channels"
+print("Targeted Injection: ", round(BK_ro*surfarea), "BK channels")
 
 sim.setPatchCount('memb', 'SK_C1' , round(SK_ro*surfarea*SK_C1_p))
 sim.setPatchCount('memb', 'SK_C2' , round(SK_ro*surfarea*SK_C2_p))
@@ -568,18 +569,18 @@ sim.setPatchCount('memb', 'SK_C4' , round(SK_ro*surfarea*SK_C4_p))
 sim.setPatchCount('memb', 'SK_O1' , round(SK_ro*surfarea*SK_O1_p))
 sim.setPatchCount('memb', 'SK_O2' , round(SK_ro*surfarea*SK_O2_p))
 
-print "SK_C1 ", round(SK_ro*surfarea*SK_C1_p)
-print "SK_C2 ", round(SK_ro*surfarea*SK_C2_p)
-print "SK_C3 ", round(SK_ro*surfarea*SK_C3_p)
-print "SK_C4 ", round(SK_ro*surfarea*SK_C4_p)
+print("SK_C1 ", round(SK_ro*surfarea*SK_C1_p))
+print("SK_C2 ", round(SK_ro*surfarea*SK_C2_p))
+print("SK_C3 ", round(SK_ro*surfarea*SK_C3_p))
+print("SK_C4 ", round(SK_ro*surfarea*SK_C4_p))
 
-print "SK_O1 ", round(SK_ro*surfarea*SK_O1_p)
-print "SK_O2 ", round(SK_ro*surfarea*SK_O2_p)
+print("SK_O1 ", round(SK_ro*surfarea*SK_O1_p))
+print("SK_O2 ", round(SK_ro*surfarea*SK_O2_p))
 
-print "Targeted Injection ", round(SK_ro*surfarea), "SK channels"
+print("Targeted Injection ", round(SK_ro*surfarea), "SK channels")
 
 sim.setPatchCount('memb', 'Leak', int(L_ro * surfarea))
-print "Injected ", int(L_ro * sim.getPatchArea('memb')), "Leak channels"
+print("Injected ", int(L_ro * sim.getPatchArea('memb')), "Leak channels")
 
 
 sim.setEfieldDT(EF_DT)
@@ -617,7 +618,7 @@ datfile3 = open(root+'data/' +  'StochasticCaburst/'+meshfile_ab+'/'+iter_n+'__'
 r.initialize(100*int(iter_n))
 
 for l in range(NTIMEPOINTS):
-    print "Tpnt: ", l
+    print("Tpnt: ", l)
     
     sim.run(TIMECONVERTER*l)
 

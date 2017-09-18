@@ -5,6 +5,7 @@
 #
 ##########################################################################
 
+from __future__ import print_function
 import steps
 import time
 import steps.rng as srng
@@ -14,7 +15,10 @@ from extra.constants import *
 from extra import data_presets
 import sys
 import os
-import cPickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 
 if len(sys.argv) == 2:
     RESULT_DIR = sys.argv[1]
@@ -71,7 +75,7 @@ sim.setCompConc('cyto', 'PVMg', PVMg_conc)
 
 ############################################################################
 
-print "Simulating model, it will take a while..."
+print("Simulating model, it will take a while...")
 
 start_time = time.time()
 sim.run(SIM_TIME)

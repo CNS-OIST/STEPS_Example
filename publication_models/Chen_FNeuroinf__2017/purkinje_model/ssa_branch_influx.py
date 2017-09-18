@@ -5,6 +5,7 @@
 #
 ##########################################################################
 
+from __future__ import print_function
 import steps
 import time
 import steps.rng as srng
@@ -14,7 +15,10 @@ from extra.constants import *
 from extra import data_presets
 import sys
 import os
-import cPickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 
 if len(sys.argv) == 2:
     RESULT_DIR = sys.argv[1]
@@ -60,7 +64,7 @@ ca_influx_profile = data_presets.genCaInfluxProfile(ca_curr_data, roi_areas, roi
 
 # load preset background calcium concerntrations
 ca_conc_preset_file = open(CA_CONC_PRESET, 'r')
-ca_conc_preset = cPickle.load(ca_conc_preset_file)
+ca_conc_preset = pickle.load(ca_conc_preset_file)
 ca_conc_preset_file.close()
 
 ########################### SIMULATION INITIALIZATION ###########################
@@ -108,7 +112,7 @@ next_influx_change_tpn = 0
 
 ############################################################################
 
-print "Simulating model, it will take a while..."
+print("Simulating model, it will take a while...")
 
 start_time = time.time()
 
@@ -125,7 +129,7 @@ for l in range(n_tpns):
 
     # need to change influx rate
     if l % update_tpns == 0:
-        print "update influx rates"
+        print("update influx rates")
         for r in range(len(rois)):
             sim.setROIReacK(rois[r], 'CaInflux', ca_influx_profile['Data'][next_influx_change_tpn][r + 1])
         next_influx_change_tpn += 1

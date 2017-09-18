@@ -30,6 +30,7 @@
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #  
 
+from __future__ import print_function
 from pylab import *
 
 from HH_APprop_tetode import *
@@ -42,7 +43,7 @@ tpnt = arange(0.0, N_timepoints*DT_sim, DT_sim)
 
 def plotVz(tidx):
     if (tidx >= tpnt.size): 
-        print 'Time index out of range'
+        print('Time index out of range')
         return
     plot(results[1]*1e6, results[0][tidx], \
          label=str(1e3*tidx*DT_sim)+'ms', linewidth=3)

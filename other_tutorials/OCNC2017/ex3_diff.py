@@ -4,6 +4,7 @@
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
+from __future__ import print_function
 import math
 import time
 
@@ -57,7 +58,7 @@ def printtime(end_time):
 	min = totmin%60
 	hours = totmin/60
 	
-	print 'Simulation time: %d h, %d min, %d sec' %(hours, min, sec)
+	print('Simulation time: %d h, %d min, %d sec' %(hours, min, sec))
 	
 ########################################################################
 
@@ -80,9 +81,9 @@ def gen_model():
 ########################################################################
 
 def gen_geom(meshfile):
-	print "Loading mesh..."
+	print("Loading mesh...")
 	mesh = meshio.importAbaqus('meshes/'+meshfile, 1.0e-6)[0]
-	print "Mesh loaded."
+	print("Mesh loaded.")
 	
 	ntets = mesh.countTets()
     
@@ -92,10 +93,10 @@ def gen_geom(meshfile):
 	
 	# Now fill the array holding the tet indices to sample at random
 	if (SAMPLE > ntets):
-		print "SAMPLE larger than total number of tetrahedrons."
+		print("SAMPLE larger than total number of tetrahedrons.")
 		return
 	if (SAMPLE < 5):
-		print "SAMPLE must be greater than 4."
+		print("SAMPLE must be greater than 4.")
 	
 	# First add the centre tet and its 4 neighbours
 	ctetidx = mesh.findTetByPoint([0.0, 0.0, 0.0])
@@ -195,7 +196,7 @@ for j in range(NITER):
         for k in range(SAMPLE):
             # Record concentration from individual tetrahedrons
             res[j, i, k] = sim.getTetConc(int(tetidxs[k]), 'X')*1.0e6
-    print '%d / %d' % (j + 1, NITER)
+    print('%d / %d' % (j + 1, NITER))
     printtime(time.time())
 
 itermeans = mean(res, axis = 0)
@@ -205,7 +206,7 @@ itermeans = mean(res, axis = 0)
 # Plotting function for recorded concentrations
 def plotconc(tidx):
 	if (tidx >= INT/DT):
-		print "Time index is out of range."
+		print("Time index is out of range.")
 		return
 	
 	scatter(tetrads, itermeans[tidx], s=2)
@@ -242,6 +243,6 @@ def _plotdetc(timepnt):
 	
 ########################################################################
 
-print "Number of time points: ", int(INT/DT)
+print("Number of time points: ", int(INT/DT))
 
 ########################################################################

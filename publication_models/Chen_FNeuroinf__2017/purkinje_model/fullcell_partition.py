@@ -5,6 +5,7 @@
 #
 ##########################################################################
 
+from __future__ import print_function
 import steps.utilities.geom_decompose as gd
 import steps.utilities.meshio as meshio
 import steps.utilities.metis_support as metis
@@ -19,7 +20,7 @@ mesh = meshio.importAbaqus(MESH_FILE, 1e-6)[0]
 metis.tetmesh2metis(mesh, 'meshes/partition/fullcell.metis')
 
 from subprocess import call
-print "Generate partition for desktop computer (from 2 cores to 10 cores)"
+print("Generate partition for desktop computer (from 2 cores to 10 cores)")
 for i in range(2, 11, 2):
     call(['mpmetis', '-ncommon=3', '-minconn', '-niter=1000', 'meshes/partition/fullcell.metis', '%i' % (i)])
     metis_parts = metis.readPartition('meshes/partition/fullcell.metis.epart.%i' % (i))
@@ -27,7 +28,7 @@ for i in range(2, 11, 2):
     tri_parts = gd.partitionTris(mesh, metis_parts, surf_tris)
     gd.printPartitionStat(metis_parts, tri_parts)
 
-print "Generate partition for supercomputer (from 100 cores to 2000 cores)"
+print("Generate partition for supercomputer (from 100 cores to 2000 cores)")
 for i in range(2100, 5001, 100):
     call(['mpmetis', '-ncommon=3', '-minconn', '-niter=1000', 'meshes/partition/fullcell.metis', '%i' % (i)])
     metis_parts = metis.readPartition('meshes/partition/fullcell.metis.epart.%i' % (i))

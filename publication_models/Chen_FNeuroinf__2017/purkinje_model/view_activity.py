@@ -6,7 +6,10 @@
 ##########################################################################
 
 from extra.activity_viewer import *
-import cPickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 import steps.utilities.geom_decompose as gd
 import steps.utilities.meshio as meshio
 import steps.visual
@@ -20,7 +23,7 @@ ACTIVITY_FILE = sys.argv[1]
 MESH_FILE = "meshes/branch.inp"
 mesh = meshio.importAbaqus(MESH_FILE, 1e-6)[0]
 morph_file = open("meshes/branch.morph", 'r')
-morph = cPickle.load(morph_file)
+morph = pickle.load(morph_file)
 tet_parts = gd.mapMorphTetmesh(morph, mesh)
 tri_parts = gd.partitionTris(mesh, tet_parts, mesh.getSurfTris())
 

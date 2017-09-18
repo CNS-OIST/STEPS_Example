@@ -48,6 +48,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+from __future__ import print_function
 import math
 import time
 from random import *
@@ -346,8 +347,8 @@ inner_tets = gettets.getcyl(mesh_stoch, 1e-6, -200e-6, 200e-6)[0]
 
 for i in inner_tets: outer_tets.remove(i)
 
-print outer_tets.__len__(), " tets in outer compartment"
-print inner_tets.__len__(), " tets in inner compartment"
+print(outer_tets.__len__(), " tets in outer compartment")
+print(inner_tets.__len__(), " tets in inner compartment")
 
 # Record voltage from the central tetrahedron
 cent_tet = mesh_stoch.findTetByPoint([0.0,0.0,0.0])
@@ -394,7 +395,7 @@ if cyl160:
     for t in maxztris: memb_tris.remove(t)
     
 else:
-    print 'Finding connecting triangles...'
+    print('Finding connecting triangles...')
     out_tris = set()
     for i in outer_tets:
             tritemp = mesh_stoch.getTetTriNeighb(i)
@@ -421,14 +422,14 @@ for i in memb_tet_neighb:
     if i in inner_tets:
         submemb_tets.append(i)
 
-print len(submemb_tets)
+print(len(submemb_tets))
 
 vol = 0.0
 
 for i in submemb_tets:
     vol = vol + mesh_stoch.getTetVol(i)
 
-print 'Volume of submembrane region is', vol
+print('Volume of submembrane region is', vol)
 
 submemb_tets_surftris = dict()
 
@@ -459,9 +460,9 @@ memb_det.addSurfsys('ssys_det')
 
 
 # For EField calculation
-print "Creating membrane.."
+print("Creating membrane..")
 membrane = sgeom.Memb('membrane', mesh_stoch, [memb_stoch])
-print "Membrane created."
+print("Membrane created.")
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # SIMULATION  # # # # # # # # # # # # # # # # # # # # # #
 
@@ -471,21 +472,21 @@ r.initialize(7)
 r_dummy = srng.create_mt19937(512)
 r_dummy.initialize(7)
 
-print "Creating Tet exact solver"
+print("Creating Tet exact solver")
 
 #Creating two solvers
 sim_stoch = ssolver.Tetexact(mdl_stoch, mesh_stoch, r, True)
 
-print "Creating Tet ODE solver"
+print("Creating Tet ODE solver")
 
 sim_det = ssolver.TetODE(mdl_det, mesh_det, r_dummy)
 
 sim_det.setTolerances(1.0e-3, 1.0e-3)
 
-print "Resetting simulation objects.."
+print("Resetting simulation objects..")
 sim_stoch.reset()
 
-print "Injecting molecules.."
+print("Injecting molecules..")
 
 sim_stoch.setTemp(TEMPERATURE+273.15)
 
@@ -495,13 +496,13 @@ if not cyl160:
 
 sim_stoch.setCompConc('cyto_stoch', 'Ca_stoch', Ca_iconc)
 
-print "Calcium concentration in stochastic simulation is: ", sim_stoch.getCompConc('cyto_stoch', 'Ca_stoch')
-print "No. of Ca molecules in stochastic simulation is: ", sim_stoch.getCompCount('cyto_stoch', 'Ca_stoch')
+print("Calcium concentration in stochastic simulation is: ", sim_stoch.getCompConc('cyto_stoch', 'Ca_stoch'))
+print("No. of Ca molecules in stochastic simulation is: ", sim_stoch.getCompCount('cyto_stoch', 'Ca_stoch'))
 
 sim_det.setCompConc('cyto_det', 'Ca_det', Ca_iconc)
 
-print "Calcium concentration in deterministic simulation is: ", sim_det.getCompConc('cyto_det', 'Ca_det')
-print "No. of Ca molecules in deterministic simulation is: ", sim_det.getCompCount('cyto_det', 'Ca_det')
+print("Calcium concentration in deterministic simulation is: ", sim_det.getCompConc('cyto_det', 'Ca_det'))
+print("No. of Ca molecules in deterministic simulation is: ", sim_det.getCompCount('cyto_det', 'Ca_det'))
 
 sim_det.setCompConc('cyto_det', 'Mg', Mg_conc)
 
@@ -514,7 +515,7 @@ pumpnbs = 6.022141e12*surfarea
 sim_det.setPatchCount('memb_det', 'Pump', round(pumpnbs))
 sim_det.setPatchCount('memb_det', 'CaPump', 0)
 
-print "Injected ", sim_det.getPatchCount('memb_det', 'Pump'), "pumps"
+print("Injected ", sim_det.getPatchCount('memb_det', 'Pump'), "pumps")
 
 sim_det.setCompConc('cyto_det', 'iCBsf',    iCBsf_conc)
 sim_det.setCompConc('cyto_det', 'iCBsCa',   iCBsCa_conc)
@@ -539,12 +540,12 @@ sim_stoch.setPatchCount('memb_stoch', 'CaP_m2' , round(CaP_ro*surfarea*CaP_m2_p)
 sim_stoch.setPatchCount('memb_stoch', 'CaP_m3' , round(CaP_ro*surfarea*CaP_m3_p))
 
 
-print "CaP_m0 ", round(CaP_ro*surfarea*CaP_m0_p)
-print "CaP_m1 ", round(CaP_ro*surfarea*CaP_m1_p)
-print "CaP_m2 ", round(CaP_ro*surfarea*CaP_m2_p)
-print "CaP_m3 ", round(CaP_ro*surfarea*CaP_m3_p)
+print("CaP_m0 ", round(CaP_ro*surfarea*CaP_m0_p))
+print("CaP_m1 ", round(CaP_ro*surfarea*CaP_m1_p))
+print("CaP_m2 ", round(CaP_ro*surfarea*CaP_m2_p))
+print("CaP_m3 ", round(CaP_ro*surfarea*CaP_m3_p))
 
-print "Targeted Injection: ", round(CaP_ro*surfarea), "CaP channels"
+print("Targeted Injection: ", round(CaP_ro*surfarea), "CaP channels")
 
 # CaT
 
@@ -556,7 +557,7 @@ sim_det.setPatchCount('memb_det', 'CaT_m0h1' , round(CaT_ro*surfarea*CaT_m0h1_p)
 sim_det.setPatchCount('memb_det', 'CaT_m1h1' , round(CaT_ro*surfarea*CaT_m1h1_p))
 sim_det.setPatchCount('memb_det', 'CaT_m2h1' , round(CaT_ro*surfarea*CaT_m2h1_p))
 
-print "Injected  ", CaT_ro*surfarea, "CaT channels"
+print("Injected  ", CaT_ro*surfarea, "CaT channels")
 
 # BK
 sim_det.setPatchCount('memb_det', 'BK_C0' , round(BK_ro*surfarea*BK_C0_p))
@@ -572,7 +573,7 @@ sim_det.setPatchCount('memb_det', 'BK_O3' , round(BK_ro*surfarea*BK_O3_p))
 sim_det.setPatchCount('memb_det', 'BK_O4' , round(BK_ro*surfarea*BK_O4_p))
 
 
-print "Injected  ", BK_ro*surfarea, "BK channels"
+print("Injected  ", BK_ro*surfarea, "BK channels")
 
 # SK
 sim_det.setPatchCount('memb_det', 'SK_C1' , round(SK_ro*surfarea*SK_C1_p))
@@ -584,7 +585,7 @@ sim_det.setPatchCount('memb_det', 'SK_O1' , round(SK_ro*surfarea*SK_O1_p))
 sim_det.setPatchCount('memb_det', 'SK_O2' , round(SK_ro*surfarea*SK_O2_p))
 
 
-print "Injected ", SK_ro*surfarea, "SK channels"
+print("Injected ", SK_ro*surfarea, "SK channels")
 
 
 sim_stoch.setEfieldDT(EF_DT)
@@ -624,7 +625,7 @@ r.initialize(int(time.time()%1000))
 
 btime = time.time()
 for l in range(NTIMEPOINTS):
-    print "Tpnt: ", l
+    print("Tpnt: ", l)
 
     #1) RUN STOCHASTIC SIMULATION i.e. compute currents and update stochastic calcium concentration
     sim_stoch.run(TIMECONVERTER*l)

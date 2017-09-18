@@ -55,6 +55,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+from __future__ import print_function
 import math
 import time
 import random
@@ -369,8 +370,8 @@ inner_tets = gettets.getcyl(mesh, 1e-6, -200e-6, 200e-6)[0]
 for i in inner_tets: outer_tets.remove(i)
 assert(outer_tets.__len__() + inner_tets.__len__() == mesh.ntets)
 
-print outer_tets.__len__(), " tets in outer compartment"
-print inner_tets.__len__(), " tets in inner compartment"
+print(outer_tets.__len__(), " tets in outer compartment")
+print(inner_tets.__len__(), " tets in inner compartment")
 
 # Record voltage from the central tetrahedron
 cent_tet = mesh.findTetByPoint([0.0,0.0,0.0])
@@ -413,7 +414,7 @@ if cyl160:
     for t in maxztris: memb_tris.remove(t)
 
 else:
-    print 'Finding connecting triangles...'
+    print('Finding connecting triangles...')
     out_tris = set()
     for i in outer_tets:
             tritemp = mesh.getTetTriNeighb(i)
@@ -475,14 +476,14 @@ for i in memb_tet_neighb:
     if i in inner_tets:
         submemb_tets.append(i)
 
-print len(submemb_tets)
+print(len(submemb_tets))
 
 vol = 0.0
 
 for i in submemb_tets:
     vol = vol + mesh.getTetVol(i)
 
-print 'Volume of submembrane region is', vol
+print('Volume of submembrane region is', vol)
 
 submemb_tets_surftris = dict()
 
@@ -500,7 +501,7 @@ for i in range(len(memb_tris)):
     ctet = submemb_tets[i]
     tettemp = mesh.getTriTetNeighb(ctri)
     if not ctet in tettemp:
-        print 'Tri and Tet do not correspond to each other'
+        print('Tri and Tet do not correspond to each other')
 
 
 border_tets = []
@@ -514,7 +515,7 @@ for i in inner_tets:
             border_tets_vols+=mesh.getTetVol(i)
             break
 
-print "Border tet vols:", border_tets_vols
+print("Border tet vols:", border_tets_vols)
 
 
 ########## Create a membrane as a surface mesh
@@ -525,22 +526,22 @@ else:
 memb.addSurfsys('ssys')
 
 # For EField calculation
-print "Creating membrane.."
+print("Creating membrane..")
 membrane = sgeom.Memb('membrane', mesh, [memb])
-print "Membrane created."
+print("Membrane created.")
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # SIMULATION  # # # # # # # # # # # # # # # # # # # # # #
 
 r = srng.create_mt19937(512)
 r.initialize(7)
 
-print "Creating tetexact solver..."
+print("Creating tetexact solver...")
 sim = ssolver.Tetexact(mdl, mesh, r, True)
 
-print "Resetting simulation objects.."
+print("Resetting simulation objects..")
 sim.reset()
 
-print "Injecting molecules.."
+print("Injecting molecules..")
 
 sim.setTemp(TEMPERATURE+273.15)
 
@@ -550,8 +551,8 @@ if not cyl160:
     
 sim.setCompConc('cyto', 'Ca', Ca_iconc)
 
-print "Calcium concentration is: ", sim.getCompConc('cyto', 'Ca')
-print "No. of Ca molecules is: ", sim.getCompCount('cyto', 'Ca')
+print("Calcium concentration is: ", sim.getCompConc('cyto', 'Ca'))
+print("No. of Ca molecules is: ", sim.getCompCount('cyto', 'Ca'))
 
 sim.setCompConc('cyto', 'Mg', Mg_conc)
 
@@ -563,7 +564,7 @@ pumpnbs = 6.022141e12*surfarea
 sim.setPatchCount('memb', 'Pump', pumpnbs)
 sim.setPatchCount('memb', 'CaPump', 0)
 
-print "Injected ", sim.getPatchCount('memb', 'Pump'), "pumps"
+print("Injected ", sim.getPatchCount('memb', 'Pump'), "pumps")
 
 sim.setCompConc('cyto', 'iCBsf',    iCBsf_conc)
 sim.setCompConc('cyto', 'iCBsCa',   iCBsCa_conc)
@@ -623,7 +624,7 @@ for i in memb_tris_bk:
         sim.setTriCount(i, 'BK_O4', sim.getTriCount(i, 'BK_O4') + 1)
         bk_o4_count = bk_o4_count + 1
     else:
-        print 'More tris picked up by algorithm than the number of BK channels'
+        print('More tris picked up by algorithm than the number of BK channels')
 
 sk_c1_count = 0
 sk_c2_count = 0
@@ -653,7 +654,7 @@ for i in memb_tris_sk:
         sim.setTriCount(i, 'SK_O2', sim.getTriCount(i, 'SK_O2') + 1)
         sk_o2_count = sk_o2_count + 1
     else:
-        print 'More tris picked up by algorithm than the number of SK channels'
+        print('More tris picked up by algorithm than the number of SK channels')
 
 
 cat_m0h0_count = 0
@@ -683,7 +684,7 @@ for i in memb_tris_cat:
         sim.setTriCount(i, 'CaT_m2h1', sim.getTriCount(i, 'CaT_m2h1') + 1)
         cat_m2h1_count = cat_m2h1_count + 1
     else:
-        print 'More tris picked up by algorithm than the number of CaT channels'
+        print('More tris picked up by algorithm than the number of CaT channels')
 
 cap_m0_count = 0
 cap_m1_count = 0
@@ -711,7 +712,7 @@ if clusterSize>0:
                 cap_m3_count = cap_m3_count + 1
 		count = count +1
             else:
-                print 'Cluster size is larger than the number of CaP channels available'
+                print('Cluster size is larger than the number of CaP channels available')
 
 for i in memb_tris_cap:
     if cap_m0_count<round(CaP_ro*surfarea*CaP_m0_p):
@@ -727,11 +728,11 @@ for i in memb_tris_cap:
         sim.setTriCount(i, 'CaP_m3', sim.getTriCount(i, 'CaP_m3') + 1)
         cap_m3_count = cap_m3_count + 1
     else:
-        print 'More tris picked up by the algorithm than the number of CaP channels available'
+        print('More tris picked up by the algorithm than the number of CaP channels available')
                                                                                                                                                                             
 
 sim.setPatchCount('memb', 'Leak', int(L_ro * surfarea))
-print "Injected  ", int(L_ro * sim.getPatchArea('memb')), "Leak channels"
+print("Injected  ", int(L_ro * sim.getPatchArea('memb')), "Leak channels")
 
 memb_triID_withBK=[]
 memb_countBK_pertriID=[]
@@ -842,7 +843,7 @@ for m in memb_tris:
 r.initialize(int(time.time()%1000))
 
 for l in range(NTIMEPOINTS):
-    print "Tpnt: ", l
+    print("Tpnt: ", l)
 
     sim.run(TIMECONVERTER*l)
     

@@ -5,6 +5,7 @@
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+from __future__ import print_function
 import steps.model as smodel
 import steps.geom as sgeom
 import steps.rng as srng
@@ -28,7 +29,7 @@ def RMS(correct, steps):
     rms/=nts
     rms=math.sqrt(rms)
     
-    print rms
+    print(rms)
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -229,10 +230,10 @@ corr_fac_vol = vol_mesh/vol_cyl
 
 RES_POT = zeros(( SIM_NTPNTS, 4))
 
-print "Running simulation..."
+print("Running simulation...")
 sim.reset()
 
-print "Injecting molecules.."
+print("Injecting molecules..")
 for t in memb_tris: sim.setTriCount(t, 'Leak', 1)
 
     
@@ -244,7 +245,7 @@ sim.setMembCapac('membrane', 0.01/corr_fac_area)
 for v in minzverts: sim.setVertIClamp(v, Iinj/n_minzverts)
 
 for l in range(SIM_NTPNTS):
-    if not l%100: print "Sim time (ms): ", SIM_DT*l*1.0e3
+    if not l%100: print("Sim time (ms): ", SIM_DT*l*1.0e3)
         
     sim.run(SIM_DT*l)
     
@@ -283,9 +284,9 @@ for line_benchmark_x1000 in lines_benchmark_x1000:
     v_benchmark_x1000.append(float(nums[1])*1e3)
     
 
-print "Voltage RMS at 0um (mV):", 
+print("Voltage RMS at 0um (mV):",)
 RMS(v_benchmark_x0, mean( (RES_POT[:,0], RES_POT[:,1]), axis=0))
-print "Voltage RMS at 1000um (mV):", 
+print("Voltage RMS at 1000um (mV):",)
 RMS(v_benchmark_x1000, mean( (RES_POT[:,3], RES_POT[:,2]), axis=0))
 
 TPNTS = arange(0.0, SIM_NTPNTS*SIM_DT*1.0e3, SIM_DT*1.0e3)

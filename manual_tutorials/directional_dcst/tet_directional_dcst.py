@@ -2,6 +2,7 @@
 
 """ Example of tetrahedron directional dcst."""
 
+from __future__ import print_function
 import random
 import steps.model as smodel
 import steps.geom as sgeom
@@ -45,41 +46,41 @@ rng.initialize(int(time.time()%4294967295))
 
 solver = solv.Tetexact(model, mesh, rng)
 
-print "Set dcst from v1 to v2 to 0..."
+print("Set dcst from v1 to v2 to 0...")
 for tri in pairing.keys():
     solver.setTetDiffD(pairing[tri][0], "D_a", 0, pairing[tri][1])
     # use this to get directional dcst
-    #print solver.getTetDiffD(pairing[tri][0], "D_a", pairing[tri][1])
+    #print(solver.getTetDiffD(pairing[tri][0], "D_a", pairing[tri][1]))
     solver.setTetCount(pairing[tri][0], "A", 10)
-print "V1 Count: ", solver.getROICount("v1_tets", "A")
-print "V2 Count: ", solver.getROICount("v2_tets", "A")
+print("V1 Count: ", solver.getROICount("v1_tets", "A"))
+print("V2 Count: ", solver.getROICount("v2_tets", "A"))
 solver.run(1)
-print "V1 Count: ", solver.getROICount("v1_tets", "A")
-print "V2 Count: ", solver.getROICount("v2_tets", "A")
+print("V1 Count: ", solver.getROICount("v1_tets", "A"))
+print("V2 Count: ", solver.getROICount("v2_tets", "A"))
 
-print "Set dcst from v1 to v2 to 1/10 of DCST..."
+print("Set dcst from v1 to v2 to 1/10 of DCST...")
 solver.reset()
 for tri in pairing.keys():
     solver.setTetDiffD(pairing[tri][0], "D_a", DCST / 10, pairing[tri][1])
     # use this to get directional dcst
-    #print solver.getTetDiffD(pairing[tri][0], "D_a", pairing[tri][1])
+    #print(solver.getTetDiffD(pairing[tri][0], "D_a", pairing[tri][1]))
     solver.setTetCount(pairing[tri][0], "A", 10)
-print "V1 Count: ", solver.getROICount("v1_tets", "A")
-print "V2 Count: ", solver.getROICount("v2_tets", "A")
+print("V1 Count: ", solver.getROICount("v1_tets", "A"))
+print("V2 Count: ", solver.getROICount("v2_tets", "A"))
 solver.run(1)
-print "V1 Count: ", solver.getROICount("v1_tets", "A")
-print "V2 Count: ", solver.getROICount("v2_tets", "A")
+print("V1 Count: ", solver.getROICount("v1_tets", "A"))
+print("V2 Count: ", solver.getROICount("v2_tets", "A"))
 
-print "Set nondirectional dcst..."
+print("Set nondirectional dcst...")
 solver.reset()
 for tri in pairing.keys():
     solver.setTetDiffD(pairing[tri][0], "D_a", DCST)
     # use this to get nondirectional dcst
-    #print solver.getTetDiffD(pairing[tri][0], "D_a")
+    #print(solver.getTetDiffD(pairing[tri][0], "D_a"))
     solver.setTetCount(pairing[tri][0], "A", 10)
-print "V1 Count: ", solver.getROICount("v1_tets", "A")
-print "V2 Count: ", solver.getROICount("v2_tets", "A")
+print("V1 Count: ", solver.getROICount("v1_tets", "A"))
+print("V2 Count: ", solver.getROICount("v2_tets", "A"))
 solver.run(1)
-print "V1 Count: ", solver.getROICount("v1_tets", "A")
-print "V2 Count: ", solver.getROICount("v2_tets", "A")
+print("V1 Count: ", solver.getROICount("v1_tets", "A"))
+print("V2 Count: ", solver.getROICount("v2_tets", "A"))
 

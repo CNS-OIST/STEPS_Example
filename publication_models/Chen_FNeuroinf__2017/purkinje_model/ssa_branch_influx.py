@@ -49,7 +49,7 @@ mesh, rois, roi_areas, roi_vols = CaBurst_geom.getGeom(MESH_FILE, MORPH_FILE)
 try: os.mkdir(RESULT_DIR)
 except: pass
 
-conc_result = open(RESULT_DIR + '/ssa_calcium_conc.dat', 'w', 0)
+conc_result = open(RESULT_DIR + '/ssa_calcium_conc.dat', 'w', 1)
 conc_result.write('#Entries: Time ')
 for roi in rois:
     conc_result.write('%s ' % (roi))

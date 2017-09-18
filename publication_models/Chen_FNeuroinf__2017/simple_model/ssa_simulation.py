@@ -117,7 +117,7 @@ try: os.mkdir(RESULT_DIR)
 except: pass
 try: os.mkdir(sim_result_dir)
 except: pass
-summary_file = open(sim_result_dir + "/result.csv", 'w', 0)
+summary_file = open(sim_result_dir + "/result.csv", 'w', 1)
 summary_file.write("Simulation Time,")
 
 ########################################################################

@@ -698,19 +698,19 @@ if clusterSize>0:
             if cap_m0_count<round(CaP_ro*surfarea*CaP_m0_p):
                 sim.setTriCount(i, 'CaP_m0', sim.getTriCount(i, 'CaP_m0') + 1)
                 cap_m0_count = cap_m0_count + 1
-		count = count +1
+                count = count +1
             elif cap_m1_count<round(CaP_ro*surfarea*CaP_m1_p):
                 sim.setTriCount(i, 'CaP_m1', sim.getTriCount(i, 'CaP_m1') + 1)
                 cap_m1_count = cap_m1_count + 1
-		count = count +1
+                count = count +1
             elif cap_m2_count<round(CaP_ro*surfarea*CaP_m2_p):
                 sim.setTriCount(i, 'CaP_m2', sim.getTriCount(i, 'CaP_m2') + 1)
                 cap_m2_count = cap_m2_count + 1
-		count = count +1
+                count = count +1
             elif cap_m3_count<round(CaP_ro*surfarea*CaP_m3_p):
                 sim.setTriCount(i, 'CaP_m3', sim.getTriCount(i, 'CaP_m3') + 1)
                 cap_m3_count = cap_m3_count + 1
-		count = count +1
+                count = count +1
             else:
                 print('Cluster size is larger than the number of CaP channels available')
 

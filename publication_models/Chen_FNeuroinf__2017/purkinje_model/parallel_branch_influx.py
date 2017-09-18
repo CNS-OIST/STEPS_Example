@@ -78,7 +78,7 @@ ca_conc_preset = pickle.load(ca_conc_preset_file)
 ca_conc_preset_file.close()
 
 if steps.mpi.rank == 0:
-    conc_result = open(RESULT_DIR + '/calcium_conc_%iprocs.dat' % (steps.mpi.nhosts), 'w', 0)
+    conc_result = open(RESULT_DIR + '/calcium_conc_%iprocs.dat' % (steps.mpi.nhosts), 'w', 1)
     conc_result.write('#Entries: Time ')
     for roi in rois:
         conc_result.write('%s ' % (roi))
@@ -150,7 +150,7 @@ for l in range(n_tpns):
 time_cost = (time.time()  - start_time)
 conc_result.close()
 
-proc_file = open(RESULT_DIR + '/proc_%i.csv' % (steps.mpi.rank), 'w', 0)
+proc_file = open(RESULT_DIR + '/proc_%i.csv' % (steps.mpi.rank), 'w', 1)
 proc_file.write("SimTime,CompTime,SyncTime,IdleTime,nIteration\n")
 proc_file.write("%f,%f,%f,%f,%i\n" % (time_cost, sim.getCompTime(), sim.getSyncTime(), sim.getIdleTime(), sim.getNIteration()))
 proc_file.close()

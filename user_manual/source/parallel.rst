@@ -4,7 +4,7 @@
 From Serial to Parallel (Parallel TetOpSplit Solver)
 ********************************************************************
 
-The simulation script described in this chapter is available at `STEPS_Example repository <https://github.com/CNS-OIST/STEPS_Example/tree/master/manual_tutorials/parallel>`_.
+The simulation script described in this chapter is available at `STEPS_Example repository <https://github.com/CNS-OIST/STEPS_Example/tree/master/python_scripts/parallel>`_.
 
 The TetOpSplit solver is avialble for STEPS 3.0.0 and above.
 Please note that the solver is still under active  development

@@ -72,7 +72,6 @@ The following table gives a visual guide to the supported features for each solv
     .. automethod:: step
     .. automethod:: setDT
     .. automethod:: setRk4DT
-    .. automethod:: getDT
     .. automethod:: getRk4DT
     .. automethod:: getTime
     
@@ -300,8 +299,8 @@ The following table gives a visual guide to the supported features for each solv
     .. automethod:: getTriSReacC
     .. automethod:: getTriSReacH
     .. automethod:: getTriSReacA
-    .. automethod:: getTriDiffD
-    .. automethod:: setTriDiffD
+    .. automethod:: getTriSDiffD
+    .. automethod:: setTriSDiffD
     .. automethod:: getTriV
     .. automethod:: setTriV
     .. automethod:: getTriVClamped

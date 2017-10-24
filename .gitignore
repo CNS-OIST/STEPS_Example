@@ -1,10 +1,9 @@
-
 *debug_log*
 *.pyc
-*.pyc
-*.cp
 *.cp
 *.pyc
-manual_tutorials/parallel/parallel_result/result.csv
-manual_tutorials/parallel/serial_result/result.csv
 *.csv
+.ipynb_checkpoints
+user_manual/bulid/
+*.md
+*.pyc

@@ -54,7 +54,7 @@ master_doc = 'manual_index'
 
 # General information about the project.
 project = u'STochastic Engine for Pathway Simulation'
-copyright = u'2014, The STEPS Development Team'
+copyright = u'2018, The STEPS Development Team'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

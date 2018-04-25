@@ -22,6 +22,7 @@ Contents:
    geom_prep.rst
    visual.rst
    preliminary_func.rst
+   matlab_support.ipynb
    API_ref.rst
    
 Indices and tables

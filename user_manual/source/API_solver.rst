@@ -15,6 +15,7 @@ Implementation of serial simulation solvers.
    
 * :class:`steps.solver.Wmrk4`
 * :class:`steps.solver.Wmdirect`
+* :class:`steps.solver.Wmrssa`
 * :class:`steps.solver.Tetexact`
 * :class:`steps.solver.TetODE`
 
@@ -26,6 +27,11 @@ based on the Runge–Kutta method.
 
 :class:`steps.solver.Wmdirect` implements a stochastic, well-mixed solver 
 based on Gillespie's Direct SSA Method. 
+
+:class:`steps.solver.Wmrssa` implements a stochastic, well-mixed solver 
+based on the Rejection SSA method (Thanh V, Zunino R, Priami C (n.d.) On the rejection-based algorithm for simulation and analysis of 
+large-scale reaction networks. The Journal of Chemical Physics 142:244106). 
+It has the same functionality support as Wmdirect, but provides significant speedup for suitable models.
 
 :class:`steps.solver.Tetexact` implements a stochastic reaction-diffusion 
 solver, based on Gillespie's Direct SSA Method extended for diffusive fluxes 
@@ -169,7 +175,124 @@ The following table gives a visual guide to the supported features for each solv
     .. automethod:: getPatchSReacA
     .. automethod:: getPatchSReacExtent
     .. automethod:: resetPatchSReacExtent
+
+.. autoclass:: Wmrk4
+
+    **Solver Information**
     
+    .. automethod:: getSolverName
+    .. automethod:: getSolverDesc
+    .. automethod:: getSolverAuthors
+    .. automethod:: getSolverEmail
+    
+    **Solver Control**
+    
+    .. automethod:: reset
+    .. automethod:: checkpoint
+    .. automethod:: restore
+    .. automethod:: run
+    .. automethod:: advance
+    .. automethod:: step
+    .. automethod:: setDT
+    .. automethod:: setRk4DT
+    .. automethod:: getRk4DT
+    .. automethod:: getTime
+    
+    **Compartment Data Access**
+    
+    .. automethod:: getCompVol
+    .. automethod:: setCompVol
+    .. automethod:: getCompCount
+    .. automethod:: setCompCount
+    .. automethod:: getCompAmount
+    .. automethod:: setCompAmount
+    .. automethod:: getCompConc
+    .. automethod:: setCompConc
+    .. automethod:: getCompClamped
+    .. automethod:: setCompClamped 
+    .. automethod:: getCompReacK 
+    .. automethod:: setCompReacK
+    .. automethod:: getCompReacActive
+    .. automethod:: setCompReacActive
+        
+    **Patch Data Access**
+    
+    .. automethod:: getPatchArea
+    .. automethod:: setPatchArea
+    .. automethod:: getPatchCount
+    .. automethod:: setPatchCount
+    .. automethod:: getPatchAmount
+    .. automethod:: setPatchAmount
+    .. automethod:: getPatchClamped
+    .. automethod:: setPatchClamped
+    .. automethod:: getPatchSReacK
+    .. automethod:: setPatchSReacK
+    .. automethod:: getPatchSReacActive
+    .. automethod:: setPatchSReacActive
+    
+.. autoclass:: Wmrssa
+
+    **Solver Information**
+    
+    .. automethod:: getSolverName
+    .. automethod:: getSolverDesc
+    .. automethod:: getSolverAuthors
+    .. automethod:: getSolverEmail
+    
+    **Solver Control**
+    
+    .. automethod:: reset
+    .. automethod:: checkpoint
+    .. automethod:: restore
+    .. automethod:: run
+    .. automethod:: advance
+    .. automethod:: step
+    .. automethod:: getTime
+    .. automethod:: getA0
+    .. automethod:: getNSteps
+    
+    **Compartment Data Access**
+    
+    .. automethod:: getCompVol
+    .. automethod:: setCompVol
+    .. automethod:: getCompCount
+    .. automethod:: setCompCount
+    .. automethod:: getCompAmount
+    .. automethod:: setCompAmount
+    .. automethod:: getCompConc
+    .. automethod:: setCompConc
+    .. automethod:: getCompClamped
+    .. automethod:: setCompClamped 
+    .. automethod:: getCompReacK 
+    .. automethod:: setCompReacK
+    .. automethod:: getCompReacActive
+    .. automethod:: setCompReacActive
+    .. automethod:: getCompReacC
+    .. automethod:: getCompReacH
+    .. automethod:: getCompReacA
+    .. automethod:: getCompReacExtent
+    .. automethod:: resetCompReacExtent
+        
+    **Patch Data Access**
+    
+    .. automethod:: getPatchArea
+    .. automethod:: setPatchArea
+    .. automethod:: getPatchCount
+    .. automethod:: setPatchCount
+    .. automethod:: getPatchAmount
+    .. automethod:: setPatchAmount
+    .. automethod:: getPatchClamped
+    .. automethod:: setPatchClamped
+    .. automethod:: getPatchSReacK
+    .. automethod:: setPatchSReacK
+    .. automethod:: getPatchSReacActive
+    .. automethod:: setPatchSReacActive
+    .. automethod:: getPatchSReacC
+    .. automethod:: getPatchSReacH
+    .. automethod:: getPatchSReacA
+    .. automethod:: getPatchSReacExtent
+    .. automethod:: resetPatchSReacExtent
+
 .. autoclass:: Tetexact
 
     **Solver Information**

@@ -1,9 +1,9 @@
-*debug_log*
+**.logs
 *.pyc
 *.cp
 *.pyc
 *.csv
-.ipynb_checkpoints
-user_manual/bulid/
+*.ipynb_checkpoints
+user_manual/build/
 *.md
 *.pyc

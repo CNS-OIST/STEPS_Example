@@ -77,8 +77,6 @@ The following table gives a visual guide to the supported features for each solv
     .. automethod:: advance
     .. automethod:: step
     .. automethod:: setDT
-    .. automethod:: setRk4DT
-    .. automethod:: getRk4DT
     .. automethod:: getTime
     
     **Compartment Data Access**
@@ -193,9 +191,7 @@ The following table gives a visual guide to the supported features for each solv
     .. automethod:: run
     .. automethod:: advance
     .. automethod:: step
-    .. automethod:: setDT
     .. automethod:: setRk4DT
-    .. automethod:: getRk4DT
     .. automethod:: getTime
     
     **Compartment Data Access**

@@ -4,6 +4,8 @@
 STEPS-CUBIT Geometry Preparation Toolkit
 ****************************************
 
+**This toolkit package is deprecated and not included in the current release. This page is kept for reference purpose.**
+
 The simulation scripts described in this chapter are available at `ModelDB <http://senselab.med.yale.edu/modeldb/ShowModel.asp?model=153351>`_
 
 

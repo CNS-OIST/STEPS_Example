@@ -33,11 +33,11 @@ Reaction-Diffusion Simulation
 Let's first see how to convert a normal serial Tetexact reaction-diffusion simulation to
 a parallel TetOpSplit simulation. Below is the Tetexact simulation script,
 
-.. literalinclude:: examples/parallel/ssa_simulation.py
+.. literalinclude:: ../../python_scripts/parallel/ssa_simulation.py
 
 And here is the parallel TetOpSplit version,
 
-.. literalinclude:: examples/parallel/parallel_simulation.py
+.. literalinclude:: ../../python_scripts/parallel/parallel_simulation.py
 
 So what are the differences? Actually not that many. Parallel TetOpSplit is designed in the way that
 a serial Tetexact simulation can be easily converted to the parallel version with

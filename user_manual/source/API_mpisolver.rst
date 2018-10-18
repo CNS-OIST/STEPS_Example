@@ -184,8 +184,8 @@ For small scale simulation with several process we recommand `EF_DV_SLUSYS`.
     .. automethod:: getTriSReacC
     .. automethod:: getTriSReacH
     .. automethod:: getTriSReacA
-    .. automethod:: getTriDiffD
-    .. automethod:: setTriDiffD
+    .. automethod:: getTriSDiffD
+    .. automethod:: setTriSDiffD
     .. automethod:: getTriV
     .. automethod:: setTriV
     .. automethod:: getTriVClamped

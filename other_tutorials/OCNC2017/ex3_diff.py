@@ -15,6 +15,11 @@ import steps.solver as solvmod
 import steps.utilities.meshio as meshio 
 import steps.geom as stetmesh
 import steps.rng as srng
+try:
+    from steps.geom import UNKNOWN_TET
+except ImportError:
+    UNKNOWN_TET = -1
+
 
 ########################################################################
 
@@ -144,7 +149,7 @@ def gen_geom(meshfile):
 		
 		idx = mesh.findTetByPoint([xpnt, ypnt, zpnt])
 		
-		if (idx == -1): continue
+		if idx == UNKNOWN_TET: continue
 		if (idx not in tetidxs): 
 			tetidxs[filled] = idx
 			filled += 1

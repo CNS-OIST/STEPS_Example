@@ -38,6 +38,11 @@ import steps.model as smodel
 import steps.solver as solvmod
 import steps.geom as stetmesh
 import steps.rng as srng
+try:
+    from steps.geom import UNKNOWN_TET
+except ImportError:
+    UNKNOWN_TET = -1
+
 
 import steps.utilities.meshio as smeshio
 
@@ -136,7 +141,7 @@ def gen_geom():
         tidx = mesh.findTetByPoint([xcrd, ycrd, zcrd])
         
         # -1 was returned if point is outside the mesh:
-        if (tidx == -1): continue
+        if tidx == UNKNOWN_TET: continue
         if (tidx not in tetidxs):
             tetidxs[stored] = tidx
             stored += 1

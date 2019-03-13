@@ -1,21 +1,20 @@
-# This script is provided as example for STEPS user manual.
-# License: GPL2.0
-# Contact: Dr. Weiliang Chen, w.chen@oist.jp
+#  This script is provided as example for STEPS user manual.
+#  License: GPL2.0
+#  Contact: Dr. Weiliang Chen, w.chen@oist.jp
 
-import steps
-import steps.model as smod
-import steps.utilities.meshio as meshio
-import steps.geom as stetmesh
-import steps.rng as srng
-import time
 import os
+import time
 
+import steps.geom as stetmesh
+import steps.model as smod
+import steps.rng as srng
 import steps.solver as ssa_solver
+import steps.utilities.meshio as meshio
 
 MESHFILE = '10x10x100_3363tets.inp'
 RESULT_DIR = "serial_result"
 
-# The initial molecule counts
+#  The initial molecule counts
 N0A = 1000
 N0B = 2000
 N0C = 3000
@@ -31,12 +30,13 @@ ENDTIME = 20.0
 RECORDING_INTERVAL = 1.0
 
 ########################################################################
-# Biochemical Model
+#  Biochemical Model
+
 
 def gen_model():
-    
+
     mdl = smod.Model()
-    
+
     # The chemical species
     A = smod.Spec('A', mdl)
     B = smod.Spec('B', mdl)
@@ -49,43 +49,43 @@ def gen_model():
     I = smod.Spec('I', mdl)
     J = smod.Spec('J', mdl)
 
-    volsys = smod.Volsys('vsys',mdl)
+    volsys = smod.Volsys('vsys', mdl)
 
+    R1 = smod.Reac('R1', volsys, lhs=[A, B], rhs=[C], kcst=1000.0e6)
+    R2 = smod.Reac('R2', volsys, lhs=[C], rhs=[A, B], kcst=100)
+    R3 = smod.Reac('R3', volsys, lhs=[C, D], rhs=[E], kcst=100e6)
+    R4 = smod.Reac('R4', volsys, lhs=[E], rhs=[C, D], kcst=10)
 
-    R1 = smod.Reac('R1', volsys, lhs = [A, B], rhs = [C],  kcst = 1000.0e6)
-    R2 = smod.Reac('R2', volsys, lhs = [C],  rhs = [A,B], kcst = 100)
-    R3 = smod.Reac('R3', volsys, lhs = [C, D], rhs = [E], kcst = 100e6)
-    R4 = smod.Reac('R4', volsys, lhs = [E], rhs = [C,D], kcst = 10)
-
-    R5 = smod.Reac('R5', volsys, lhs = [F, G], rhs = [H], kcst = 10e6)
-    R6 = smod.Reac('R6', volsys, lhs = [H], rhs = [F,G], kcst = 1)
-    R7 = smod.Reac('R7', volsys, lhs = [H, I], rhs = [J],  kcst = 1e6)
-    R8 = smod.Reac('R8', volsys, lhs = [J],  rhs = [H,I], kcst = 0.1*10)
-
+    R5 = smod.Reac('R5', volsys, lhs=[F, G], rhs=[H], kcst=10e6)
+    R6 = smod.Reac('R6', volsys, lhs=[H], rhs=[F, G], kcst=1)
+    R7 = smod.Reac('R7', volsys, lhs=[H, I], rhs=[J], kcst=1e6)
+    R8 = smod.Reac('R8', volsys, lhs=[J], rhs=[H, I], kcst=0.1 * 10)
 
     # The diffusion rules
-    D1 = smod.Diff('D1', volsys, A,  100e-12)
-    D2 = smod.Diff('D2', volsys, B,  90e-12)
+    D1 = smod.Diff('D1', volsys, A, 100e-12)
+    D2 = smod.Diff('D2', volsys, B, 90e-12)
     D3 = smod.Diff('D3', volsys, C, 80e-12)
     D4 = smod.Diff('D4', volsys, D, 70e-12)
     D5 = smod.Diff('D5', volsys, E, 60e-12)
-    D6 = smod.Diff('D6', volsys, F,  50e-12)
-    D7 = smod.Diff('D7', volsys, G,  40e-12)
-    D8 = smod.Diff('D8', volsys, H,  30e-12)
-    D9 = smod.Diff('D9', volsys, I,  20e-12)
+    D6 = smod.Diff('D6', volsys, F, 50e-12)
+    D7 = smod.Diff('D7', volsys, G, 40e-12)
+    D8 = smod.Diff('D8', volsys, H, 30e-12)
+    D9 = smod.Diff('D9', volsys, I, 20e-12)
     D10 = smod.Diff('D10', volsys, J, 10e-12)
-    
+
     return mdl
 
+
 ########################################################################
-# Geometry
+#  Geometry
 def gen_geom():
     mesh = meshio.importAbaqus(MESHFILE, 1e-6)[0]
     ntets = mesh.countTets()
     comp = stetmesh.TmComp('comp', mesh, range(ntets))
     comp.addVolsys('vsys')
-    
+
     return mesh
+
 
 ########################################################################
 
@@ -93,10 +93,12 @@ m = gen_model()
 g = gen_geom()
 
 ########################################################################
-# recording
+#  recording
 
-try: os.mkdir(RESULT_DIR)
-except: pass
+try:
+    os.mkdir(RESULT_DIR)
+except:
+    pass
 
 summary_file = open(RESULT_DIR + "/result.csv", 'w', 1)
 summary_file.write("Simulation Time,A,B,C,D,E,F,G,H,I,J\n")
@@ -104,12 +106,12 @@ summary_file.write("Simulation Time,A,B,C,D,E,F,G,H,I,J\n")
 ########################################################################
 
 rng = srng.create('mt19937', 512)
-rng.initialize(int(time.time()%4294967295))
+rng.initialize(int(time.time() % 4294967295))
 
 sim = ssa_solver.Tetexact(m, g, rng)
 
 
-# Set initial conditions
+#  Set initial conditions
 sim.setCompCount('comp', 'A', N0A)
 sim.setCompCount('comp', 'B', N0B)
 sim.setCompCount('comp', 'C', N0C)
@@ -138,9 +140,21 @@ for l in range(n_tpns):
     I_count = sim.getCompCount('comp', 'I')
     J_count = sim.getCompCount('comp', 'J')
 
-    summary_file.write("%f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\n" % \
-    (current_simtime, A_count, B_count, C_count, D_count, E_count, \
-    F_count, G_count, H_count, I_count, J_count))
-    
-summary_file.close()
+    summary_file.write(
+        "%f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\n"
+        % (
+            current_simtime,
+            A_count,
+            B_count,
+            C_count,
+            D_count,
+            E_count,
+            F_count,
+            G_count,
+            H_count,
+            I_count,
+            J_count,
+        )
+    )
 
+summary_file.close()

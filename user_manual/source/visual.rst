@@ -16,7 +16,7 @@ Prerequisites
 The following third-party python packages are required to use the visualization toolkit.
 
 1. `NumPy <http://www.numpy.org/>`_
-2. `PyQt4 <http://www.riverbankcomputing.co.uk/software/pyqt/download>`_
+2. `PyQt <http://www.riverbankcomputing.co.uk/software/pyqt/download>`_
 3. `PyQtGraph <http://www.pyqtgraph.org/>`_
 
 Installation

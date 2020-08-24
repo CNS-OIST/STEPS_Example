@@ -22,7 +22,7 @@ such as substructure identification and biochemical model assocaition, are commo
 required prior to the simulation. The STEPS-CUBIT geometry preparation toolkit provides
 useful utilities for these tasks.
 
-API reference of this module can be accessed via :ref:`API_utilities_steps_cubit`
+API reference of this module can be accessed via :ref:`API_1_utilities_steps_cubit`
 
 Prerequisites
 ===================

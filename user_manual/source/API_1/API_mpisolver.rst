@@ -1,27 +1,27 @@
-.. _API_mpisolver:
+.. _API_1_mpisolver:
 
-****************
-steps.mpi.solver
-****************
+**********************
+steps.API_1.mpi.solver
+**********************
 
-.. data:: steps.mpi.nhosts
+.. data:: steps.API_1.mpi.nhosts
 
 The number of processes used in the MPI simulation.
 
-.. data:: steps.mpi.rank
+.. data:: steps.API_1.mpi.rank
 
 The rank of the current MPI process.
 
-.. module:: steps.mpi.solver
+.. module:: steps.API_1.mpi.solver
 
 Implementation of parallel simulation solver.
    
-* :class:`steps.mpi.solver.TetOpSplit`
+* :class:`steps.API_1.mpi.solver.TetOpSplit`
 
 The solver is a partial implementation of the STEPS solver API.
 At the moment STEPS implements just one parallel solver. 
 
-:class:`steps.mpi.solver.TetOpSplit` implements a spatial stochastic 
+:class:`steps.API_1.mpi.solver.TetOpSplit` implements a spatial stochastic 
 solver that applies an accurate approximation for diffusion, and reactions
 are simulated stochastically based on Gillespie's Direct SSA Method. Simulations
 are run in parallel under the MPI protocol.
@@ -34,19 +34,19 @@ For small scale simulation with several process we recommand `EF_DV_SLUSYS`.
 
     Options for `calcMembPot`
 
-    * .. data:: steps.mpi.solver.EF_NONE
+    * .. data:: steps.API_1.mpi.solver.EF_NONE
     
          No EField solver is needed.
 
-    * .. data:: steps.mpi.solver.EF_DEFAULT
+    * .. data:: steps.API_1.mpi.solver.EF_DEFAULT
 
          Run serial EField simulation (Tetexact version) on process 0.
 
-    * .. data:: steps.mpi.solver.EF_DV_SLUSYS
+    * .. data:: steps.API_1.mpi.solver.EF_DV_SLUSYS
 
          Use parallel SuperLU EField solver.
 
-    * .. data:: steps.mpi.solver.EF_DV_PETSC
+    * .. data:: steps.API_1.mpi.solver.EF_DV_PETSC
 
          Use parallel PETSc EField solver.
 
@@ -135,7 +135,6 @@ For small scale simulation with several process we recommand `EF_DV_SLUSYS`.
     
     .. automethod:: setSDiffBoundaryDiffusionActive
     .. automethod:: getSDiffBoundaryDiffusionActive
-    .. automethod:: setDiffBoundaryDcst
     .. automethod:: setSDiffBoundaryDcst
 
     **Tetrahedral Data Access**

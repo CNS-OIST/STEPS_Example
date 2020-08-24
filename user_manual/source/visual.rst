@@ -8,7 +8,7 @@ The simulation scripts described in this chapter are available at `STEPS_Example
 
 In this chapter, we'll use simple models as examples to introduce the use of visualization toolkit described in `Python-based geometry preparation and simulation visualization toolkits for STEPS <http://journal.frontiersin.org/Journal/10.3389/fninf.2014.00037/abstract>`_.
 
-API reference of this module can be accessed via :ref:`API_visual`
+API reference of this module can be accessed via :ref:`API_1_visual`
 
 Prerequisites
 ===================
@@ -153,7 +153,7 @@ We also define the diffuson constants according to publication. ::
     # Import model
     mdl = ip3r_model.getModel()
 
-We then add a :mod:`steps.model.Volsys` volume system to the model to host the :mod:`steps.model.Diff` 
+We then add a :mod:`steps.API_1.model.Volsys` volume system to the model to host the :mod:`steps.API_1.model.Diff` 
 diffution rules for Calcium and IP3. ::
 
     volsys = smodel.Volsys('vsys', mdl)
@@ -166,7 +166,7 @@ diffution rules for Calcium and IP3. ::
     Ca_diff = smodel.Diff('Ca_diff', volsys, Ca, DCST_Ca)
     IP3_diff = smodel.Diff('IP3_diff', volsys, IP3, DCST_IP3)
 
-Now we load the :mod:`steps.geom.Tetmesh` from file prepared in :ref:`spatial_ip3`, using :func:`steps.utilities.meshio.loadMesh`. ::
+Now we load the :mod:`steps.API_1.geom.Tetmesh` from file prepared in :ref:`spatial_ip3`, using :func:`steps.API_1.utilities.meshio.loadMesh`. ::
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
     # Import mesh
@@ -174,7 +174,7 @@ Now we load the :mod:`steps.geom.Tetmesh` from file prepared in :ref:`spatial_ip
 
     mesh = meshio.loadMesh("ip3r_mesh")[0]
 
-We then create the random number generator and the :mod:`steps.solver.Tetexact` solver,
+We then create the random number generator and the :mod:`steps.API_1.solver.Tetexact` solver,
 and initialize the simulation by adding molecules into compartments and patch. ::
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -215,14 +215,14 @@ Plot Display
 ''''''''''''
 
 Now let's create a plot display so that we can have a quantitative view of the simulation.
-We first create a :mod:`steps.visual.PlotDisplay` instance, which will be the host of all our plots.
+We first create a :mod:`steps.API_1.visual.PlotDisplay` instance, which will be the host of all our plots.
 ::
 
     # Create plot display
     plots = visual.PlotDisplay("IP3 Receptor Model", size = (600, 400))
 
-The :mod:`steps.visual.PlotDisplay` class provides varies functions for different plotting requirements.
-For example, :func:`steps.visual.PlotDisplay.addCompSpecPlot` adds a plot to the display, which displays 
+The :mod:`steps.API_1.visual.PlotDisplay` class provides varies functions for different plotting requirements.
+For example, :func:`steps.API_1.visual.PlotDisplay.addCompSpecPlot` adds a plot to the display, which displays 
 molecule count/Concentration changes during simulation. We can also setup different display features 
 for the plot, such as axis labels, data style, etc. The following code creates a plot showing 
 calcium Concentration changes in cytosol. ::
@@ -254,7 +254,7 @@ Simulation Display
 We start working on the actual simulation displays. In this example, we would like to create multiple
 display windows, one for overview of the complete system, and several others for varies components.
 
-A simulation display can be constructed by creating a :mod:`steps.visual.SimDisplay` object. ::
+A simulation display can be constructed by creating a :mod:`steps.API_1.visual.SimDisplay` object. ::
 
     # Create simulation displays
     full_display = visual.SimDisplay("Full View", w = 600, h = 400)
@@ -266,8 +266,8 @@ A simulation display can be constructed by creating a :mod:`steps.visual.SimDisp
 Now it is time to add different visual components to the displays.
 The Visualization toolkit provides two major types of visual components, static and dynamic.
 
-Static components include :mod:`steps.visual.VisualCompMesh` for Visualizing compartment mesh, and
-:mod:`steps.visual.VisualPatchMesh` for Visualizing patch mesh. We create two :mod:`steps.visual.VisualCompMesh` instances for both cytosol and ER, and a :mod:`steps.visual.VisualPatchMesh` instance for ER membrane. ::
+Static components include :mod:`steps.API_1.visual.VisualCompMesh` for Visualizing compartment mesh, and
+:mod:`steps.API_1.visual.VisualPatchMesh` for Visualizing patch mesh. We create two :mod:`steps.API_1.visual.VisualCompMesh` instances for both cytosol and ER, and a :mod:`steps.API_1.visual.VisualPatchMesh` instance for ER membrane. ::
 
     # Create static mesh components
     ER_view = visual.VisualCompMesh("ER", full_display, mesh, "ER", color = [0.678, 1.000, 0.184, 0.05])
@@ -275,8 +275,8 @@ Static components include :mod:`steps.visual.VisualCompMesh` for Visualizing com
     memb_view = visual.VisualPatchMesh("memb", full_display, mesh, "memb", color = [1.000, 0.973, 0.863, 0.05])
 
 Dynamic components include several variations of molecule visualization components for species in compartments
-or on patches. Here we use two different components, :mod:`steps.visual.VisualCompSpec` for visualizing 
-compartmental species such as calcium in ER and cytosol, as well as IP3 in cytosol. And :mod:`steps.visual.VisualPatchChannel` for visualizing different states of IP3 receptors on ER membrane. ::
+or on patches. Here we use two different components, :mod:`steps.API_1.visual.VisualCompSpec` for visualizing 
+compartmental species such as calcium in ER and cytosol, as well as IP3 in cytosol. And :mod:`steps.API_1.visual.VisualPatchChannel` for visualizing different states of IP3 receptors on ER membrane. ::
 
     # Create dynamic species components
     Ca_ER = visual.VisualCompSpec("Ca_ER", full_display, mesh, sim, "ER", "Ca", [1.000, 0.647, 0.000, 1.0], spec_size = 0.005)
@@ -303,7 +303,7 @@ We then add these visual components to associated simulation displays ::
 
 Simulation Control
 ''''''''''''''''''
-The final task is to create a :mod:`steps.visual.SimControl` controller and assigned simulation and displays
+The final task is to create a :mod:`steps.API_1.visual.SimControl` controller and assigned simulation and displays
 to it. ::
 
     # Add simulation and displays to control
@@ -324,12 +324,12 @@ Plots
 
 Count/Concentration Plot
 ^^^^^^^^^^^^^^^^^^^^^^^^^
-    * :mod:`steps.visual.PlotDisplay.addCompSpecPlot`
-    * :mod:`steps.visual.PlotDisplay.addTetsSpecPlot`
-    * :mod:`steps.visual.PlotDisplay.addPatchSpecPlot`
-    * :mod:`steps.visual.PlotDisplay.addTrisSpecPlot`
-    * :mod:`steps.visual.PlotDisplay.addCompSumSpecsPlot`
-    * :mod:`steps.visual.PlotDisplay.addPatchSumSpecsPlot`
+    * :mod:`steps.API_1.visual.PlotDisplay.addCompSpecPlot`
+    * :mod:`steps.API_1.visual.PlotDisplay.addTetsSpecPlot`
+    * :mod:`steps.API_1.visual.PlotDisplay.addPatchSpecPlot`
+    * :mod:`steps.API_1.visual.PlotDisplay.addTrisSpecPlot`
+    * :mod:`steps.API_1.visual.PlotDisplay.addCompSumSpecsPlot`
+    * :mod:`steps.API_1.visual.PlotDisplay.addPatchSumSpecsPlot`
     
 .. raw:: html
 
@@ -344,11 +344,11 @@ Count/Concentration Plot
         
 Distribution Plot
 ^^^^^^^^^^^^^^^^^
-    * :mod:`steps.visual.PlotDisplay.addCompSpecDist`
-    * :mod:`steps.visual.PlotDisplay.addPatchSpecDist`
-    * :mod:`steps.visual.PlotDisplay.addTetsSpecDist`
-    * :mod:`steps.visual.PlotDisplay.addTrisSpecDist`
-    * :mod:`steps.visual.PlotDisplay.addROISpecDist`
+    * :mod:`steps.API_1.visual.PlotDisplay.addCompSpecDist`
+    * :mod:`steps.API_1.visual.PlotDisplay.addPatchSpecDist`
+    * :mod:`steps.API_1.visual.PlotDisplay.addTetsSpecDist`
+    * :mod:`steps.API_1.visual.PlotDisplay.addTrisSpecDist`
+    * :mod:`steps.API_1.visual.PlotDisplay.addROISpecDist`
 
 .. raw:: html
 
@@ -366,8 +366,8 @@ Visual Component
 
 Static Component
 ^^^^^^^^^^^^^^^^
-    * :mod:`steps.visual.VisualCompMesh`
-    * :mod:`steps.visual.VisualPatchMesh`
+    * :mod:`steps.API_1.visual.VisualCompMesh`
+    * :mod:`steps.API_1.visual.VisualPatchMesh`
 
 .. raw:: html
 
@@ -384,12 +384,12 @@ Dynamic Component
 ^^^^^^^^^^^^^^^^^
 Diffusive Species
 ''''''''''''''''''
-    * :mod:`steps.visual.VisualTetsSpec`
-    * :mod:`steps.visual.VisualCompSpec`
-    * :mod:`steps.visual.VisualROITetsSpec`
-    * :mod:`steps.visual.VisualTrisSpec`
-    * :mod:`steps.visual.VisualPatchSpec`
-    * :mod:`steps.visual.VisualROITrisSpec`
+    * :mod:`steps.API_1.visual.VisualTetsSpec`
+    * :mod:`steps.API_1.visual.VisualCompSpec`
+    * :mod:`steps.API_1.visual.VisualROITetsSpec`
+    * :mod:`steps.API_1.visual.VisualTrisSpec`
+    * :mod:`steps.API_1.visual.VisualPatchSpec`
+    * :mod:`steps.API_1.visual.VisualROITrisSpec`
 
 .. raw:: html
 
@@ -404,9 +404,9 @@ Diffusive Species
 
 Non-diffusive Channel Species
 '''''''''''''''''''''''''''''
-    * :mod:`steps.visual.VisualTrisChannel`
-    * :mod:`steps.visual.VisualPatchChannel`
-    * :mod:`steps.visual.VisualROITrisChannel`
+    * :mod:`steps.API_1.visual.VisualTrisChannel`
+    * :mod:`steps.API_1.visual.VisualPatchChannel`
+    * :mod:`steps.API_1.visual.VisualROITrisChannel`
     
 .. raw:: html
 

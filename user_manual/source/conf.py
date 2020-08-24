@@ -286,3 +286,131 @@ intersphinx_mapping = {'http://docs.python.org/': None}
 
 [extensions]
 todo_include_todos = True
+
+
+####################################################
+# Configuration for generating API_2 documentation #
+####################################################
+
+
+import types
+
+import steps
+from steps.API_2 import model, geom, utils, sim
+
+# Not sure if there is a better way to do this but if we do not return the descriptor itself
+# during documentation, the __doc__ from the original function is not taken into account. 
+# This might be due to how sphinx gets class attributes which trigger the call of the descriptor's
+# __get__ method instead of returning the descriptor itself. To avoid this, we monkey patch the
+# descriptor's __get__ method to return the descriptor instead of the normal value.
+steps.API_2.utils.classproperty.__get__ = lambda self, *args: self
+
+# -- Project information -----------------------------------------------------
+
+
+
+# -- General configuration ---------------------------------------------------
+
+# Add any Sphinx extension module names here, as strings. They can be
+# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
+# ones.
+extensions += [
+    'sphinx.ext.autosummary',
+]
+
+autodoc_default_options = {
+    # 'members': True,
+    'member-order': 'bysource',
+    # 'special-members': True,
+    # 'inherited-members': 'ndarray',
+    # 'undoc-members': True,
+    # 'exclude-members': '__weakref__'
+}
+
+def AllSubclasses(cls):
+    for cls2 in cls.__subclasses__():
+        yield cls2
+        for cls3 in AllSubclasses(cls2):
+            yield cls3
+
+visualClasses = ['SimControl', 'PlotDisplay', 'TimePlot', 'SpatialPlot', 'NewRow', 'SimDisplay', 'ElementDisplay']
+
+def autodoc_skip_member(app, what, name, obj, skip, options):
+    if obj is not None and hasattr(obj, '__doc__'):
+        if name.startswith('__'):
+            if obj.__doc__ is not None and ':meta public:' in obj.__doc__:
+                return False
+            else:
+                return True
+        elif obj.__doc__ is not None and ':meta private:' in obj.__doc__:
+            return True
+        elif isinstance(obj, types.MethodType) and obj.__self__.__name__ in visualClasses:
+            if obj.__name__ == 'Create' :
+                return True
+    return skip
+
+replace_map = {
+    '{{model.Reaction._FwdSpecifier}}': steps.API_2.model.Reaction._FwdSpecifier,
+    '{{model.Reaction._BkwSpecifier}}': steps.API_2.model.Reaction._BkwSpecifier,
+}
+
+def autodoc_process_docstring(app, what, name, obj, options, lines):
+    if isinstance(obj, types.MethodType) and obj.__name__ == 'Create' and obj.__self__.__name__ != 'NamedObject':
+        lines[:] = [f"""
+            Auto naming creation method, see :py:func:`steps.API_2.utils.NamedObject.Create` for auto naming syntax and :py:class:`{obj.__self__.__name__}` for arguments.
+        """]
+    # Replace the dosctring of ALL(...) methods
+    if isinstance(obj, types.FunctionType) and obj.__name__ == 'ALL':
+        if len(name.split('.')) > 2:
+            *_, clsname, methname = name.split('.')
+            if clsname not in ['NamedObject', 'SimPath', 'Simulation']:
+                lines[:] = [f"""
+                    Access the children of the object, see :py:func:`steps.API_2.utils.NamedObject.ALL` for details.
+                """]
+    # Replace the docstring of special methods in classes inheriting from RefList
+    if isinstance(obj, types.FunctionType) and obj.__name__.startswith('__'):
+        if len(name.split('.')) > 2:
+            *_, clsname, methname = name.split('.')
+            if methname == '__getattr__' and clsname not in ['NamedObject', 'SimPath', 'Simulation', 'ResultSelector']:
+                lines[:] = [f"""
+                    Access the children of the object as if they were an attribute, see :py:func:`steps.API_2.utils.NamedObject.__getattr__` for details.
+                """]
+            elif clsname in [cls.__name__ for cls in steps.API_2.geom.RefList.__subclasses__()]:
+                clsval = [cls for cls in steps.API_2.geom.RefList.__subclasses__() if cls.__name__ == clsname][0]
+                refcls = clsval._refCls
+                funcCls = obj.__qualname__.split('.')[0]
+                if funcCls == steps.API_2.geom.RefList.__name__:
+                    lines[:] = [f"""{lines[0]}
+
+                        See :py:func:`RefList.{methname}` for details, replace 'RefList' by '{clsname}' and 'Reference' by '{refcls.__name__}' in the examples.
+                    """]
+            elif clsname in [cls.__name__ for cls in AllSubclasses(steps.API_2.model.ReactionElement)]:
+                funcCls = obj.__qualname__.split('.')[0]
+                if funcCls == steps.API_2.model.ReactionElement.__name__:
+                    lines[:] = [f"""{lines[0]}
+
+                        See :py:func:`ReactionElement.{methname}` for details.
+                    """]
+    for i in range(len(lines)):
+        for key, repl in replace_map.items():
+            if key in lines[i]:
+                lines[i] = lines[i].replace(key, repl)
+
+def autodoc_process_signature(app, what, name, obj, options, signature, return_annotation):
+    sig = tuple()
+    if signature is not None:
+        for param in signature.strip('()').split(','):
+            param = param.strip()
+            if not (param.startswith('_') and '=' in param):
+                sig += (param,)
+        return ('(' + ', '.join(sig) + ')', return_annotation)
+    else:
+        return (signature, return_annotation)
+
+def setup(app):
+    app.connect('autodoc-skip-member', autodoc_skip_member)
+    app.connect('autodoc-process-docstring', autodoc_process_docstring)
+    app.connect('autodoc-process-signature', autodoc_process_signature)
+
+
+

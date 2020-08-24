@@ -1,8 +1,8 @@
-.. _API_ref:
+.. _API_1_ref:
 
-**************
-API References
-**************
+****************
+API_1 References
+****************
 
 Namespaces:
 
@@ -17,19 +17,20 @@ Namespaces:
    API_utilities_meshio.rst
    API_utilities_collections.rst
    API_utilities_sbml.rst
+   API_utilities_steps_cubit.rst
    API_visual.rst
    
 Currently STEPS has 6 major namespaces, divided by functionality. 
-The :mod:`steps.model` namespace defines classes of chemical species in the model, 
-as well as the reaction and diffusion objects. The :mod:`steps.geom` namespace 
+The :mod:`steps.API_1.model` namespace defines classes of chemical species in the model, 
+as well as the reaction and diffusion objects. The :mod:`steps.API_1.geom` namespace 
 contains classes that define the geometry of the model (i.e. tetrahedral meshes, 
-compartments and patches). The :mod:`steps.rng` namespace contains the random number 
-generators (currently only one generator is available). The :mod:`steps.solver` and :mod:`steps.mpi.solver` namespaces 
-implement the simulation solvers. The :mod:`steps.utilities` namespace provides useful 
+compartments and patches). The :mod:`steps.API_1.rng` namespace contains the random number 
+generators (currently only one generator is available). The :mod:`steps.API_1.solver` and :mod:`steps.API_1.mpi.solver` namespaces 
+implement the simulation solvers. The :mod:`steps.API_1.utilities` namespace provides useful 
 tools related to the model and geometry description, currently providing 3D 
 tetrahedral mesh loading and saving support. 
 
-.. figure:: images/steps.jpg
+.. figure:: ../images/steps.jpg
    :align:  center
    
    STEPS main class diagram.
@@ -38,7 +39,7 @@ tetrahedral mesh loading and saving support.
 
 For most of the set and get methods, STEPS provides corresponding attributes 
 which can be accessed and modified directly. For example (spec is a reference 
-to an object of type :class:`steps.model.Spec`)::
+to an object of type :class:`steps.API_1.model.Spec`)::
 
     >>> spec.setID('Ca')
     
@@ -69,7 +70,7 @@ are completely lower-case::
     
 All attributes beginning with double underscore are built-in attributes related 
 to the implementation of the type and can be ignored. So, for our 
-:func:`steps.model.Spec` object (one of the most basic objects in STEPS) we have 
+:func:`steps.API_1.model.Spec` object (one of the most basic objects in STEPS) we have 
 functions ``getID``, ``setID`` and ``getModel`` available with attributes ``id`` 
 and ``model`` related to those functions.
 

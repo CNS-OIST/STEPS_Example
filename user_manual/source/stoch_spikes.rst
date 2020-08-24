@@ -23,7 +23,7 @@ will be offered of things that have been described in previous chapters.
 
 
 Modelling solution
-=================
+==================
 
 At the top of the script, as usual, we import some modules, including STEPS modules and some self-written helper modules. This
 import includes the extra/constants.py file, which includes all important parameters for the module such as physical 
@@ -441,7 +441,7 @@ with the exception of concentration where units are molar::
 
 
 Command line execution
---------------------
+----------------------
 
 
 Back to the StochasticCaburst.py script, and next we take a slightly new approach to previous models, in which we utilise command line arguments (``sys.argv``).
@@ -597,7 +597,7 @@ in [#f1]_ and [#f2]_. Most parameters come from the :ref:`constants`::
 .. _ptype:
 
 P-type Calcium channel
---------------------
+----------------------
 
 The P-type calcium channel is a different type of ion channel to those we have seen before. In previous chapters we saw 
 Hodgkin-Huxley sodium and potassium channels that conducted an Ohmic current. The sodium and potassium ions in that situation 
@@ -633,7 +633,7 @@ across the membrane triangle where the channel resides::
     CaPm2m1 = smodel.VDepSReac('CaPm2m1', ssys, slhs = [CaP_m2], srhs = [CaP_m1], k= lambda V: 1.0e3 *2.* beta_cap(V*1.0e3)* Qt)
     CaPm1m0 = smodel.VDepSReac('CaPm1m0', ssys, slhs = [CaP_m1], srhs = [CaP_m0], k= lambda V: 1.0e3 *1.* beta_cap(V*1.0e3)* Qt)
 
-We come to creating our GHK current object (:class:`steps.model.GHKcurr`). This object will calculate single-channel current for a given
+We come to creating our GHK current object (:class:`steps.API_1.model.GHKcurr`). This object will calculate single-channel current for a given
 channel state by the GHK flux equation:
 
 .. math::
@@ -648,8 +648,8 @@ on the sign of the current and the valence of the ions.
 Many of the values required for calculating a GHK current are simulation variables, such as concentrations and voltage, simulation constants such as 
 temperature, or fixed constants such as the Faraday constant and the gas constant. Such values are either known or can be found by STEPS during runtime and so are not part of 
 object construction, with the exception of single-channel permeability which we will come to later. First let's look at the required arguments to the object constructor, which are, in order:
-a string identifier, parent surface system, the channel state (reference to a :class:`steps.model.ChanState` object) and the permeable ion  
-(reference to a :class:`steps.model.Spec` object). There are also optional keyword arguments ('virtual_oconc' and 'computeflux') and we'll 
+a string identifier, parent surface system, the channel state (reference to a :class:`steps.API_1.model.ChanState` object) and the permeable ion  
+(reference to a :class:`steps.API_1.model.Spec` object). There are also optional keyword arguments ('virtual_oconc' and 'computeflux') and we'll 
 see that which of these optional arguments are used depends on whether the mesh has an extracellular 'outer' compartment available (e.g. the 10um, 20um, 40um and 
 80um meshes) or not (e.g. the 160um mesh)::
 
@@ -676,7 +676,7 @@ excitability (a possible example is potassium) then it may be a good labour-save
 of ions as an approximation. However, in this model if we set 'computeflux' to False then the result would be no intracellular calcium, which is 
 obviously not desirable, and so the 'computeflux' flag is set to True, as it usually will be for most ions in most models.  
 
-We might notice by equation :eq:`9.1` that there is some missing information that we did not supply to the :class:`steps.model.GHKcurr` constructor, 
+We might notice by equation :eq:`9.1` that there is some missing information that we did not supply to the :class:`steps.API_1.model.GHKcurr` constructor, 
 specifically the valence and the single-channel permeability. We will come to the latter 
 soon, but first if we go back to the :ref:`calc_dyn` description, where we created the calcium species in the system we see this::
 
@@ -684,7 +684,7 @@ soon, but first if we go back to the :ref:`calc_dyn` description, where we creat
     Ca = smodel.Spec('Ca', mdl)
     Ca.setValence(2)
 
-For calcium (and only for calcium) we used function :func:`steps.model.Spec.setValence` to specify a valence of 2. 'Valence' can be an ambiguous term, but 
+For calcium (and only for calcium) we used function :func:`steps.API_1.model.Spec.setValence` to specify a valence of 2. 'Valence' can be an ambiguous term, but 
 here it means the net elementary electrical charge per ion, which in this example for Ca2+ is +2. Negative valences can of course be specified by 
 using a negative number. It is essential that this function is called to set a valence for any ion that will be used for a GHK current in the simulation- 
 if no valence is specified the result will be an error. 
@@ -692,13 +692,13 @@ if no valence is specified the result will be an error.
 The last parameter we need to set is single-channel permeability. Because conductance is not constant for a GHK current (apart from under certain unusual 
 conditions) one value for a conductance parameter does not suffice. However, since single-channel permeability is often rather a difficult parameter
 to define, STEPS does provide functionality for estimating the permeability. So we have two options for setting single-channel permeability: 
-:func:`steps.model.GHKcurr.setP` and :func:`steps.model.GHKcurr.setPInfo`. The first is straightforward and simply means providing single-channel 
+:func:`steps.API_1.model.GHKcurr.setP` and :func:`steps.API_1.model.GHKcurr.setPInfo`. The first is straightforward and simply means providing single-channel 
 permeability in S.I. units of cubic metres / second. In this model the parameter can be found in the :ref:`constants` and takes the value 
 2.5e-20 cubic metres / second [#f4]_::
 
     OC_CaP.setP(CaP_P)
 
-The second option, the :func:`steps.model.GHKcurr.setPInfo` function, requires some explanation. In effect, the conductance of a channel that is modelled 
+The second option, the :func:`steps.API_1.model.GHKcurr.setPInfo` function, requires some explanation. In effect, the conductance of a channel that is modelled 
 by the GHK flux equation varies with 
 voltage (:ref:`Figure 10.1 <figure_10_1>`) with a dependence on the 'outer' and 'inner' concentrations of the ion (in fact conductance is only constant with voltage 
 when these concentrations are equal), as well as weakly on temperature. 
@@ -715,10 +715,10 @@ when these concentrations are equal), as well as weakly on temperature.
 STEPS is able to estimate single-channel permeability from single-channel conductance, but for STEPS to do so the user must supply 
 information about the conditions under which the conductance was measured, and in theory this should be enough to find the single-channel permeability since it is 
 assumed constant (although there are occasions when permeability too can have some weak voltage dependence [#f3]_, 
-which is, however, currently not possible to model with STEPS). Specifically, the :func:`steps.model.GHKcurr.setPInfo` function requires arguments of:
+which is, however, currently not possible to model with STEPS). Specifically, the :func:`steps.API_1.model.GHKcurr.setPInfo` function requires arguments of:
 estimated single-channel conductance [#f5]_ (units: Siemens), one voltage within the range at which conductance was measured (Volts), temperature (Kelvin), 'outer' concentration 
 of the ion (molar), and 'inner' concentration of the ion (molar). Since the valence of the ion is known it is not necessary to supply that information to 
-the :func:`steps.model.GHKcurr.setPInfo` function. So, for example, for some GHKcurrent object called ``K_GHK``, if we measured single-channel conductance 
+the :func:`steps.API_1.model.GHKcurr.setPInfo` function. So, for example, for some GHKcurrent object called ``K_GHK``, if we measured single-channel conductance 
 as 20pS in a small voltage range around -22mV at 20 degrees Celsius (293.15 Kelvin) with an estimated extracellular ion concentration of 4mM and 
 intracellular concentration of 155mM, then we would call the function like so::
 
@@ -730,7 +730,7 @@ We are now familiar, through aspects discussed so far in this chapter and other 
 a very detailed description is not necessary for most remaining parts of the model. We move on to our other three ion channels in the model.
 
 T-type Calcium channel
---------------------
+----------------------
 
 Like the P-type Calcium channel, transitions between channel states of the T-type Calcium channel are voltage-dependent and we model the calcium current as a GHK current::
 
@@ -777,10 +777,10 @@ BK-type Calcium-activated Potassium channel
 -------------------------------------------
 
 The BK channel in the model undergoes both voltage-dependent and non-voltage dependent processes and so its Channel State transitions are described by 
-both :class:`steps.model.SReac` and :class:`steps.model.VDepSReac` objects. This is an example of the same functionality for Channel State objects as for Species objects from 
+both :class:`steps.API_1.model.SReac` and :class:`steps.API_1.model.VDepSReac` objects. This is an example of the same functionality for Channel State objects as for Species objects from 
 which they are derived (as described in [#f3]_) : Channel State objects can be used interchangeably anywhere a Species object can be used, and so they can interact with other Channel States and Species through Surface Reactions, 
 they may diffuse on the surface, or even diffuse in volumes and undergo volume reactions. Here we will notice that Channel States (e.g. ``BK_C0``) appear alongside Species (``Ca``) 
-in :class:`steps.model.SReac` constructors:: 
+in :class:`steps.API_1.model.SReac` constructors:: 
 
     BKchan = smodel.Chan('BKchan', mdl)
 
@@ -828,7 +828,7 @@ in :class:`steps.model.SReac` constructors::
     BKO3C3 = smodel.VDepSReac('BKO3C3', ssys, slhs = [BK_O3], srhs = [BK_C3], k=lambda V: b_3(V))
     BKO4C4 = smodel.VDepSReac('BKO4C4', ssys, slhs = [BK_O4], srhs = [BK_C4], k=lambda V: b_4(V))
 
-:class:`steps.model.OhmicCurr` objects are applied to 5 
+:class:`steps.API_1.model.OhmicCurr` objects are applied to 5 
 different channel states, demonstrating the support for multiple conducting/permeable states for a channel::
 
     OC_BK0 = smodel.OhmicCurr('OC_BK0', ssys, chanstate = BK_O0, erev = BK_rev, g = BK_G )
@@ -874,7 +874,7 @@ Leak channel
 ------------
 
 The leak conductance is described as a leak channel, though another option for setting the leak would have been to (later) use 
-function :func:`steps.solver.Tetexact.setMembRes` (also supported in TetODE solver: :func:`steps.solver.TetODE.setMembRes`)::
+function :func:`steps.API_1.solver.Tetexact.setMembRes` (also supported in TetODE solver: :func:`steps.API_1.solver.TetODE.setMembRes`)::
 
     L = smodel.Chan('L', mdl)
     Leak = smodel.ChanState('Leak', mdl, L)
@@ -982,7 +982,7 @@ We also find the submembrane tetrahedrons, that is all tetrahedrons connected to
         vol = vol + mesh.getTetVol(i)
 
 
-And we are ready to create our membrane. That is a :class:`steps.geom.Memb` object for which we are able to model electrical excitability by adding 
+And we are ready to create our membrane. That is a :class:`steps.API_1.geom.Memb` object for which we are able to model electrical excitability by adding 
 ion channels and solving potential across the membrane and within the intracellular conduction volume. For details of the method see [#f3]_.  
 First we need to create a patch, named a little confusingly ``memb``::
 
@@ -994,7 +994,7 @@ First we need to create a patch, named a little confusingly ``memb``::
 
     memb.addSurfsys('ssys')
 
-And then we create the membrane. Here we take advantage of previously found and stored connectivity optimisation (by function :func:`steps.solver.Tetexact.saveMembOpt`), 
+And then we create the membrane. Here we take advantage of previously found and stored connectivity optimisation (by function :func:`steps.API_1.solver.Tetexact.saveMembOpt`), 
 in files such as /meshes/Cylinder2_dia2um_L10um_outer0_3um_0.3shell_0.3size_19156tets_adaptive.inp_optimalidx. Connectivity optimisation is discussed in [#f3]_ and :doc:`/memb_pot`::
 
     membrane = sgeom.Memb('membrane', mesh, [memb], opt_file_name = './meshes/'+meshfile_ab+"_optimalidx")
@@ -1014,12 +1014,12 @@ different arrangements of channels::
     r.initialize(7)
 
 We create the spatial stochastic solver object, turning the voltage calculation on by setting the 'calcMembPot' flag to True. Recall that we need one (and only one) 
-:class:`steps.geom.Memb` object to exist in the geometry for this to work::
+:class:`steps.API_1.geom.Memb` object to exist in the geometry for this to work::
 
     sim = ssolver.Tetexact(mdl, mesh, r, True)
     sim.reset()
 
-Next we see a new function, :func:`steps.solver.Tetexact.setTemp`, which sets the simulation temperature. Currently, this will only influence any GHK flux rates, and 
+Next we see a new function, :func:`steps.API_1.solver.Tetexact.setTemp`, which sets the simulation temperature. Currently, this will only influence any GHK flux rates, and 
 will have no influence on any other kinetics. The value for ``TEMPERATURE`` is 34 degrees Celsius and we need to set temperature in Kelvin, following the usual S.I. rule 
 in STEPS::
 
@@ -1089,10 +1089,10 @@ Next we inject ions, buffers and channels. Most values appear in the :ref:`const
 
     sim.setPatchCount('memb', 'Leak', int(L_ro * surfarea))
 
-And finally set some parameters for the 'E-Field' voltage calculation using solver functions, in order: :func:`steps.solver.Tetexact.setEfieldDT` to set the communication 
+And finally set some parameters for the 'E-Field' voltage calculation using solver functions, in order: :func:`steps.API_1.solver.Tetexact.setEfieldDT` to set the communication 
 time-step between the voltage calculation and the reaction-diffusion 
-simulation (from :ref:`constants`: ``EF_DT`` = 0.02e-3 seconds), :func:`steps.solver.Tetexact.setMembPotential` to set the initial membrane potential (``init_pot`` = -60e-3 V), :func:`steps.solver.Tetexact.setMembVolRes` to set resistivity of the conduction volume enclosed by the 
-membrane (``Ra`` = 2.357 ohm.m) and :func:`steps.solver.Tetexact.setMembCapac` to set membrane capacitance (``memb_capac`` = 1.5e-2 F/m\ :sup:`2`\)::
+simulation (from :ref:`constants`: ``EF_DT`` = 0.02e-3 seconds), :func:`steps.API_1.solver.Tetexact.setMembPotential` to set the initial membrane potential (``init_pot`` = -60e-3 V), :func:`steps.API_1.solver.Tetexact.setMembVolRes` to set resistivity of the conduction volume enclosed by the 
+membrane (``Ra`` = 2.357 ohm.m) and :func:`steps.API_1.solver.Tetexact.setMembCapac` to set membrane capacitance (``memb_capac`` = 1.5e-2 F/m\ :sup:`2`\)::
 
     sim.setEfieldDT(EF_DT)
     sim.setMembPotential('membrane', init_pot)
@@ -1128,11 +1128,11 @@ was from a fixed number earlier to ensure consistent initial conditions, and now
 Running the simulation
 ----------------------
 
-At last we are ready to run the simulation, which is achieved simply by calls to function :func:`steps.solver.Tetexact.run` within a simulation loop. The rest of the following code is simply 
-used for recording data. Functions :func:`steps.solver.Tetexact.getTriGHKI` and :func:`steps.solver.Tetexact.getTriOhmicI` allow us to record the currents from all membrane 
+At last we are ready to run the simulation, which is achieved simply by calls to function :func:`steps.API_1.solver.Tetexact.run` within a simulation loop. The rest of the following code is simply 
+used for recording data. Functions :func:`steps.API_1.solver.Tetexact.getTriGHKI` and :func:`steps.API_1.solver.Tetexact.getTriOhmicI` allow us to record the currents from all membrane 
 triangles, which are then summed to record the total current for each channel type. Voltage is recorded from just one central location in the conduction volume with function 
-:func:`steps.solver.Tetexact.getTetV` and calcium is recorded from both the submembrane region using function :func:`steps.solver.Tetexact.getTetCount` and summing 
-over submembrane tets, and for the cytosol compartment as a whole with function :func:`steps.solver.Tetexact.getCompConc` ::     
+:func:`steps.API_1.solver.Tetexact.getTetV` and calcium is recorded from both the submembrane region using function :func:`steps.API_1.solver.Tetexact.getTetCount` and summing 
+over submembrane tets, and for the cytosol compartment as a whole with function :func:`steps.API_1.solver.Tetexact.getCompConc` ::     
 
     for l in range(NTIMEPOINTS):
         

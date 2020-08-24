@@ -1,48 +1,48 @@
-.. _API_solver:
+.. _API_1_solver:
 
-************
-steps.solver
-************
+******************
+steps.API_1.solver
+******************
 
-.. module:: steps.solver
+.. module:: steps.API_1.solver
 
 Implementation of serial simulation solvers. 
 
-.. figure::  images/steps.solver.jpg
+.. figure::  ../images/steps.solver.jpg
    :align:   center
    
-   Class diagram for steps.solver namespace.
+   Class diagram for steps.API_1.solver namespace.
    
-* :class:`steps.solver.Wmrk4`
-* :class:`steps.solver.Wmdirect`
-* :class:`steps.solver.Wmrssa`
-* :class:`steps.solver.Tetexact`
-* :class:`steps.solver.TetODE`
+* :class:`steps.API_1.solver.Wmrk4`
+* :class:`steps.API_1.solver.Wmdirect`
+* :class:`steps.API_1.solver.Wmrssa`
+* :class:`steps.API_1.solver.Tetexact`
+* :class:`steps.API_1.solver.TetODE`
 
 Each solver is a partial or full implementation of the STEPS solver API.
-At the moment STEPS implements four different serial solvers (and one parallel solver in steps.mpi.solver namespace). 
+At the moment STEPS implements four different serial solvers (and one parallel solver in steps.API_1.mpi.solver namespace). 
 
-:class:`steps.solver.Wmrk4` implements a well-mixed, deterministic solver 
+:class:`steps.API_1.solver.Wmrk4` implements a well-mixed, deterministic solver 
 based on the Runge–Kutta method. 
 
-:class:`steps.solver.Wmdirect` implements a stochastic, well-mixed solver 
+:class:`steps.API_1.solver.Wmdirect` implements a stochastic, well-mixed solver 
 based on Gillespie's Direct SSA Method. 
 
-:class:`steps.solver.Wmrssa` implements a stochastic, well-mixed solver 
+:class:`steps.API_1.solver.Wmrssa` implements a stochastic, well-mixed solver 
 based on the Rejection SSA method (Thanh V, Zunino R, Priami C (n.d.) On the rejection-based algorithm for simulation and analysis of 
 large-scale reaction networks. The Journal of Chemical Physics 142:244106). 
 It has the same functionality support as Wmdirect, but provides significant speedup for suitable models.
 
-:class:`steps.solver.Tetexact` implements a stochastic reaction-diffusion 
+:class:`steps.API_1.solver.Tetexact` implements a stochastic reaction-diffusion 
 solver, based on Gillespie's Direct SSA Method extended for diffusive fluxes 
 between tetrahedral elements in complex geometries.
 
-:class:`steps.solver.TetODE` is a spatial determinstic solver where diffusive fluxes are
+:class:`steps.API_1.solver.TetODE` is a spatial determinstic solver where diffusive fluxes are
 between tetrahedral elements in complex geometries. Uses CVODE for solutions.
 
 
 While each unique solver applies a different method for simulation to the other 
-solvers, each solver also typically supports a different subset of all the features in :ref:`API_model` and :ref:`API_geom` 
+solvers, each solver also typically supports a different subset of all the features in :ref:`API_1_model` and :ref:`API_1_geom` 
 components, where some features are unimplemented because they don’t make sense for the solver or 
 simply because the solver is not yet fully mature. For example, the exclusively well-mixed solvers, 
 Wmdirect and Wmrk4, do not support mesh-based spatial simulations so ignore diffusion rules. When a user attempts to invoke an 
@@ -53,64 +53,11 @@ result in a simulation error. Such behaviours are described in more detail in th
 The following table gives a visual guide to the supported features for each solver: 
  
 
-.. figure::  images/support.png
+.. figure::  ../images/support.png
    :align:   center
    
    At-a-glance guide of supported features by solver.
 
-
-.. autoclass:: Wmrk4
-
-    **Solver Information**
-    
-    .. automethod:: getSolverName
-    .. automethod:: getSolverDesc
-    .. automethod:: getSolverAuthors
-    .. automethod:: getSolverEmail
-    
-    **Solver Control**
-    
-    .. automethod:: reset
-    .. automethod:: checkpoint
-    .. automethod:: restore
-    .. automethod:: run
-    .. automethod:: advance
-    .. automethod:: step
-    .. automethod:: setDT
-    .. automethod:: getTime
-    
-    **Compartment Data Access**
-    
-    .. automethod:: getCompVol
-    .. automethod:: setCompVol
-    .. automethod:: getCompCount
-    .. automethod:: setCompCount
-    .. automethod:: getCompAmount
-    .. automethod:: setCompAmount
-    .. automethod:: getCompConc
-    .. automethod:: setCompConc
-    .. automethod:: getCompClamped
-    .. automethod:: setCompClamped 
-    .. automethod:: getCompReacK 
-    .. automethod:: setCompReacK
-    .. automethod:: getCompReacActive
-    .. automethod:: setCompReacActive
-        
-    **Patch Data Access**
-    
-    .. automethod:: getPatchArea
-    .. automethod:: setPatchArea
-    .. automethod:: getPatchCount
-    .. automethod:: setPatchCount
-    .. automethod:: getPatchAmount
-    .. automethod:: setPatchAmount
-    .. automethod:: getPatchClamped
-    .. automethod:: setPatchClamped
-    .. automethod:: getPatchSReacK
-    .. automethod:: setPatchSReacK
-    .. automethod:: getPatchSReacActive
-    .. automethod:: setPatchSReacActive
-    
 .. autoclass:: Wmdirect
 
     **Solver Information**
@@ -244,7 +191,6 @@ The following table gives a visual guide to the supported features for each solv
     .. automethod:: advance
     .. automethod:: step
     .. automethod:: getTime
-    .. automethod:: getA0
     .. automethod:: getNSteps
     
     **Compartment Data Access**

@@ -23,6 +23,7 @@ Contents:
    visual.rst
    preliminary_func.rst
    matlab_support.ipynb
+   API_2/guide.rst
    API_1/API_ref.rst
    API_2/API_ref.rst
    

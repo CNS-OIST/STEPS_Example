@@ -35,7 +35,7 @@ Examples
 Visualization of Spatial IP3 Receptor Model
 -------------------------------------------
 
-Here we use the IP3 receptor model described in :ref:`ip3` and its spatial extension in :ref:`spatial_ip3`
+Here we use the IP3 receptor model described in :ref:`/ip3.ipynb` and its spatial extension in :ref:`spatial_ip3`
 to demostrate how to use the visualization toolkit in practice.
 
 Biochemical Model

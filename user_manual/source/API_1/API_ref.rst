@@ -17,7 +17,6 @@ Namespaces:
    API_utilities_meshio.rst
    API_utilities_collections.rst
    API_utilities_sbml.rst
-   API_utilities_steps_cubit.rst
    API_visual.rst
    
 Currently STEPS has 6 major namespaces, divided by functionality. 

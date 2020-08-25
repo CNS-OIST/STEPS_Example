@@ -130,7 +130,7 @@ different project requirements. Script and mesh data of these examples can be fo
 
 Spatial IP3 Receptor Model
 --------------------------
-This example is a spatial extension of the model described in :ref:`ip3`. To create a suitable 
+This example is a spatial extension of the model described in :ref:`/ip3.ipynb`. To create a suitable 
 geometry for the simulation, we extract a triangular spine morphology from an electron microscopic
 reconstruction of spiny dendrites (`<http://synapses.clm.utexas.edu/anatomy/Ca1pyrmd/radiatum/K24/K24.stm>`_)
 and artificially create a triangle mesh inside to represent the ER membrane of the spine.

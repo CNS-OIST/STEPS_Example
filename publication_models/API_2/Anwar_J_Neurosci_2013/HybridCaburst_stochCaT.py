@@ -106,9 +106,9 @@ with mdl_stoch:
             r['CaTm0h1_m1h1'].setRates(VDepRate(lambda V: 1.0e3 *2.* alpham_cat(V*1.0e3)), VDepRate(lambda V: 1.0e3 *1.* betam_cat(V*1.0e3)))
 
         if cyl160:
-            OC_CaT = GHKCurr.Create(CaTchan[CaT_m2h1], Ca_stoch, CaP_P, virtual_oconc=Ca_oconc, computeflux=True)
+            OC_CaT = GHKCurr.Create(CaTchan[CaT_m2h1], Ca_stoch, CaT_P, virtual_oconc=Ca_oconc, computeflux=True)
         else:
-            OC_CaT = GHKCurr.Create(CaTchan[CaT_m2h1], Ca_stoch, CaP_P, computeflux=True)
+            OC_CaT = GHKCurr.Create(CaTchan[CaT_m2h1], Ca_stoch, CaT_P, computeflux=True)
 
 
 with mdl_det:

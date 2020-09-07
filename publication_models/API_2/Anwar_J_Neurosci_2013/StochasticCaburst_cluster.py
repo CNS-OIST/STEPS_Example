@@ -519,6 +519,3 @@ with open(os.path.join(runPath, 'OpenBKandCa.dat'), 'w') as f:
             f.write('%.6g' % val + ' ')
         f.write('\n')
 
-#TODO
-
-# rs5 = rs.TRIS(memb_tris).LIST(*CaPchan, *CaTchan, *BKchan, *SKchan).Count

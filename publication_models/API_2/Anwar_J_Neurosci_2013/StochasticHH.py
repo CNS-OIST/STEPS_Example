@@ -1,5 +1,3 @@
-import steps.interface
-
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Okinawa Institute of Science and Technology, Japan.
@@ -45,18 +43,17 @@ import steps.interface
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+import steps.interface
 
-from __future__ import print_function
 import math
-# WARNING: Using a variable name that is reserved (['time']).
 import time
 from random import *
 from steps.model import *
 from steps.geom import *
 from steps.rng import *
 from steps.sim import *
+from steps.saving import *
 
-import meshes.gettets as gettets
 from extra.constants_hh import *
 
 import sys
@@ -64,7 +61,7 @@ import os
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-meshfile_ab, root, iter_n = sys.argv[1], sys.argv[2], sys.argv[3]
+_, meshfile_ab, root, iter_n = sys.argv
 
 if meshfile_ab == 'Cylinder2_dia2um_L160um_outer0_0.3shell_0.3size_279152tets_adaptive.inp':
     cyl160=True
@@ -74,75 +71,54 @@ else:
 ########################### BIOCHEMICAL MODEL ###############################
 
 mdl = Model()
-# WARNING: Using a variable name that is reserved (['r']).
 r = ReactionManager()
+
 with mdl:
     
-    #surface systems (No need for a vol sys)                                                                                                                                                                                                                                                            
     ssys = SurfaceSystem.Create()
-    K_n0, K_n1, K_n2, K_n3, K_n4 = SubUnitState.Create()
-    
+
     # Potassium channel
-    Kchan = Channel.Create([K_n0, K_n1, K_n2, K_n3, K_n4])
-with ssys, mdl, Kchan[...]:
-    
-    
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    K_n0.s <r['Kn0n1']> K_n1.s ; r['Kn0n1'].setRates(VDepRate(lambda V: 1.0e3 *4.*a_n(V*1.0e3)* Qt, vrange=Vrange), VDepRate(lambda V: 1.0e3 *1.*b_n(V*1.0e3)* Qt, vrange=Vrange))
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    K_n1.s <r['Kn1n2']> K_n2.s ; r['Kn1n2'].setRates(VDepRate(lambda V: 1.0e3 *3.*a_n(V*1.0e3)* Qt, vrange=Vrange), VDepRate(lambda V: 1.0e3 *2.*b_n(V*1.0e3)* Qt, vrange=Vrange))
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    K_n2.s <r['Kn2n3']> K_n3.s ; r['Kn2n3'].setRates(VDepRate(lambda V: 1.0e3 *2.*a_n(V*1.0e3)* Qt, vrange=Vrange), VDepRate(lambda V: 1.0e3 *3.*b_n(V*1.0e3)* Qt, vrange=Vrange))
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    
-    K_n3.s <r['Kn3n4']> K_n4.s ; r['Kn3n4'].setRates(VDepRate(lambda V: 1.0e3 *1.*a_n(V*1.0e3)* Qt, vrange=Vrange), VDepRate(lambda V: 1.0e3 *4.*b_n(V*1.0e3)* Qt, vrange=Vrange))
-with ssys:
-    
-    OC_K = OhmicCurr.Create(Kchan[K_n4], K_G, K_rev)
-with mdl:
-    Na_m0h0, Na_m1h0, Na_m2h0, Na_m3h0, Na_m0h1, Na_m1h1, Na_m2h1, Na_m3h1 = SubUnitState.Create()
-    
-    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #                
-    
+    n0, n1, n2, n3, n4 = SubUnitState.Create()
+    Kn = SubUnit.Create([n0, n1, n2, n3, n4])
+    Kchan = Channel.Create([Kn])
+
+    _a_n = VDepRate(lambda V: 1.0e3 * a_n(V*1.0e3)* Qt, vrange=Vrange)
+    _b_n = VDepRate(lambda V: 1.0e3 * b_n(V*1.0e3)* Qt, vrange=Vrange)
+
     # Sodium channel
-    Nachan = Channel.Create([Na_m0h0, Na_m1h0, Na_m2h0, Na_m3h0, Na_m0h1, Na_m1h1, Na_m2h1, Na_m3h1])
-with ssys, mdl, Nachan[...]:
-    
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    Na_m0h1.s <r['Na_m0h1_m1h1']> Na_m1h1.s ; r['Na_m0h1_m1h1'].setRates(VDepRate(lambda V:1.0e3*3.*a_m(V*1.0e3)* Qt, vrange=Vrange), VDepRate(lambda V:1.0e3*1.*b_m(V*1.0e3)* Qt, vrange=Vrange))
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    Na_m1h1.s <r['Na_m1h1_m2h1']> Na_m2h1.s ; r['Na_m1h1_m2h1'].setRates(VDepRate(lambda V:1.0e3*2.*a_m(V*1.0e3)* Qt, vrange=Vrange), VDepRate(lambda V:1.0e3*2.*b_m(V*1.0e3)* Qt, vrange=Vrange))
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    
-    Na_m2h1.s <r['Na_m2h1_m3h1']> Na_m3h1.s ; r['Na_m2h1_m3h1'].setRates(VDepRate(lambda V:1.0e3*1.*a_m(V*1.0e3)* Qt, vrange=Vrange), VDepRate(lambda V:1.0e3*3.*b_m(V*1.0e3)* Qt, vrange=Vrange))
-    
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    Na_m0h0.s <r['Na_m0h0_m1h0']> Na_m1h0.s ; r['Na_m0h0_m1h0'].setRates(VDepRate(lambda V:1.0e3*3.*a_m(V*1.0e3)* Qt, vrange=Vrange), VDepRate(lambda V:1.0e3*1.*b_m(V*1.0e3)* Qt, vrange=Vrange))
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    Na_m1h0.s <r['Na_m1h0_m2h0']> Na_m2h0.s ; r['Na_m1h0_m2h0'].setRates(VDepRate(lambda V:1.0e3*2.*a_m(V*1.0e3)* Qt, vrange=Vrange), VDepRate(lambda V:1.0e3*2.*b_m(V*1.0e3)* Qt, vrange=Vrange))
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    
-    Na_m2h0.s <r['Na_m2h0_m3h0']> Na_m3h0.s ; r['Na_m2h0_m3h0'].setRates(VDepRate(lambda V:1.0e3*1.*a_m(V*1.0e3)* Qt, vrange=Vrange), VDepRate(lambda V:1.0e3*3.*b_m(V*1.0e3)* Qt, vrange=Vrange))
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    
-    Na_m0h0.s <r['Na_m0h0_m0h1']> Na_m0h1.s ; r['Na_m0h0_m0h1'].setRates(VDepRate(lambda V:1.0e3*a_h(V*1.0e3)* Qt, vrange=Vrange), VDepRate(lambda V:1.0e3*b_h(V*1.0e3)* Qt, vrange=Vrange))
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    Na_m1h0.s <r['Na_m1h0_m1h1']> Na_m1h1.s ; r['Na_m1h0_m1h1'].setRates(VDepRate(lambda V:1.0e3*a_h(V*1.0e3)* Qt, vrange=Vrange), VDepRate(lambda V:1.0e3*b_h(V*1.0e3)* Qt, vrange=Vrange))
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    Na_m2h0.s <r['Na_m2h0_m2h1']> Na_m2h1.s ; r['Na_m2h0_m2h1'].setRates(VDepRate(lambda V:1.0e3*a_h(V*1.0e3)* Qt, vrange=Vrange), VDepRate(lambda V:1.0e3*b_h(V*1.0e3)* Qt, vrange=Vrange))
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    Na_m3h0.s <r['Na_m3h0_m3h1']> Na_m3h1.s ; r['Na_m3h0_m3h1'].setRates(VDepRate(lambda V:1.0e3*a_h(V*1.0e3)* Qt, vrange=Vrange), VDepRate(lambda V:1.0e3*b_h(V*1.0e3)* Qt, vrange=Vrange))
-with ssys:
-    
-    OC_Na = OhmicCurr.Create(Nachan[Na_m3h1], Na_G, Na_rev)
-with mdl:
-    Leak = SubUnitState.Create()
-    
+    m0, m1, m2, m3, h0, h1 = SubUnitState.Create()
+    Nam, Nah = SubUnit.Create([m0, m1, m2, m3], [h0, h1])
+    Nachan = Channel.Create([Nam, Nah])
+
+    _a_m = VDepRate(lambda V:1.0e3*a_m(V*1.0e3)* Qt, vrange=Vrange)
+    _b_m = VDepRate(lambda V:1.0e3*b_m(V*1.0e3)* Qt, vrange=Vrange)
+    _a_h = VDepRate(lambda V:1.0e3*a_h(V*1.0e3)* Qt, vrange=Vrange)
+    _b_h = VDepRate(lambda V:1.0e3*b_h(V*1.0e3)* Qt, vrange=Vrange)
+
     # Leak channel
+    Leak = SubUnitState.Create()
     L = Channel.Create([Leak])
-with ssys:
-    
-    OC_L = OhmicCurr.Create(L[Leak], L_G, leak_rev)
+
+    with ssys:
+        with Kchan[...]:
+            n0.s <r[1]> n1.s <r[2]> n2.s <r[3]> n3.s <r[4]> n4.s
+            r[1].setRates(4 * _a_n, 1 * _b_n)
+            r[2].setRates(3 * _a_n, 2 * _b_n)
+            r[3].setRates(2 * _a_n, 3 * _b_n)
+            r[4].setRates(1 * _a_n, 4 * _b_n)
+
+        with Nachan[...]:
+            h0.s <r[1]> h1.s
+            r[1].setRates(_a_h, _b_h)
+
+            m0.s <r[1]> m1.s <r[2]> m2.s <r[3]> m3.s
+            r[1].setRates(3*_a_m,   _b_m)
+            r[2].setRates(2*_a_m, 2*_b_m)
+            r[3].setRates(  _a_m, 3*_b_m)
+
+        OC_K = OhmicCurr.Create(Kchan[n4], K_G, K_rev)
+        OC_Na = OhmicCurr.Create(Nachan[m3, h1], Na_G, Na_rev)
+        OC_L = OhmicCurr.Create(L[Leak], L_G, leak_rev)
 
 
 ##################################
@@ -150,95 +126,70 @@ with ssys:
 ########### MESH & COMPARTMENTALIZATION #################
 
 ##########Import Mesh
-
 mesh = TetMesh.Load('./meshes/'+meshfile_ab)
 
-outer_tets = range(len(mesh.tets))
-
-###USE OF gettets
-#getcyl(tetmesh, rad,  zmin, zmax, binnum=120, x = 0.0, y = 0.0):
-inner_tets = gettets.getcyl(mesh, 1e-6, -200e-6, 200e-6)[0]
-
-for i in inner_tets: outer_tets.remove(i)
-assert(outer_tets.__len__() + inner_tets.__len__() == len(mesh.tets))
-
-print(outer_tets.__len__(), " tets in outer compartment")
-print(inner_tets.__len__(), " tets in inner compartment")
-
-# Record voltage from the central tetrahedron
-# WARNING: findTetByPoint was replaced by the new TetList syntax and trying to access a point outside the mesh will now raise an exception.
-cent_tet = mesh.tets[0.0, 0.0, 0.0].idx
 with mesh:
-    
+    rad, zmin, zmax = 1e-6, -200e-6, 200e-6
+    inner_tets, outer_tets = TetList(), TetList()
+    for t in mesh.tets:
+        c = t.center
+        if zmin <= c.z <= zmax and c.x**2 + c.y**2 <= rad**2:
+            inner_tets.append(t)
+        else:
+            outer_tets.append(t)
+
+    print(len(outer_tets), " tets in outer compartment")
+    print(len(inner_tets), " tets in inner compartment")
+
+    # Record voltage from the central tetrahedron
+    cent_tet = mesh.tets[0.0, 0.0, 0.0]
+
     ########## Create an intracellular compartment i.e. cytosolic compartment
-    
     cyto = TetComp.Create(inner_tets)
-    
+
     if cyl160:
         # Ensure that we use points a small distance inside the boundary:
-        LENGTH = mesh.bbox.max[2] - mesh.bbox.min[2]
-        boundminz = mesh.bbox.min[2] + LENGTH/len(mesh.tets)
-        boundmaxz = mesh.bbox.max[2] - LENGTH/len(mesh.tets)
-
-        memb_tris = list(mesh.surface.indices)
-        minztris = []
-        maxztris = []
-        for tri in memb_tris:
-            zminboundtri = True
-            zmaxboundtri = True
-            tritemp = mesh.tris[tri].verts.indices
-            trizs = [0.0, 0.0, 0.0]
-            trizs[0] = mesh.verts[tritemp[0]][2]
-            trizs[1] = mesh.verts[tritemp[1]][2]
-            trizs[2] = mesh.verts[tritemp[2]][2]
-            for j in range(3):
-                if (trizs[j]>boundminz):
-                    zminboundtri = False
-            if (zminboundtri):
-                minztris.append(tri)
-                continue
-            for j in range(3):
-                if (trizs[j]< boundmaxz):
-                    zmaxboundtri = False
-            if (zmaxboundtri):
-                maxztris.append(tri)
-
-        for t in minztris: memb_tris.remove(t)
-        for t in maxztris: memb_tris.remove(t)
-        
+        minz, maxz = mesh.bbox.min.z, mesh.bbox.max.z
+        memb_tris = TriList(tri for tri in mesh_stock.surface if minz < tri.center.z < maxz)
     else:
         print('Finding connecting triangles...')
-        out_tris = set()
-        for i in outer_tets:
-                tritemp = mesh.tets[i].faces.indices
-                for j in range(4): out_tris.add(tritemp[j])
+        memb_tris = inner_tets.surface & outer_tets.surface
 
-        in_tris = set()
-        for i in inner_tets:
-                tritemp = mesh.tets[i].faces.indices
-                for j in range(4): in_tris.add(tritemp[j])
-
-        memb_tris = out_tris.intersection(in_tris)
-        memb_tris = list(memb_tris)
-    
-    print(len(memb_tris), " surface triangles.")
-    
     ########## Create a membrane as a surface mesh
-    memb = TetPatch.Create(memb_tris, cyto, None, 'ssys')
-    
-    print("Area: ", memb.getArea())
-    
+    memb = TetPatch.Create(memb_tris, cyto, None, ssys)
+
+    # For EField calculation
     print("Creating membrane..")
     membrane = Membrane.Create([memb])
-print("Membrane created.")
+    print("Membrane created.")
+
+###### TRANSLATION TOKEN
 
 # # # # # # # # # # # # # # # # # # # # # # # # SIMULATION  # # # # # # # # # # # # # # # # # # # # # #
 
-# WARNING: Using a variable name that is reserved (['r']).
-r = RNG('mt19937', 512, 7)
+rng = RNG('mt19937', 512, 7)
 
-# WARNING: Using a variable name that is reserved (['r']).
-sim = Simulation('Tetexact', mdl, mesh, r, calcMembPot=True)
+sim = Simulation('Tetexact', mdl, mesh, rng, calcMembPot=True)
+
+#### Recording #####
+
+dc = time.strftime('%b%d_%H_%M_%S_%Y')
+
+runPath = os.path.join(root, 'data/StochasticHH/', meshfile_ab, f'{iter_n}__{dc}')
+os.makedirs(runPath, exist_ok=True)
+
+rs = ResultSelector(sim)
+
+rs1 = rs.SUM(rs.TRIS(memb_tris).OC_Na.I) <<\
+      rs.SUM(rs.TRIS(memb_tris).OC_K.I) <<\
+      rs.SUM(rs.TRIS(memb_tris).OC_L.I)
+
+rs2 = rs.TET(cent_tet).V
+
+rs1.toFile(os.path.join(runPath, 'currents.dat.bin'))
+rs2.toFile(os.path.join(runPath, 'voltage.dat.bin'))
+
+sim.toSave(rs1, rs2, dt=TIMECONVERTER)
 
 print("Resetting simulation object..")
 sim.newRun()
@@ -251,20 +202,12 @@ surfarea = sim.memb.Area
 
 sim.memb.L[Leak].Count = round(L_ro * surfarea)
 
-sim.memb.Nachan[Na_m0h0].Count = round(Na_ro*surfarea*Na_facs[0])
-sim.memb.Nachan[Na_m1h0].Count = round(Na_ro*surfarea*Na_facs[1])
-sim.memb.Nachan[Na_m2h0].Count = round(Na_ro*surfarea*Na_facs[2])
-sim.memb.Nachan[Na_m3h0].Count = round(Na_ro*surfarea*Na_facs[3])
-sim.memb.Nachan[Na_m0h1].Count = round(Na_ro*surfarea*Na_facs[4])
-sim.memb.Nachan[Na_m1h1].Count = round(Na_ro*surfarea*Na_facs[5])
-sim.memb.Nachan[Na_m2h1].Count = round(Na_ro*surfarea*Na_facs[6])
-sim.memb.Nachan[Na_m3h1].Count = round(Na_ro*surfarea*Na_facs[7])
+for h, hsu in enumerate(Nah):
+    for m, msu in enumerate(Nam):
+        sim.memb.Nachan[msu, hsu].Count = round(Na_ro*surfarea*Na_facs[h*4 + m])
 
-sim.memb.Kchan[K_n0].Count = round(K_ro*surfarea*K_facs[0])
-sim.memb.Kchan[K_n1].Count = round(K_ro*surfarea*K_facs[1])
-sim.memb.Kchan[K_n2].Count = round(K_ro*surfarea*K_facs[2])
-sim.memb.Kchan[K_n3].Count = round(K_ro*surfarea*K_facs[3])
-sim.memb.Kchan[K_n4].Count = round(K_ro*surfarea*K_facs[4])
+for n, ksu in enumerate(Kn):
+    sim.memb.Kchan[ksu].Count = round(K_ro*surfarea*K_facs[n])
 
 print('Leak', round(L_ro * surfarea))
 
@@ -297,54 +240,26 @@ sim.membrane.VolRes = Ra
 
 sim.membrane.Capac = memb_capac
 
-
-#### Recording #####
-
-# WARNING: Using a variable name that is reserved (['time']).
-c=time.ctime()
-
-dc = c.split()[1]+c.split()[2]+'_'+c.split()[3]+'_'+c.split()[4]
-dc= dc.replace(':', '_')
-
-try: os.mkdir(root+'data')
-except: pass
-try: os.mkdir(root+'data/' +  'StochasticHH')
-except: pass
-try: os.mkdir(root+'data/' +  'StochasticHH/'+meshfile_ab)
-except: pass 
-
-os.mkdir(root+'data/' +  'StochasticHH/'+meshfile_ab+'/'+iter_n+'__'+dc )
-
-
-datfile =  open(root+'data/' +  'StochasticHH/'+meshfile_ab+'/'+iter_n+'__'+dc + '/currents.dat', 'w')
-datfile2 = open(root+'data/' +  'StochasticHH/'+meshfile_ab+'/'+iter_n+'__'+dc + '/voltage.dat', 'w')
-
-# WARNING: Using a variable name that is reserved (['r']).
-r.initialize(100*int(iter_n))
+rng.initialize(100*int(iter_n))
 
 for l in range(NTIMEPOINTS):
     print("Tpnt: ", l)
 
-    # WARNING: Using a variable name that is reserved (['run']).
     sim.run(TIMECONVERTER*l)
 
-    tcur_Na = 0.0
-    tcur_K = 0.0
-    tcur_L = 0.0
+# This last part is only present for backwards compatibility with the scripts created with API_1.
+# We need to save to text files, like in the original script.
 
-    for m in memb_tris:
-        tcur_Na = tcur_Na + sim.TRI(m).OC_Na.I 
-        tcur_K = tcur_K + sim.TRI(m).OC_K.I
-        tcur_L = tcur_L + sim.TRI(m).OC_L.I
-    
-    datfile.write('%.6g' %(1.0e3*TIMECONVERTER*l) + ' ')
-    datfile.write('%.6g' %((tcur_Na*1.0e-1)/surfarea) + ' ')
-    datfile.write('%.6g' %((tcur_K*1.0e-1)/surfarea) + ' ')
-    datfile.write('%.6g' %((tcur_L*1.0e-1)/surfarea) + ' ')
-    datfile.write('\n')
-    
-    datfile2.write('%.6g' %(1.0e3*TIMECONVERTER*l) + ' ')
-    datfile2.write('%.6g' %(sim.TET(cent_tet).V*1.0e3) + ' ')
-    datfile2.write('\n')
+with open(os.path.join(runPath, 'currents.dat'), 'w') as f:
+    for t, row in zip(rs1.time[0], rs1.data[0]):
+        f.write('%.6g' % (t * 1e3) + ' ')
+        for val in row:
+            f.write('%.6g' % (val * 0.1 / surfarea) + ' ')
+        f.write('\n')
 
-## END
+with open(os.path.join(runPath, 'voltage.dat'), 'w') as f:
+    for t, row in zip(rs2.time[0], rs2.data[0]):
+        f.write('%.6g' % (t * 1e3) + ' ')
+        for val in row:
+            f.write('%.6g' % (val * 1e3) + ' ')
+        f.write('\n')

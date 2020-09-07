@@ -23,7 +23,7 @@ import math
 
 EF_DT = 2.0e-5          # The EField dt
 # NTIMEPOINTS =  25001 
-NTIMEPOINTS =  100
+NTIMEPOINTS =  1000
  
 TIMECONVERTER =  2.0e-5
 

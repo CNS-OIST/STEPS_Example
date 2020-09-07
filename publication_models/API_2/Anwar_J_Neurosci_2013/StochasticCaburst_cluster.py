@@ -322,7 +322,12 @@ with mesh:
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # SIMULATION  # # # # # # # # # # # # # # # # # # # # # #
 
-rng = RNG('mt19937', 512, seed=int(time.time()%1000))
+seed = 7
+#TODO
+# seed = int(time.time()%1000)
+rng = RNG('mt19937', 512, seed)
+
+#_________ mdl.stepsModel __________
 
 print("Creating tetexact solver...")
 sim = Simulation('Tetexact', mdl, mesh, rng, calcMembPot=True)

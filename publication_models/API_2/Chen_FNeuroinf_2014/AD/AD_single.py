@@ -58,11 +58,11 @@ with sc:
         ElementDisplay(rs.dend, color=[0, 0, 1, 0.2])
 
         # Dynamic element
-        ElementDisplay(rs.LIST('dend', 'shaft').X, color=[1.0, 0.0, 0.0, 1.0], spec_size = 0.1)
+        ElementDisplay(rs.LIST('dend', 'shaft').X, color=[1.0, 0.0, 0.0, 1.0], spec_size=0.1)
 
     with SimDisplay('Hide Spine Species'):
         ElementDisplay(rs.dend, color=[0, 0, 1, 0.2])
-        ElementDisplay(rs.shaft.X, color=[1.0, 0.0, 0.0, 1.0], spec_size = 0.1)
+        ElementDisplay(rs.shaft.X, color=[1.0, 0.0, 0.0, 1.0], spec_size=0.1)
 
     with PlotDisplay('Plots'):
         SpatialPlot(rs.TETS(tetmesh.shaft.tets).X.Count, axis=[0, 0, 1], nbins=100)

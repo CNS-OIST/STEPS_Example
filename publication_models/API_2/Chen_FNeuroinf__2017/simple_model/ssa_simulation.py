@@ -1,5 +1,3 @@
-import steps.interface
-
 #########################################################################
 #  This script is provided for
 #
@@ -7,14 +5,13 @@ import steps.interface
 #
 ##########################################################################
 
-import datetime
-import steps
+import steps.interface
+
 from steps.model import *
 from steps.sim import *
-import math
 from steps.geom import *
-from steps.rng_Modif import *
-# WARNING: Using a variable name that is reserved (['time']).
+from steps.rng import *
+import math
 import time
 import numpy
 import os
@@ -50,67 +47,44 @@ ENDTIME = 20.0
 def gen_model():
     
     mdl = Model()
-    # WARNING: Using a variable name that is reserved (['r']).
     r = ReactionManager()
     with mdl:
-        
         # The chemical species
-        
-        # The chemical species
-        # WARNING: Using a variable name that is reserved (['A']).
-        A_Modif, B, C_Modif, D_Modif, E, F, G, H_Modif, I_Modif, J = Species.Create()
+        SA, SB, SC, SD, SE, SF, SG, SH, SI, SJ = Species.Create()
 
         volsys = VolumeSystem.Create()
-    with volsys, mdl:
 
+        with volsys:
 
-        # WARNING: Using a variable name that is reserved (['A', 'C']).
-        A_Modif + B <r['R1']> C_Modif ; r['R1'].setRates(1000000000.0, 100.0)
-        # WARNING: Using a variable name that is reserved (['C', 'D']).
-        C_Modif + D_Modif <r['R3']> E ; r['R3'].setRates(100000000.0, 10.0)
+            SA + SB <r[1]> SC
+            SC + SD <r[2]> SE
+            SF + SG <r[3]> SH
+            SH + SI <r[4]> SJ
+            r[1].setRates(1000000000.0, 100.0)
+            r[2].setRates(100000000.0, 10.0)
+            r[3].setRates(10000000.0, 1.0)
+            r[4].setRates(1000000.0, 0.1*10)
 
-        # WARNING: Using a variable name that is reserved (['H']).
-        F + G <r['R5']> H_Modif ; r['R5'].setRates(10000000.0, 1.0)
-        # WARNING: Using a variable name that is reserved (['H', 'I']).
-        H_Modif + I_Modif <r['R7']> J ; r['R7'].setRates(1000000.0, 0.1*10)
+            # The diffusion rules
+            D1 =  Diffusion.Create(SA, 1e-10)
+            D2 =  Diffusion.Create(SB, 9e-11)
+            D3 =  Diffusion.Create(SC, 8e-11)
+            D4 =  Diffusion.Create(SD, 7e-11)
+            D5 =  Diffusion.Create(SE, 6e-11)
+            D6 =  Diffusion.Create(SF, 5e-11)
+            D7 =  Diffusion.Create(SG, 4e-11)
+            D8 =  Diffusion.Create(SH, 3e-11)
+            D9 =  Diffusion.Create(SI, 2e-11)
+            D10 = Diffusion.Create(SJ, 1e-11)
 
-
-        # The diffusion rules
-        # WARNING: Using a variable name that is reserved (['A']).
-        D1 =         Diffusion.Create(A_Modif, 1e-10)
-
-        D2 =         Diffusion.Create(B, 9e-11)
-
-        # WARNING: Using a variable name that is reserved (['C']).
-        D3 =         Diffusion.Create(C_Modif, 8e-11)
-
-        # WARNING: Using a variable name that is reserved (['D']).
-        D4 =         Diffusion.Create(D_Modif, 7e-11)
-
-        D5 =         Diffusion.Create(E, 6e-11)
-
-        D6 =         Diffusion.Create(F, 5e-11)
-
-        D7 =         Diffusion.Create(G, 4e-11)
-
-        # WARNING: Using a variable name that is reserved (['H']).
-        D8 =         Diffusion.Create(H_Modif, 3e-11)
-
-        # WARNING: Using a variable name that is reserved (['I']).
-        D9 =         Diffusion.Create(I_Modif, 2e-11)
-
-        D10 =         Diffusion.Create(J, 1e-11)
-
-    
     return mdl
 
 ########################################################################
 # Geometry
 def gen_geom():
-    mesh = TetMesh.LoadAbaqus("meshes/" + MESHFILE, scale=1e-06)
-    ntets = len(mesh.tets)
+    mesh = TetMesh.LoadAbaqus(os.path.join("meshes", MESHFILE), scale=1e-06)
     with mesh:
-        comp = TetComp.Create(range(ntets), 'volsys')
+        comp = TetComp.Create(mesh.tets, 'volsys')
     
     return mesh
 
@@ -120,41 +94,40 @@ m = gen_model()
 g = gen_geom()
 
 ########################################################################
-# WARNING: Using a variable name that is reserved (['rng']).
-rng_Modif = RNG('mt19937', 512, int(time.time()%4294967295))
-# WARNING: Using a variable name that is reserved (['rng']).
-sim = Simulation('Tetexact', m, g, rng_Modif)
+rng = RNG('mt19937', 512, int(time.time()%4294967295))
+sim = Simulation('Tetexact', m, g, rng)
 
 ########################################################################
 # recording
-sim_result_dir = RESULT_DIR + "/ssa_%e_%s" % (MOLECULE_RATIO, MESHFILE)
+sim_result_dir = os.path.join(RESULT_DIR,  f"ssa_{MOLECULE_RATIO}_{MESHFILE}")
 
-try: os.mkdir(RESULT_DIR)
-except: pass
-try: os.mkdir(sim_result_dir)
-except: pass
-summary_file = open(sim_result_dir + "/result.csv", 'w', 1)
+os.makedirs(sim_result_dir, exist_ok=True)
+
+summary_file = open(os.path.join(sim_result_dir, "result.csv"), 'w', 1)
 summary_file.write("Simulation Time,")
 
 ########################################################################
 
+sim.newRun()
+
 # Set initial conditions
-sim.comp.A_Modif.Count = N0A * MOLECULE_RATIO
-sim.comp.B.Count = N0B * MOLECULE_RATIO
-sim.comp.C_Modif.Count = N0C * MOLECULE_RATIO
-sim.comp.D_Modif.Count = N0D * MOLECULE_RATIO
-sim.comp.E.Count = N0E * MOLECULE_RATIO
-sim.comp.F.Count = N0F * MOLECULE_RATIO
-sim.comp.G.Count = N0G * MOLECULE_RATIO
-sim.comp.H_Modif.Count = N0H * MOLECULE_RATIO
-sim.comp.I_Modif.Count = N0I * MOLECULE_RATIO
-sim.comp.J.Count = N0J * MOLECULE_RATIO
-# WARNING: Using a variable name that is reserved (['time', 'time']).
+sim.comp.SA.Count = N0A * MOLECULE_RATIO
+sim.comp.SB.Count = N0B * MOLECULE_RATIO
+sim.comp.SC.Count = N0C * MOLECULE_RATIO
+sim.comp.SD.Count = N0D * MOLECULE_RATIO
+sim.comp.SE.Count = N0E * MOLECULE_RATIO
+sim.comp.SF.Count = N0F * MOLECULE_RATIO
+sim.comp.SG.Count = N0G * MOLECULE_RATIO
+sim.comp.SH.Count = N0H * MOLECULE_RATIO
+sim.comp.SI.Count = N0I * MOLECULE_RATIO
+sim.comp.SJ.Count = N0J * MOLECULE_RATIO
+
 start_time = time.time()
-# WARNING: Using a variable name that is reserved (['run']).
+
 sim.run(ENDTIME)
-# WARNING: Using a variable name that is reserved (['time', 'time']).
+
 end_time = (time.time()  - start_time)
+
 summary_file.write("%f\n" % (end_time))
 summary_file.close()
 

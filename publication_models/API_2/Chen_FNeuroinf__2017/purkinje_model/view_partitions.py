@@ -1,5 +1,3 @@
-import steps.interface
-
 #########################################################################
 #  This script is provided for
 #
@@ -7,27 +5,24 @@ import steps.interface
 #
 ##########################################################################
 
-try:
-    import cPickle as pickle
-except:
-    import pickle
+import steps.interface
+
+from steps.geom import *
+from steps.visual import *
+
 import sys
 
-if len(sys.argv) == 3:
-    MESH_FILE = sys.argv[1]
-    PARTITION_FILE = sys.argv[2]
-else:
+try:
+    _, MESH_FILE, PARTITION_FILE  = sys.argv
+except:
     MESH_FILE = "meshes/branch.inp"
     PARTITION_FILE = "meshes/partition/branch.metis.epart.100"
 
 mesh = TetMesh.LoadAbaqus(MESH_FILE, scale=1e-06)
-tet_partitions = metis.readPartition(PARTITION_FILE)
-# WARNING: partitionTris was incorporated into LinearMeshPartition or MetisPartition.
-...
+partition = MetisPartition(mesh, PARTITION_FILE)
 
-import steps.visual
-import pyqtgraph as pg
-app = pg.mkQApp()
+sc = SimControl()
+with sc:
+    PartitionDisplay(partition)
+sc.run()
 
-w = steps.visual.TriPartitionDisplay(mesh, tri_partitions, w = 1200, h = 800)
-app.exec_()

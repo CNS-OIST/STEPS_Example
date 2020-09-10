@@ -1,5 +1,3 @@
-import steps.interface
-
 #########################################################################
 #  This script is provided for
 #
@@ -7,25 +5,24 @@ import steps.interface
 #
 ##########################################################################
 
-from __future__ import print_function
-import steps
-# WARNING: Using a variable name that is reserved (['time']).
+import steps.interface
+
 import time
+
 from steps.rng import *
+from steps.geom import *
 from steps.sim import *
+from steps.saving import *
 
 from extra.constants import *
 from extra import data_presets
 import sys
 import os
-try:
-    import cPickle as pickle
-except:
-    import pickle
+import pickle
 
-if len(sys.argv) == 2:
-    RESULT_DIR = sys.argv[1]
-else:
+try:
+    _, RESULT_DIR = sys.argv
+except:
     RESULT_DIR = "result_branch_influx"
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 MESH_FILE = "meshes/branch.inp"
@@ -33,7 +30,8 @@ MORPH_FILE = "meshes/branch.morph"
 CA_CONC_PRESET = "extra/CaConc_PRESET1"
 CA_P_CURR_DATA_FILE = "extra/CaPCurr_DATASET1"
 
-SIM_TIME = 30.0e-3
+SIM_TIME = 30.0e-6
+
 PRESET_DATA_START_TIME = 50.0e-3
 INFLUX_UPDATE_INTERVAL= 1.0e-3
 DATA_RECORD_INTERVAL = 0.02e-3
@@ -49,14 +47,7 @@ mesh, rois, roi_areas, roi_vols = CaBurst_geom.getGeom(MESH_FILE, MORPH_FILE)
 
 ########################### Recording ###########################
 
-try: os.mkdir(RESULT_DIR)
-except: pass
-
-conc_result = open(RESULT_DIR + '/ssa_calcium_conc.dat', 'w', 1)
-conc_result.write('#Entries: Time ')
-for roi in rois:
-    conc_result.write('%s ' % (roi))
-conc_result.write('\n')
+os.makedirs(RESULT_DIR, exist_ok=True)
 
 ########################### LOAD PRESET CALCIUM INFLUX DATA ###########################
 
@@ -66,17 +57,23 @@ ca_curr_data = data_presets.readData(CA_P_CURR_DATA_FILE)
 ca_influx_profile = data_presets.genCaInfluxProfile(ca_curr_data, roi_areas, roi_vols, PRESET_DATA_START_TIME, PRESET_DATA_START_TIME + SIM_TIME, INFLUX_UPDATE_INTERVAL)
 
 # load preset background calcium concerntrations
-ca_conc_preset_file = open(CA_CONC_PRESET, 'r')
-ca_conc_preset = pickle.load(ca_conc_preset_file)
-ca_conc_preset_file.close()
+with open(CA_CONC_PRESET, 'rb') as ca_conc_preset_file:
+    ca_conc_preset = pickle.load(ca_conc_preset_file)
 
 ########################### SIMULATION INITIALIZATION ###########################
 
-# WARNING: Using a variable name that is reserved (['r']).
-r = RNG('mt19937', 512, int(time.time()))
+rng = RNG('mt19937', 512, int(time.time()))
 
-# WARNING: Using a variable name that is reserved (['r']).
-sim = Simulation('Tetexact', mdl, mesh, r)
+sim = Simulation('Tetexact', mdl, mesh, rng)
+
+rs = ResultSelector(sim)
+
+rs1 = rs.LIST(*rois).Ca.Conc
+rs1.toFile(os.path.join(RESULT_DIR, 'ssa_calcium_conc.dat.bin'))
+
+sim.toSave(rs1, dt=DATA_RECORD_INTERVAL)
+
+sim.newRun()
 
 sim.cyto.Mg.Conc = Mg_conc
 
@@ -101,7 +98,7 @@ sim.cyto.PVCa.Conc = PVCa_conc
 sim.cyto.PVMg.Conc = PVMg_conc
 
 for roi in rois:
-    getattr(sim, roi).Ca.Conc = ca_conc_preset[roi]
+    sim.LIST(roi).Ca.Conc = ca_conc_preset[roi]
 
 n_tpns = int(SIM_TIME / DATA_RECORD_INTERVAL) + 1
 update_tpns = int(INFLUX_UPDATE_INTERVAL / DATA_RECORD_INTERVAL)
@@ -118,35 +115,35 @@ next_influx_change_tpn = 0
 
 print("Simulating model, it will take a while...")
 
-# WARNING: Using a variable name that is reserved (['time', 'time']).
 start_time = time.time()
 
 for l in range(n_tpns):
     sim_endtime = DATA_RECORD_INTERVAL * l
-    # WARNING: Using a variable name that is reserved (['run']).
     sim.run(sim_endtime)
     
-    conc_result.write('%.6g' %(sim_endtime) + ' ')
-    
-    for roi in rois:
-        conc = getattr(sim, roi).Ca.Conc
-        conc_result.write('%.6e' %(conc) + ' ')
-    conc_result.write('\n')
-
     # need to change influx rate
     if l % update_tpns == 0:
         print("update influx rates")
         for r in range(len(rois)):
-            # WARNING: Using a variable name that is reserved (['r', 'r']).
-            getattr(sim, rois[r]).CaInflux['fwd'].K = ca_influx_profile['Data'][next_influx_change_tpn][r + 1]
+            sim.LIST(rois[r]).CaInflux['fwd'].K = ca_influx_profile['Data'][next_influx_change_tpn][r + 1]
         next_influx_change_tpn += 1
 
-# WARNING: Using a variable name that is reserved (['time', 'time']).
 time_cost = (time.time()  - start_time)
 
-conc_result.close()
-performance_file = open(RESULT_DIR + '/ssa_performance.csv', 'w')
-performance_file.write("Time Cost,%f" % (time_cost))
-performance_file.write("\n")
-performance_file.close()
+with open(RESULT_DIR + '/ssa_performance.csv', 'w') as performance_file:
+    performance_file.write("Time Cost,%f" % (time_cost) + "\n")
 
+############################################################################
+# Needed to maintain backward compatibility with file formats
+
+with open(os.path.join(RESULT_DIR, 'ssa_calcium_conc.dat'), 'w') as f:
+    f.write('#Entries: Time ')
+    for roi in rois:
+        f.write('%s ' % (roi))
+    f.write('\n')
+
+    for t, row in zip(rs1.time[0], rs1.data[0]):
+        f.write('%.6g' %(sim_endtime) + ' ')
+        for val in row:
+            f.write('%.6e' %(val) + ' ')
+        f.write('\n')

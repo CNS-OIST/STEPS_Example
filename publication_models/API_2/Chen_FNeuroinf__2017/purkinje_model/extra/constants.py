@@ -1,5 +1,3 @@
-import steps.interface
-
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Okinawa Institute of Science and Technology, Japan.

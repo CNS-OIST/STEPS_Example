@@ -24,12 +24,18 @@ def getGeom(mesh_file_name, morph_file_name = None):
     
     morph = Morph.Load(morph_file_name)
     # partition based on branching
-    partition = MorphPartition(mesh, morph, scale=1e-6)
+    partition, ind2sec = MorphPartition(mesh, morph, scale=1e-6)
 
+    rois = []
+    roi_areas = {}
+    roi_vols = {}
     with mesh:
-        for r, tets in partition.tetTable.items():
-            ROI(tets, name=f'dend[{r}]')
-        for r, tris in partition.triTable.items():
-            ROI(tris, name=f'dend[{r}]_surf')
+        for ind, tets in partition.tetTable.items():
+            key = ind2sec[ind]
+            roitet = ROI(tets, name=key)
+            roitri = ROI(partition.triTable[ind], name=key + '_surf')
+            rois.append(key)
+            roi_vols[key] = roitet.Vol
+            roi_areas[key] = roitri.Area
 
-    return mesh
+    return mesh, rois, roi_areas, roi_vols

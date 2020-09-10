@@ -1,5 +1,3 @@
-import steps.interface
-
 #########################################################################
 #  This script is provided for
 #
@@ -7,11 +5,11 @@ import steps.interface
 #
 ##########################################################################
 
+import steps.interface
+
+from steps.geom import *
+
 from extra.activity_viewer import *
-try:
-    import cPickle as pickle
-except:
-    import pickle
 import steps.visual
 import pyqtgraph as pg
 import random
@@ -22,14 +20,11 @@ ACTIVITY_FILE = sys.argv[1]
 
 MESH_FILE = "meshes/branch.inp"
 mesh = TetMesh.LoadAbaqus(MESH_FILE, scale=1e-06)
-morph_file = open("meshes/branch.morph", 'r')
-morph = pickle.load(morph_file)
-tet_parts = gd.mapMorphTetmesh(morph, mesh)
-# WARNING: partitionTris was incorporated into LinearMeshPartition or MetisPartition.
-...
+morph = Morph.Load("meshes/branch.morph")
 
-tet_part_table = gd.getTetPartitionTable(tet_parts)
-tri_part_table = gd.getTriPartitionTable(tri_parts)
+partition, ind2sec = MorphPartition(mesh, morph, default_tris=mesh.surface)
+
+tri_parts = {triInd: ind2sec[ind] for triInd, ind in partition.triPart.items()}
 
 mpi_data = SI2NEURON(readData(ACTIVITY_FILE))
 app = pg.mkQApp()

@@ -13,6 +13,7 @@ from extra.constants import *
 ########################### BIOCHEMICAL MODEL ###############################
 def getModel():
     mdl = Model()
+    r = ReactionManager()
     with mdl:
 
         # Species
@@ -42,7 +43,7 @@ def getModel():
             CaPump.s >r['PumpD_k']> Pump.s
             r['PumpD_k'].setRates(P_k_kcst)
 
-        with vsys, mdl:
+        with vsys:
 
             #iCBsf-fast and iCBsCa
             (Ca + iCBsf <r['iCBsf1_f']> iCBsCa) + Ca <r['iCBsCa_f']> iCBCaCa

@@ -1,7 +1,6 @@
-import steps.interface
-
 from __future__ import print_function
 from __future__ import unicode_literals
+
 import numpy as np
 from pylab import *
 import pyqtgraph as pg
@@ -15,7 +14,7 @@ from numpy import outer
 from matplotlib.backends import qt_compat
 from matplotlib import cm
 import numpy as np
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore
 from numpy import arange, sin, pi
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -64,7 +63,7 @@ class ColorFigCanvas(FigureCanvas):
         fig.set_size_inches(width/float(dpi),height/float(dpi))
         self.axes = fig.add_subplot(111, frame_on = True)
         # We want the axes cleared every time plot() is called
-        self.axes.hold(False)
+        # self.axes.hold(False)
         
         self.compute_initial_figure(min_v, max_v)
         
@@ -204,8 +203,8 @@ class TriActivitySeriesDisplay(QtGui.QMainWindow):
         self.scale = scale
         self.setWindowTitle(title)
         
-        self.bound_min = [v * self.scale for v in mesh.getBoundMin()]
-        self.bound_max = [v * self.scale for v in mesh.getBoundMax()]
+        self.bound_min = [v * self.scale for v in mesh.bbox.min]
+        self.bound_max = [v * self.scale for v in mesh.bbox.max]
         
         self.center = [0.0, 0.0, 0.0]
         
@@ -239,7 +238,7 @@ class TriActivitySeriesDisplay(QtGui.QMainWindow):
             # WARNING: Using a variable name that is reserved (['r']).
             color = getJetColor(self.series_data[self.curr_tpn][r+1], self.min_v, self.max_v)
             # WARNING: Using a variable name that is reserved (['r']).
-            part = TriPartitionMesh(self, mesh, self.tri_part_table[self.roi_entries[r]], color = color)
+            part = TriPartitionMesh(self, mesh.stepsMesh, self.tri_part_table[self.roi_entries[r]], color = color)
             self.draw_parts.append(part)
             self.view_widget.addItem(part)
         self.show()

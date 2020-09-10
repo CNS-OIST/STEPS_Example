@@ -1,5 +1,3 @@
-import steps.interface
-
 #########################################################################
 #  This script is provided for
 #
@@ -7,26 +5,24 @@ import steps.interface
 #
 ##########################################################################
 
-                                                                                                                                                  
-from __future__ import print_function
-from steps.rng import *
+import steps.interface
 
-# WARNING: Using a variable name that is reserved (['time']).
 import time
+
+from steps.rng import *
+from steps.sim import *
+from steps.geom import *
+
 from extra.constants import *
 import sys
 import os
+
 try:
-    import cPickle as pickle
+    _, RESULT_DIR = sys.argv
 except:
-    import pickle
-
-if len(sys.argv) == 2:
-    RESULT_DIR = sys.argv[1]
-else:
     RESULT_DIR = "result_fullcell_background"
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 MESH_FILE = "meshes/fullcell.inp"
 
 SIM_TIME = 30.0e-5
@@ -42,23 +38,20 @@ import CaBurst_geom
 mesh = CaBurst_geom.getGeom(MESH_FILE)
 
 ########################### Recording ###########################
-if MPI.rank == 0:
-    try: os.mkdir(RESULT_DIR)
-    except: pass
+
+os.makedirs(RESULT_DIR, exist_ok=True)
 
 ########################### PARTITIONING ###########################
 partition_file = 'meshes/partition/fullcell.metis.epart.' + str(MPI.nhosts)
-mpi_tet_partitions = metis_support.readPartition(partition_file)
-# WARNING: partitionTris was incorporated into LinearMeshPartition or MetisPartition.
-...
+partition = MetisPartition(mesh, partition_file, default_tris=mesh.surface)
 
 ########################### CREATE SOLVER ###########################
 
-# WARNING: Using a variable name that is reserved (['r']).
-r = RNG('mt19937', 512, int(time.time()) * MPI.rank)
+rng = RNG('mt19937', 512, int(time.time() * MPI.rank))
 
-# WARNING: Using a variable name that is reserved (['r']).
-sim = Simulation('TetOpSplit', mdl, mesh, r, MeshPartition(tet_hosts=mpi_tet_partitions, tri_hosts=mpi_tri_partitions, wm_hosts=[]))
+sim = Simulation('TetOpSplit', mdl, mesh, rng, partition)
+
+sim.newRun()
 
 sim.cyto.Mg.Conc = Mg_conc
 
@@ -83,24 +76,20 @@ sim.cyto.PVCa.Conc = PVCa_conc
 sim.cyto.PVMg.Conc = PVMg_conc
 
 ############################################################################
+
 if MPI.rank == 0:
     print("Simulating model, it will take a while if running with small amount of processes...")
 
-# WARNING: Using a variable name that is reserved (['time', 'time']).
 start_time = time.time()
-# WARNING: Using a variable name that is reserved (['run']).
 sim.run(SIM_TIME)
-# WARNING: Using a variable name that is reserved (['time', 'time']).
 time_cost = (time.time()  - start_time)
 
-proc_file = open(RESULT_DIR + '/proc_%i.csv' % MPI.rank, 'w', 1)
-proc_file.write("SimTime,CompTime,SyncTime,IdleTime,nIteration\n")
-proc_file.write("%f,%f,%f,%f,%i\n" % (time_cost, sim.getCompTime(), sim.getSyncTime(), sim.getIdleTime(), sim.getNIteration()))
-proc_file.close()
+with open(RESULT_DIR + '/proc_%i.csv' % MPI.rank, 'w', 1) as proc_file:
+    proc_file.write("SimTime,CompTime,SyncTime,IdleTime,nIteration\n")
+    proc_file.write("%f,%f,%f,%f,%i\n" % (time_cost, sim.solver.getCompTime(), sim.solver.getSyncTime(), sim.solver.getIdleTime(), sim.solver.getNIteration()))
 
 if MPI.rank == 0:
-    performance_file = open(RESULT_DIR + '/performance_%iprocs.csv' % MPI.nhosts, 'w')
-    performance_file.write("Time Cost,%f" % (time_cost))
-    performance_file.write("\n")
-    performance_file.close()
+    with open(RESULT_DIR + '/performance_%iprocs.csv' % MPI.nhosts, 'w') as performance_file:
+        performance_file.write("Time Cost,%f" % (time_cost))
+        performance_file.write("\n")
 

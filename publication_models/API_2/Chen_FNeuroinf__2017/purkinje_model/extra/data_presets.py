@@ -1,7 +1,3 @@
-import steps.interface
-
-from __future__ import absolute_import
-
 import sys
 import os
 import random
@@ -16,13 +12,11 @@ def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
 def getMeanData(data):
     sums = {}
     n_twin = 0
-    # WARNING: Using a variable name that is reserved (['data']).
     first_data = data.values()[0]
     for s in first_data.keys():
         sums[s] = 0.0
     for t in data.keys():
         n_twin += 1
-        # WARNING: Using a variable name that is reserved (['data']).
         current_data = data[t]
         for s in current_data.keys():
             sums[s] += current_data[s]
@@ -59,9 +53,7 @@ def SI2NEURON(dataset):
     new_dataset["Data"] = []
     for data_line in dataset["Data"]:
         new_data_line = []
-        # WARNING: Using a variable name that is reserved (['time']).
         time = data_line[0] * 1000
-        # WARNING: Using a variable name that is reserved (['time']).
         new_data_line.append(time)
         for v in data_line[1:]:
             new_data_line.append(v*1e6)
@@ -79,10 +71,8 @@ def genCaInfluxProfile(dataset, sur_areas, vols, start_time, end_time, time_win)
     influx_profile["Entries"] = dataset["Entries"]
     influx_profile["Data"] = []
     for data in dataset["Data"]:
-        # WARNING: Using a variable name that is reserved (['time', 'data']).
         time = data[0]
         
-        # WARNING: Using a variable name that is reserved (['data']).
         curr_data = data[1:]
         if start_time > time:
             continue

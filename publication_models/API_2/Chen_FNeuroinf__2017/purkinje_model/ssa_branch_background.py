@@ -1,5 +1,3 @@
-import steps.interface
-
 #########################################################################
 #  This script is provided for
 #
@@ -7,10 +5,10 @@ import steps.interface
 #
 ##########################################################################
 
-from __future__ import print_function
-import steps
-# WARNING: Using a variable name that is reserved (['time']).
+import steps.interface
+
 import time
+
 from steps.rng import *
 from steps.sim import *
 
@@ -18,15 +16,12 @@ from extra.constants import *
 from extra import data_presets
 import sys
 import os
-try:
-    import cPickle as pickle
-except:
-    import pickle
 
-if len(sys.argv) == 2:
-    RESULT_DIR = sys.argv[1]
-else:
+try:
+    _, RESULT_DIR = sys.argv
+except:
     RESULT_DIR = "result_branch_background"
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 MESH_FILE = "meshes/branch.inp"
 
@@ -44,16 +39,15 @@ mesh = CaBurst_geom.getGeom(MESH_FILE)
 
 ########################### Recording ###########################
 
-try: os.mkdir(RESULT_DIR)
-except: pass
+os.makedirs(RESULT_DIR, exist_ok=True)
 
 ########################### SIMULATION INITIALIZATION ###########################
 
-# WARNING: Using a variable name that is reserved (['r']).
-r = RNG('mt19937', 512, int(time.time()))
+rng = RNG('mt19937', 512, int(time.time()))
 
-# WARNING: Using a variable name that is reserved (['r']).
-sim = Simulation('Tetexact', mdl, mesh, r)
+sim = Simulation('Tetexact', mdl, mesh, rng)
+
+sim.newRun()
 
 sim.cyto.Mg.Conc = Mg_conc
 
@@ -81,11 +75,8 @@ sim.cyto.PVMg.Conc = PVMg_conc
 
 print("Simulating model, it will take a while...")
 
-# WARNING: Using a variable name that is reserved (['time', 'time']).
 start_time = time.time()
-# WARNING: Using a variable name that is reserved (['run']).
 sim.run(SIM_TIME)
-# WARNING: Using a variable name that is reserved (['time', 'time']).
 time_cost = (time.time()  - start_time)
 
 performance_file = open(RESULT_DIR + '/ssa_performance.csv', 'w')

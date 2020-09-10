@@ -1,5 +1,3 @@
-import steps.interface
-
 #########################################################################
 #  This script is provided for
 #
@@ -7,32 +5,28 @@ import steps.interface
 #
 ##########################################################################
 
-from __future__ import print_function
-import os
+import steps.interface
 
-try: os.mkdir("meshes/partition")
-except: pass
+from steps.geom import *
+
+import os
+from subprocess import call
+
+os.makedirs("meshes/partition", exist_ok=True)
 
 MESH_FILE = "meshes/branch.inp"
 mesh = TetMesh.LoadAbaqus(MESH_FILE, scale=1e-06)
 
-metis.tetmesh2metis(mesh, 'meshes/partition/branch.metis')
+mesh.ConvertToMetis('meshes/partition/branch.metis')
 
-from subprocess import call
 print("Generate partition for desktop computer (from 2 cores to 10 cores)")
 for i in range(2, 11, 2):
     call(['mpmetis', '-ncommon=3', '-minconn', '-niter=1000', 'meshes/partition/branch.metis', '%i' % (i)])
-    metis_parts = metis.readPartition('meshes/partition/branch.metis.epart.%i' % (i))
-    surf_tris = mesh.surface.indices
-    # WARNING: partitionTris was incorporated into LinearMeshPartition or MetisPartition.
-    ...
-    gd.printPartitionStat(metis_parts, tri_parts)
+    metis_part = MetisPartition(mesh, 'meshes/partition/branch.metis.epart.%i' % (i), default_tris=mesh.surface)
+    metis_part.printStats()
 
 print("Generate partition for supercomputer (from 50 cores to 1000 cores)")
 for i in range(50, 1001, 50):
     call(['mpmetis', '-ncommon=3', '-minconn', '-niter=1000', 'meshes/partition/branch.metis', '%i' % (i)])
-    metis_parts = metis.readPartition('meshes/partition/branch.metis.epart.%i' % (i))
-    surf_tris = mesh.surface.indices
-    # WARNING: partitionTris was incorporated into LinearMeshPartition or MetisPartition.
-    ...
-    gd.printPartitionStat(metis_parts, tri_parts)
+    metis_part = MetisPartition(mesh, 'meshes/partition/branch.metis.epart.%i' % (i), default_tris=mesh.surface)
+    metis_part.printStats()

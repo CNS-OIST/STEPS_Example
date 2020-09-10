@@ -47,9 +47,7 @@ def SI2NEURON(dataset):
     new_dataset["Data"] = []
     for data_line in dataset["Data"]:
         new_data_line = []
-        # WARNING: Using a variable name that is reserved (['time']).
         time = data_line[0] * 1000
-        # WARNING: Using a variable name that is reserved (['time']).
         new_data_line.append(time)
         for v in data_line[1:]:
             new_data_line.append(v*1e6)
@@ -68,7 +66,6 @@ class ColorFigCanvas(FigureCanvas):
         self.compute_initial_figure(min_v, max_v)
         
         #
-        # WARNING: Using a variable name that is reserved (['__init__']).
         FigureCanvas.__init__(self, fig)
         self.setParent(parent)
         #FigureCanvas.setMinimumSize(self, 100, 2)
@@ -103,7 +100,6 @@ class TriActivitySeriesDisplay(QtGui.QMainWindow):
         """
         Constructor.
         """
-        # WARNING: Using a variable name that is reserved (['__init__']).
         QtGui.QMainWindow.__init__(self)
         self.setGeometry(x, y, w, h)
         
@@ -235,9 +231,7 @@ class TriActivitySeriesDisplay(QtGui.QMainWindow):
         self.center = new_center
 
         for r in range(self.n_entries):
-            # WARNING: Using a variable name that is reserved (['r']).
             color = getJetColor(self.series_data[self.curr_tpn][r+1], self.min_v, self.max_v)
-            # WARNING: Using a variable name that is reserved (['r']).
             part = TriPartitionMesh(self, mesh.stepsMesh, self.tri_part_table[self.roi_entries[r]], color = color)
             self.draw_parts.append(part)
             self.view_widget.addItem(part)
@@ -263,9 +257,7 @@ class TriActivitySeriesDisplay(QtGui.QMainWindow):
         self.curr_tpn = 0
         self.time_text.setText("%f %s" % (self.series_data[self.curr_tpn][0], self.time_unit))
         for r in range(self.n_entries):
-            # WARNING: Using a variable name that is reserved (['r']).
             color = getJetColor(self.series_data[self.curr_tpn][r+1], self.min_v, self.max_v)
-            # WARNING: Using a variable name that is reserved (['r']).
             self.draw_parts[r].setColor(color)
     
     def nextTpn(self):
@@ -275,10 +267,8 @@ class TriActivitySeriesDisplay(QtGui.QMainWindow):
         if self.curr_tpn % self.fps == 0:
             self.time_text.setText("%f %s" % (self.series_data[self.curr_tpn][0], self.time_unit))
         for r in range(self.n_entries):
-            # WARNING: Using a variable name that is reserved (['r']).
             color = getJetColor(self.series_data[self.curr_tpn][r+1], self.min_v, self.max_v)
             #print(self.roi_entries[r], " ", self.series_data[self.curr_tpn][r+1], " ", color)
-            # WARNING: Using a variable name that is reserved (['r']).
             self.draw_parts[r].setColor(color)
         if self.curr_tpn < self.ntpns - 1:
             self.timer.singleShot(1000 / self.fps, self.nextTpn)
@@ -328,7 +318,6 @@ class TriPartitionMesh(gl.GLMeshItem):
         tris_data.shape = -1, 3
         verts_data.shape = -1, 3
         mesh_data = gl.MeshData(vertexes=verts_data, faces = tris_data)
-        # WARNING: Using a variable name that is reserved (['__init__']).
         gl.GLMeshItem.__init__(self, meshdata=mesh_data, smooth=False, computeNormals =True, shader='balloon', glOptions='additive')
         self.setColor(color)
 

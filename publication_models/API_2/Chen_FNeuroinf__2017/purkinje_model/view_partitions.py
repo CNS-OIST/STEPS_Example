@@ -19,10 +19,10 @@ except:
     PARTITION_FILE = "meshes/partition/branch.metis.epart.100"
 
 mesh = TetMesh.LoadAbaqus(MESH_FILE, scale=1e-06)
-partition = MetisPartition(mesh, PARTITION_FILE)
+partition = MetisPartition(mesh, PARTITION_FILE, default_tris=mesh.surface)
 
 sc = SimControl()
 with sc:
-    PartitionDisplay(partition)
+    PartitionDisplay(partition, 'tri')
 sc.run()
 

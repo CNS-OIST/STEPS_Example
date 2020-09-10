@@ -27,6 +27,8 @@ partition, ind2sec = MorphPartition(mesh, morph, default_tris=mesh.surface)
 tri_parts = {triInd: ind2sec[ind] for triInd, ind in partition.triPart.items()}
 
 mpi_data = SI2NEURON(readData(ACTIVITY_FILE))
+
+# Note that this part and the corresponding code in extra/activity_viewer is not translated to API_2
 app = pg.mkQApp()
 conc_display = TriActivitySeriesDisplay(mesh, tri_parts, mpi_data, title = "MPI Sim", time_unit = "ms", data_unit = "mM", min_v = 0.0236, max_v = 3.51)
 app.exec_()

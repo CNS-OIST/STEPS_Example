@@ -1,5 +1,3 @@
-import steps.interface
-
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # Rallpack3 model
@@ -7,14 +5,15 @@ import steps.interface
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-from __future__ import print_function
+import steps.interface
+
 from steps.model import *
 from steps.geom import *
 from steps.rng import *
 from steps.sim import *
+from steps.saving import *
 
 import math
-# WARNING: Using a variable name that is reserved (['time']).
 import time
 from random import *
 from pylab import *
@@ -142,8 +141,6 @@ Iinj = 0.1e-9
 # record potential at the two extremes along (z) axis 
 POT_POS = array([ 0.0, 1.0e-03])
 
-POT_N = len(POT_POS)
-
 # Length of the mesh, in m
 LENGTH = 1000.0e-6
 
@@ -153,172 +150,81 @@ mdl = Model()
 r = ReactionManager()
 with mdl:
     ssys = SurfaceSystem.Create()
-    K_n0, K_n1, K_n2, K_n3, K_n4 = SubUnitState.Create()
-    
-    # K channel
-    K_Modif = Channel.Create([K_n0, K_n1, K_n2, K_n3, K_n4])
-    Na_m0h1, Na_m1h1, Na_m2h1, Na_m3h1, Na_m0h0, Na_m1h0, Na_m2h0, Na_m3h0 = SubUnitState.Create()
-    
-    # Na channel
-    Na = Channel.Create([Na_m0h1, Na_m1h1, Na_m2h1, Na_m3h1, Na_m0h0, Na_m1h0, Na_m2h0, Na_m3h0])
-    Leak = SubUnitState.Create()
-    
-    # Leak
-    L = Channel.Create([Leak])
 
-# Gating kinetics 
-_a_m = lambda mV: ((((0.1 * (25 -(mV + 65.)) / (math.exp((25 - (mV + 65.)) / 10.) - 1)))))
-_b_m = lambda mV: ((((4. * math.exp(-((mV + 65.) / 18.))))))
-_a_h = lambda mV: ((((0.07 * math.exp((-(mV + 65.) / 20.))))))
-_b_h = lambda mV: ((((1. / (math.exp((30 - (mV + 65.)) / 10.) + 1)))))
-_a_n = lambda mV: ((((0.01 * (10 -(mV + 65.)) / (math.exp((10 - (mV + 65.)) / 10.) - 1)))))
-_b_n = lambda mV: ((((0.125 * math.exp(-(mV + 65.) / 80.)))))
-with ssys, mdl, K_Modif[...]:
-    
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    K_n0.s <r['Kn0n1']> K_n1.s ; r['Kn0n1'].setRates(VDepRate(lambda V: 1.0e3 *4.*_a_n(V*1.0e3)), VDepRate(lambda V: 1.0e3 *1.*_b_n(V*1.0e3)))
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    K_n1.s <r['Kn1n2']> K_n2.s ; r['Kn1n2'].setRates(VDepRate(lambda V: 1.0e3 *3.*_a_n(V*1.0e3)), VDepRate(lambda V: 1.0e3 *2.*_b_n(V*1.0e3)))
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    K_n2.s <r['Kn2n3']> K_n3.s ; r['Kn2n3'].setRates(VDepRate(lambda V: 1.0e3 *2.*_a_n(V*1.0e3)), VDepRate(lambda V: 1.0e3 *3.*_b_n(V*1.0e3)))
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    
-    K_n3.s <r['Kn3n4']> K_n4.s ; r['Kn3n4'].setRates(VDepRate(lambda V: 1.0e3 *1.*_a_n(V*1.0e3)), VDepRate(lambda V: 1.0e3 *4.*_b_n(V*1.0e3)))
-with ssys, mdl, Na[...]:
-    
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    Na_m0h1.s <r['Na_m0h1_m1h1']> Na_m1h1.s ; r['Na_m0h1_m1h1'].setRates(VDepRate(lambda V: 1.0e3 * 3. * _a_m(V * 1.0e3)), VDepRate(lambda V: 1.0e3 * 1. * _b_m(V * 1.0e3)))
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    Na_m1h1.s <r['Na_m1h1_m2h1']> Na_m2h1.s ; r['Na_m1h1_m2h1'].setRates(VDepRate(lambda V: 1.0e3 * 2. * _a_m(V * 1.0e3)), VDepRate(lambda V: 1.0e3 * 2. * _b_m(V * 1.0e3)))
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    
-    Na_m2h1.s <r['Na_m2h1_m3h1']> Na_m3h1.s ; r['Na_m2h1_m3h1'].setRates(VDepRate(lambda V: 1.0e3 * 1. * _a_m(V * 1.0e3)), VDepRate(lambda V: 1.0e3 * 3. * _b_m(V * 1.0e3)))
-    
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    Na_m0h0.s <r['Na_m0h0_m1h0']> Na_m1h0.s ; r['Na_m0h0_m1h0'].setRates(VDepRate(lambda V: 1.0e3 * 3. * _a_m(V * 1.0e3)), VDepRate(lambda V: 1.0e3 * 1. * _b_m(V * 1.0e3)))
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    Na_m1h0.s <r['Na_m1h0_m2h0']> Na_m2h0.s ; r['Na_m1h0_m2h0'].setRates(VDepRate(lambda V: 1.0e3 * 2. * _a_m(V * 1.0e3)), VDepRate(lambda V: 1.0e3 * 2. * _b_m(V * 1.0e3)))
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-        
-    Na_m2h0.s <r['Na_m2h0_m3h0']> Na_m3h0.s ; r['Na_m2h0_m3h0'].setRates(VDepRate(lambda V: 1.0e3 * 1. * _a_m(V * 1.0e3)), VDepRate(lambda V: 1.0e3 * 3. * _b_m(V * 1.0e3)))
-    
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-        
-    Na_m0h1.s <r['Na_m0h1_m0h0']> Na_m0h0.s ; r['Na_m0h1_m0h0'].setRates(VDepRate(lambda V: 1.0e3 *_a_h(V * 1.0e3)), VDepRate(lambda V: 1.0e3 *_b_h(V * 1.0e3)))
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    Na_m1h1.s <r['Na_m1h1_m1h0']> Na_m1h0.s ; r['Na_m1h1_m1h0'].setRates(VDepRate(lambda V: 1.0e3 *_a_h(V * 1.0e3)), VDepRate(lambda V: 1.0e3 *_b_h(V * 1.0e3)))
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    Na_m2h1.s <r['Na_m2h1_m2h0']> Na_m2h0.s ; r['Na_m2h1_m2h0'].setRates(VDepRate(lambda V: 1.0e3 *_a_h(V * 1.0e3)), VDepRate(lambda V: 1.0e3 *_b_h(V * 1.0e3)))
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    Na_m3h1.s <r['Na_m3h1_m3h0']> Na_m3h0.s ; r['Na_m3h1_m3h0'].setRates(VDepRate(lambda V: 1.0e3 *_a_h(V * 1.0e3)), VDepRate(lambda V: 1.0e3 *_b_h(V * 1.0e3)))
-with ssys:
-    
-    
-    OC_K = OhmicCurr.Create(K_Modif[K_n4], K_G/K_ro, K_rev) 
-    OC_Na = OhmicCurr.Create(Na[Na_m3h0], Na_G/Na_ro, Na_rev) 
+    # K channel
+    n0, n1, n2, n3, n4 = SubUnitState.Create()
+    VGKC = Channel.Create([n0, n1, n2, n3, n4])
+
+    # Na channel
+    h0, h1, m0, m1, m2, m3 = SubUnitState.Create()
+    mNaSU, hNaSU = SubUnit.Create(
+        [m0, m1, m2, m3],
+        [h0, h1],
+    )
+    VGNaC = Channel.Create([mNaSU, hNaSU])
+
+    # Leak
+    leaksus = SubUnitState.Create()
+    Leak = Channel.Create([leaksus])
+
+    # Gating kinetics 
+    _a_n = VDepRate(lambda V: 1e3*((0.01*(10-(V*1e3+65))/(math.exp((10-(V*1e3+65))/10)-1))))
+    _b_n = VDepRate(lambda V: 1e3*((0.125*math.exp(-(V*1e3+65)/80))))
+    _a_m = VDepRate(lambda V: 1e3*((0.1*(25-(V*1e3+65))/(math.exp((25-(V*1e3+65))/10)-1))))
+    _b_m = VDepRate(lambda V: 1e3*((4*math.exp(-(V*1e3+65)/18))))
+    _a_h = VDepRate(lambda V: 1e3*((0.07*math.exp(-(V*1e3+65)/20))))
+    _b_h = VDepRate(lambda V: 1e3*((1/(math.exp((30-(V*1e3+65))/10)+1))))
+
+    with ssys:
+        with VGKC[...]:
+            n0.s <r[1]> n1.s <r[2]> n2.s <r[3]> n3.s <r[4]> n4.s
+            r[1].setRates(4*_a_n,   _b_n)
+            r[2].setRates(3*_a_n, 2*_b_n)
+            r[3].setRates(2*_a_n, 3*_b_n)
+            r[4].setRates(  _a_n, 4*_b_n)
+
+        with VGNaC[...]:
+            h1.s <r[1]> h0.s
+            r[1].setRates(_a_h, _b_h)
+
+            m0.s <r[1]> m1.s <r[2]> m2.s <r[3]> m3.s
+            r[1].setRates(3*_a_m,   _b_m)
+            r[2].setRates(2*_a_m, 2*_b_m)
+            r[3].setRates(  _a_m, 3*_b_m)
+
+        VGKC_I = OhmicCurr.Create(VGKC[n4], K_G / K_ro, K_rev)
+        VGNaC_I = OhmicCurr.Create(VGNaC[m3, h0], Na_G / Na_ro, Na_rev)
 
 # Mesh geometry
 mesh = TetMesh.Load('./meshes/'+meshfile)
+
 with mesh:
     
     cyto = TetComp.Create(range(len(mesh.tets)))
     
     # The tetrahedrons from which to record potential
-    POT_TET = zeros(POT_N, dtype = 'uint')
+    POT_TET = TetList(mesh.tets[0, 0, z] for z in POT_POS)
     
-    i=0
-    for p in POT_POS:
-        # Assuming axiz aligned with z-axis
-        # WARNING: findTetByPoint was replaced by the new TetList syntax and trying to access a point outside the mesh will now raise an exception.
-        POT_TET[i] = mesh.tets[0.0, 0.0, POT_POS[i]].idx
-        i=i+1
-    
-    # Find the tets connected to the bottom face
-    # First find all the tets with ONE face on a boundary
-    boundtets = []
-    #store the 0to3 index of the surface triangle for each of these boundary tets
-    bt_srftriidx = []
-    
-    for i in range(len(mesh.tets)):
-    	tettemp = mesh.tets[i].neighbs.indices
-    	if (tettemp[0] ==-1 or tettemp[1] == -1 or tettemp[2] == -1 or tettemp[3] == -1): 
-    		boundtets.append(i)
-    		templist = []
-    		if (tettemp[0] == -1): 
-    			templist.append(0)
-    		if (tettemp[1] == -1): 
-    			templist.append(1)
-    		if (tettemp[2] == -1): 
-    			templist.append(2)
-    		if (tettemp[3] == -1): 
-    			templist.append(3)
-    		bt_srftriidx.append(templist)
+    minz, maxz = mesh.bbox.min.z, mesh.bbox.max.z
+    memb_tris = TriList(tri for tri in mesh.surface if minz < tri.center.z < maxz)
 
-    assert (boundtets.__len__() == bt_srftriidx.__len__())
-    
-    # Find the tets on the z=0 and z=1000um boundaries, and the triangles
-    minztets = []
-    minztris = []
-    maxztris = []
-    minzverts=set([])
-    
-    boundminz = mesh.bbox.min[2] + LENGTH/len(mesh.tets)
-    boundmaxz = mesh.bbox.max[2] - LENGTH/len(mesh.tets)
-    
-    for i in range(boundtets.__len__()):
-        # get the boundary triangle
-        for btriidx in bt_srftriidx[i]:
-            zminboundtri = True
-            tribidx = mesh.tets[boundtets[i]].faces.indices[btriidx]
-            tritemp = mesh.tris[tribidx].verts.indices
-            trizs = [0.0, 0.0, 0.0]
-            trizs[0] = mesh.verts[tritemp[0]][2]
-            trizs[1] = mesh.verts[tritemp[1]][2]
-            trizs[2] = mesh.verts[tritemp[2]][2]
-            for j in range(3):
-                if (trizs[j]>boundminz):
-                    zminboundtri = False
-            if (zminboundtri): 
-                minztets.append(boundtets[i])
-                minztris.append(tribidx)    
-                minzverts.add(tritemp[0])
-                minzverts.add(tritemp[1])
-                minzverts.add(tritemp[2])            
-                continue
-            
-            zmaxboundtri = True
-            for j in range(3):
-                if (trizs[j]< boundmaxz):
-                    zmaxboundtri = False
-            if (zmaxboundtri): 
-               maxztris.append(tribidx)    
-
-    n_minztris = len(minztris)
-    assert(n_minztris > 0)
-    minzverts = list(minzverts)
-    n_minzverts = len(minzverts)
-    assert(n_minzverts > 0)
-    
-    memb_tris = list(mesh.surface.indices)
-    
-    # Doing this now, so will inject into first little z section
-    for t in minztris: memb_tris.remove(t)
-    for t in maxztris: memb_tris.remove(t)
+    sides = mesh.surface - memb_tris
+    minzverts = VertList(vert for vert in sides.verts if vert.z <= minz)
+    maxzverts = VertList(vert for vert in sides.verts if vert.z >= maxz)
     
     # Create the membrane with the tris removed at faces
-    memb = TetPatch.Create(memb_tris, cyto, None, 'ssys')
+    memb = TetPatch.Create(memb_tris, cyto, None, ssys)
     
     membrane = Membrane.Create([memb], opt_method=2, search_percent=100.0)
 
 # Set the single-channel conductance:
 g_leak_sc = L_G_tot/len(memb_tris)
 with ssys:
-    OC_L = OhmicCurr.Create(L[Leak], g_leak_sc, leak_rev) 
+    OC_L = OhmicCurr.Create(Leak[leaksus], g_leak_sc, leak_rev) 
 
 
 # Create the solver objects
 sim = Simulation('TetODE', mdl, mesh, None, calcMembPot=True)
-# WARNING: Using a variable name that is reserved (['setTolerances']).
 sim.setTolerances(1.0e-6, 1e-6)
 
 
@@ -330,43 +236,49 @@ vol_cyl = math.pi*0.5*0.5*1000*1e-18
 vol_mesh = sim.cyto.Vol
 corr_fac_vol = vol_mesh/vol_cyl
 
-RES_POT = zeros(( SIM_NTPNTS, POT_N))
+# Data saving
+
+rs = ResultSelector(sim)
+
+Vrs = rs.TETS(POT_TET).V
+
+sim.toSave(Vrs, dt=SIM_DT)
+
+sim.newRun()
 
 print("\nRunning simulation")
 
-for t in memb_tris: sim.setTriCount(t, 'Leak', 1)
+sim.TRIS(memb_tris).Leak[leaksus].Count = 1
 
-sim.memb.Na[Na_m0h1].Count = (Na_ro*surfarea_cyl*NA_FACS[0])
-sim.memb.Na[Na_m1h1].Count = (Na_ro*surfarea_cyl*NA_FACS[1])
-sim.memb.Na[Na_m2h1].Count = (Na_ro*surfarea_cyl*NA_FACS[2])
-sim.memb.Na[Na_m3h1].Count = (Na_ro*surfarea_cyl*NA_FACS[3])
-sim.memb.Na[Na_m0h0].Count = (Na_ro*surfarea_cyl*NA_FACS[4])
-sim.memb.Na[Na_m1h0].Count = (Na_ro*surfarea_cyl*NA_FACS[5])
-sim.memb.Na[Na_m2h0].Count = (Na_ro*surfarea_cyl*NA_FACS[6])
-sim.memb.Na[Na_m3h0].Count = (Na_ro*surfarea_cyl*NA_FACS[7])
-sim.memb.K_Modif[K_n0].Count = (K_ro*surfarea_cyl*K_FACS[0])
-sim.memb.K_Modif[K_n1].Count = (K_ro*surfarea_cyl*K_FACS[1])
-sim.memb.K_Modif[K_n2].Count = (K_ro*surfarea_cyl*K_FACS[2])
-sim.memb.K_Modif[K_n3].Count = (K_ro*surfarea_cyl*K_FACS[3])
-sim.memb.K_Modif[K_n4].Count = (K_ro*surfarea_cyl*K_FACS[4])
+sim.memb.VGNaC[m0, h1].Count = (Na_ro*surfarea_cyl*NA_FACS[0])
+sim.memb.VGNaC[m1, h1].Count = (Na_ro*surfarea_cyl*NA_FACS[1])
+sim.memb.VGNaC[m2, h1].Count = (Na_ro*surfarea_cyl*NA_FACS[2])
+sim.memb.VGNaC[m3, h1].Count = (Na_ro*surfarea_cyl*NA_FACS[3])
+sim.memb.VGNaC[m0, h0].Count = (Na_ro*surfarea_cyl*NA_FACS[4])
+sim.memb.VGNaC[m1, h0].Count = (Na_ro*surfarea_cyl*NA_FACS[5])
+sim.memb.VGNaC[m2, h0].Count = (Na_ro*surfarea_cyl*NA_FACS[6])
+sim.memb.VGNaC[m3, h0].Count = (Na_ro*surfarea_cyl*NA_FACS[7])
+sim.memb.VGKC[n0].Count = (K_ro*surfarea_cyl*K_FACS[0])
+sim.memb.VGKC[n1].Count = (K_ro*surfarea_cyl*K_FACS[1])
+sim.memb.VGKC[n2].Count = (K_ro*surfarea_cyl*K_FACS[2])
+sim.memb.VGKC[n3].Count = (K_ro*surfarea_cyl*K_FACS[3])
+sim.memb.VGKC[n4].Count = (K_ro*surfarea_cyl*K_FACS[4])
 
 sim.membrane.Potential = -65e-3
 sim.membrane.VolRes = Ra*corr_fac_vol
 sim.membrane.Capac = 0.01/corr_fac_area
 
-for v in minzverts: sim.setVertIClamp(v, Iinj/n_minzverts)
+sim.VERTS(minzverts).IClamp = Iinj / len(minzverts)
 
 for l in range(SIM_NTPNTS):
     if not l%200:
         print("Sim time (ms): ", SIM_DT*l*1.0e3)
     
-    # WARNING: Using a variable name that is reserved (['run']).
     sim.run(SIM_DT*l)
-    
-    for p in range(POT_N):
-        RES_POT[l,p] = sim.TET(int(POT_TET[p])).V*1.0e3
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+RES_POT = Vrs.data[0] * 1e3
 
 # Benchmark
 # At 0um- the end of the mesh

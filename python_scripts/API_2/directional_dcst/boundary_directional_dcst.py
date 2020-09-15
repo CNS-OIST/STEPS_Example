@@ -50,8 +50,8 @@ print("Set directonal dcst from comp1 to comp2 to 1/10 of DCST, and 0 from comp2
 
 sim.newRun()
 sim.comp1.SA.Count = 100
-sim.db.SA.Dcst = Params(dcst=DCST / 10, direction_comp=comp2)
-sim.db.SA.Dcst = Params(dcst=0.0, direction_comp=comp1)
+sim.db(direc=comp2).SA.Dcst = DCST / 10
+sim.db(direc=comp1).SA.Dcst = 0
 print("V1 Count: ", sim.comp1.SA.Count)
 print("V2 Count: ", sim.comp2.SA.Count)
 sim.run(1)

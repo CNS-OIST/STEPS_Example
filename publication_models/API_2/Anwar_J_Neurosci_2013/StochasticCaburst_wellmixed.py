@@ -684,8 +684,6 @@ for l in range(NTIMEPOINTS):
     Si = sim_WM.shell0.Ca.Conc
 
     So = Ca_oconc
-# Translate token ###############
-
     
     # Get the single-channel currents first
     tcur_CaP_sc = cf.getGHKI(CaP_P, V, 2, TEMPERATURE+273.15, Si*1.0e3, So*1.0e3)

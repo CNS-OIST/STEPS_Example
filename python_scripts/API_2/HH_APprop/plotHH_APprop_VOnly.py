@@ -40,8 +40,6 @@ import numpy as np
 
 CellPot = ResultSelector.FromFile('CellPot_only.dat')
 
-NBINS = 100
-
 def plotPotential(t):
     tidx = min(enumerate(CellPot.time[0]), key=lambda v: abs(v[1] - t))[0]
     plt.plot(

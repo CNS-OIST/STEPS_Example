@@ -366,11 +366,9 @@ os.makedirs(runPath, exist_ok=True)
 
 rng1.initialize(10*int(iter_n))
 
-# TMP NOT TRANSLATED YET
 datfile  = open(os.path.join(runPath, 'currents.dat'), 'w')
 datfile2 = open(os.path.join(runPath, 'voltage.dat'), 'w')
 datfile3 = open(os.path.join(runPath, 'calcium.dat'), 'w')
-# END TMP
 
 stets = submemb_tets.indices
 stris = submemb_tris.indices
@@ -474,8 +472,6 @@ for l in range(NTIMEPOINTS):
 
 
     sim_stoch.run(TIMECONVERTER*l)
-
-##### TRANSLATION PROGRESSION TOKEN
 
     datfile.write('%.6g' %(1.0e3*TIMECONVERTER*l) + ' ')
     datfile.write('%.6g' %((tcur_CaP*1.0e-1)/surfarea) + ' ')

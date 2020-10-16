@@ -124,17 +124,17 @@ with model:
     ssys = SurfaceSystem.Create()
 
     #  Potassium channel
-    n0, n1, n2, n3, n4 = SubUnitState.Create()
-    nKSU = SubUnit.Create([n0, n1, n2, n3, n4])
-    VGKC = Channel.Create([nKSU])
+    Ko, Kc = SubUnitState.Create()
+    KSU = SubUnit.Create([Ko, Kc])
+    VGKC = Channel.Create([KSU]*4)
 
     # Sodium channel
-    h0, h1, m0, m1, m2, m3 = SubUnitState.Create()
-    mNaSU, hNaSU = SubUnit.Create(
-        [m0, m1, m2, m3],
-        [h0, h1],
+    Na_mo, Na_mc, Na_hi, Na_ha = SubUnitState.Create()
+    NamSU, NahSU = SubUnit.Create(
+        [Na_mo, Na_mc],
+        [Na_hi, Na_ha]
     )
-    VGNaC = Channel.Create([mNaSU, hNaSU])
+    VGNaC = Channel.Create([NamSU, NamSU, NamSU, NahSU])
 
     # Leak channel
     lsus = SubUnitState.Create()
@@ -148,40 +148,31 @@ with model:
     thi = math.pow(3.0, ((celsius-6.3)/10.0)) * 1.0e3
 
     _a_n = VDepRate(lambda V: thi*((0.01*(10-(V*1e3+65))/(math.exp((10-(V*1e3+65))/10)-1))), vrange=Vrange)
-
     _b_n = VDepRate(lambda V: thi*((0.125*math.exp(-(V*1e3+65)/80))), vrange=Vrange)
     
     _a_m = VDepRate(lambda V: thi*((0.1*(25-(V*1e3+65))/(math.exp((25-(V*1e3+65))/10)-1))), vrange=Vrange)
-    
     _b_m = VDepRate(lambda V: thi*((4*math.exp(-(V*1e3+65)/18))), vrange=Vrange)
 
     _a_h = VDepRate(lambda V: thi*((0.07*math.exp(-(V*1e3+65)/20))), vrange=Vrange)
-    
     _b_h = VDepRate(lambda V: thi*((1/(math.exp((30-(V*1e3+65))/10)+1))), vrange=Vrange)
 
     with ssys:
 
         with VGKC[...]:
-            n0.s <r[1]> n1.s <r[2]> n2.s <r[3]> n3.s <r[4]> n4.s
-            r[1].setRates(4*_a_n,   _b_n)
-            r[2].setRates(3*_a_n, 2*_b_n)
-            r[3].setRates(2*_a_n, 3*_b_n)
-            r[4].setRates(  _a_n, 4*_b_n)
+            Kc.s <r[1]> Ko.s
+            r[1].setRates(_a_n, _b_n)
 
         with VGNaC[...]:
-            h0.s <r[1]> h1.s
+            Na_hi.s <r[1]> Na_ha.s
             r[1].setRates(_a_h, _b_h)
-
-            m0.s <r[1]> m1.s <r[2]> m2.s <r[3]> m3.s
-            r[1].setRates(3*_a_m,   _b_m)
-            r[2].setRates(2*_a_m, 2*_b_m)
-            r[3].setRates(  _a_m, 3*_b_m)
+            
+            Na_mc.s <r[1]> Na_mo.s
+            r[1].setRates(_a_m, _b_m)
 
         # Create ohmic current objects
-        VGKC_I = OhmicCurr.Create(VGKC[n4], K_G, K_rev)
-        VGNaC_I = OhmicCurr.Create(VGNaC[m3, h1], Na_G, Na_rev)
+        VGKC_I = OhmicCurr.Create(VGKC[Ko, Ko, Ko, Ko], K_G, K_rev)
+        VGNaC_I = OhmicCurr.Create(VGNaC[Na_mo, Na_mo, Na_mo, Na_ha], Na_G, Na_rev)
         Leak_I = OhmicCurr.Create(Leak[lsus], L_G, leak_rev)
-
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # # # # # # # # # # # # # # # TETRAHEDRAL MESH  # # # # # # # # # # # # # # # # #
@@ -247,12 +238,13 @@ sim.newRun()
 # Inject channels
 surfarea = sim.patch.Area
 
-for i, m in enumerate(mNaSU):
-    for j, h in enumerate(hNaSU):
-        sim.patch.VGNaC[m, h].Count = Na_ro * surfarea * Na_facs[j][i]
+for state in VGNaC:
+    prop = Na_facs[state.Count(Na_ha)][state.Count(Na_mo)]
+    sim.patch.VGNaC[state].Count = Na_ro * surfarea * prop
 
-for i, n in enumerate(nKSU):
-    sim.patch.VGKC[n].Count = K_ro * surfarea * K_facs[i]
+for state in VGKC:
+    prop = K_facs[state.Count(Ko)]
+    sim.patch.VGKC[state].Count = K_ro * surfarea * prop
 
 sim.patch.Leak[lsus].Count = L_ro * surfarea
 

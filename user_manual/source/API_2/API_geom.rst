@@ -4,20 +4,51 @@
 steps.API_2.geom
 ****************
 
+* Containers
 
-* :py:class:`steps.API_2.geom.Geometry`
-* :py:class:`steps.API_2.geom.Compartment`
-* :py:class:`steps.API_2.geom.Patch`
-* :py:class:`steps.API_2.geom.Membrane`
-* :py:class:`steps.API_2.geom.TetMesh`
-* :py:class:`steps.API_2.geom.TetComp`
-* :py:class:`steps.API_2.geom.TetPatch`
-* :py:class:`steps.API_2.geom.ROI`
-* :py:class:`steps.API_2.geom.DiffBoundary`
-* :py:class:`steps.API_2.geom.SDiffBoundary`
-* :py:class:`steps.API_2.geom.MeshPartition`
-* :py:class:`steps.API_2.geom.LinearMeshPartition`
-* :py:class:`steps.API_2.geom.MetisPartition`
+ * :py:class:`steps.API_2.geom.Geometry`
+
+  * :py:class:`steps.API_2.geom.Compartment`
+  * :py:class:`steps.API_2.geom.Patch`
+
+ * :py:class:`steps.API_2.geom.TetMesh`
+
+  * :py:class:`steps.API_2.geom.TetComp`
+  * :py:class:`steps.API_2.geom.TetPatch`
+  * :py:class:`steps.API_2.geom.Membrane`
+  * :py:class:`steps.API_2.geom.ROI`
+  * :py:class:`steps.API_2.geom.DiffBoundary`
+  * :py:class:`steps.API_2.geom.SDiffBoundary`
+
+* Mesh partitioning
+
+ * :py:class:`steps.API_2.geom.MeshPartition`
+ * :py:class:`steps.API_2.geom.LinearMeshPartition`
+ * :py:class:`steps.API_2.geom.MetisPartition`
+ * :py:class:`steps.API_2.geom.MorphPartition`
+
+* References
+
+ * :py:class:`steps.API_2.geom.Reference`
+ * :py:class:`steps.API_2.geom.TetReference`
+ * :py:class:`steps.API_2.geom.TriReference`
+ * :py:class:`steps.API_2.geom.BarReference`
+ * :py:class:`steps.API_2.geom.VertReference`
+
+* Reference lists
+
+ * :py:class:`steps.API_2.geom.RefList`
+ * :py:class:`steps.API_2.geom.TetList`
+ * :py:class:`steps.API_2.geom.TriList`
+ * :py:class:`steps.API_2.geom.BarList`
+ * :py:class:`steps.API_2.geom.VertList`
+
+* Convenience classes
+
+ * :py:class:`steps.API_2.geom.Point`
+ * :py:class:`steps.API_2.geom.Morph`
+
+----------
 
 .. automodule:: steps.API_2.geom
     :members:

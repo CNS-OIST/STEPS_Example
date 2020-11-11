@@ -4,8 +4,16 @@
 steps.API_2.utils
 *****************
 
-* :py:class:`steps.API_2.utils.NamedObject`
-* :py:class:`steps.API_2.utils.Params`
+* Utility classes
+
+ * :py:class:`steps.API_2.utils.NamedObject`
+ * :py:class:`steps.API_2.utils.Params`
+
+* Options
+
+ * :py:func:`steps.API_2.utils.SetVerbosity`
+
+----------
 
 .. autoclass:: steps.API_2.utils.NamedObject
     :members:
@@ -19,4 +27,4 @@ steps.API_2.utils
     :inherited-members: ndarray
     :special-members:
 
-
+.. autofunction:: steps.API_2.utils.SetVerbosity

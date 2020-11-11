@@ -4,9 +4,20 @@
 steps.API_2.sim
 ***************
 
-* :py:class:`steps.API_2.sim.Simulation`
-* :py:class:`steps.API_2.sim.SBMLSimulation`
-* :py:class:`steps.API_2.sim.SimPath`
+* Simulation
+
+ * :py:class:`steps.API_2.sim.Simulation`
+ * :py:class:`steps.API_2.sim.SBMLSimulation`
+
+* Simulation utilities
+
+ * :py:class:`steps.API_2.sim.SimPath`
+
+* Parallel simulations
+
+ * :py:class:`steps.API_2.sim.MPI`
+
+----------
 
 .. automodule:: steps.API_2.sim
     :members:

@@ -1,9 +1,13 @@
 # IP3 receptor mesh simulation
 
-import steps.model as smodel
-import steps.geom as swm
-import steps.rng as srng
-import steps.solver as ssolver
+import steps.interface
+
+from steps.model import *
+from steps.geom import *
+from steps.rng import *
+from steps.sim import *
+from steps.saving import *
+from steps.visual import *
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
@@ -22,103 +26,79 @@ import ip3r_model
 
 # Import model
 mdl = ip3r_model.getModel()
+with mdl:
 
-volsys = smodel.Volsys('vsys', mdl)
+    vsys = VolumeSystem.Create()
+    with vsys:
 
-# Fetch reference to Calcium and IP3 Spec objects
-Ca = mdl.getSpec('Ca')
-IP3 = mdl.getSpec('IP3')
+        # Create diffusion rules (fetch reference to Ca and IP3 from mdl)
+        Ca_diff =  Diffusion.Create(mdl.Ca,  DCST_Ca)
+        IP3_diff = Diffusion.Create(mdl.IP3, DCST_IP3)
 
-# Create diffusion rules
-Ca_diff = smodel.Diff('Ca_diff', volsys, Ca, DCST_Ca)
-IP3_diff = smodel.Diff('IP3_diff', volsys, IP3, DCST_IP3)
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-# Import mesh
-import steps.utilities.meshio as meshio
-
-mesh = meshio.loadMesh("ip3r_mesh")[0]
+mesh = TetMesh.Load('ip3r_mesh')
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 # Create random number generator
-r = srng.create('mt19937', 512)
-r.initialize(456)
+rng = RNG('mt19937', 512, 456)
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 # Create reaction-diffusion solver object
-sim = ssolver.Tetexact(mdl, mesh, r)
+sim = Simulation('Tetexact', mdl, mesh, rng)
 
 # Setup initial condition
-sim.setCompCount('cyt', 'Ca', 1)
-sim.setCompConc('cyt', 'IP3', 2.5e-6)
-sim.setCompConc('ER', 'Ca', 150e-6)
-sim.setPatchCount('memb', 'R', 16)
+sim.cyt.Ca.Count = 1
+sim.cyt.IP3.Conc = 2.5e-06
+sim.ER.Ca.Conc = 0.00015
+sim.memb.R.Count = 16
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # Visualization
-import pyqtgraph as pg
-import steps.visual as visual
 
-# Visualization initialization
-app = pg.mkQApp()
+rs = ResultSelector(sim)
 
-# Create plot display
-plots = visual.PlotDisplay("IP3 Receptor Model", size = (600, 400))
+# Create control
+sc = SimControl(end_time = 1.0, upd_interval = 0.0001)
 
-# Create Plots
-pen = pg.mkPen(color=(255,255,255), width=2)
-p = plots.addCompSpecPlot("<span style='font-size: 16pt'>Ca_cyt", sim, "cyt", "Ca", data_size = 1000,y_range= [0, 1e-5], measure = "conc", pen=(255, 0.647 * 255, 0))
-p.getAxis('left').setPen(pen)
-p.getAxis('bottom').setPen(pen)
-p.showGrid(x=True, y=True)
-labelStyle = {'color': '#ffffff', 'font-size': '16px'}
-p.setLabel('bottom', 'Time', 's', **labelStyle)
+with sc:
+    # Plots
+    with PlotDisplay('IP3 Receptor Model'):
+        TimePlot(rs.cyt.Ca.Conc, title='Ca_cyt', pen=(255, 0.647 * 255, 0), data_size=1000, y_range=[0, 1e-5], y_label=('Concentration', 'M'))
+        NewRow()
+        TimePlot(rs.memb.Ropen.Count, title='Ropen_memb', pen=(255, 0, 255), data_size=1000, y_range=[0, 10], y_label=('Concentration', 'M'))
 
-plots.nextRow()
+    # 3D displays
+    ER_d, CytIP3_d, CytCa_d, memb_d, full_d = SimDisplay.Create('ER', 'Cyt IP3', 'Cyt Calcium', 'memb', 'Full view')
 
-p = plots.addPatchSpecPlot("<span style='font-size: 16pt'>Ropen_memb", sim, "memb", "Ropen", data_size = 1000,y_range= [0, 10], pen=(255, 0, 255))
-p.getAxis('left').setPen(pen)
-p.getAxis('bottom').setPen(pen)
-p.showGrid(x=True, y=True)
-p.setLabel('bottom', 'Time', 's', **labelStyle)
+    with ER_d:
+        # Static mesh element
+        ElementDisplay(rs.ER, color=[0.678, 1, 0.184, 0.05])
+        # Dynamic element
+        ElementDisplay(rs.ER.Ca, color=[1, 0.647, 0, 1], spec_size = 0.005)
 
-# Create simulation displays
-ER_display = visual.SimDisplay("ER", w = 600, h = 400)
-cytIP3_display = visual.SimDisplay("Cyt IP3", w = 600, h = 400)
-cytCa_display = visual.SimDisplay("Cyt Calcium", w = 600, h = 400)
-memb_display = visual.SimDisplay("memb", w = 600, h = 400)
-full_display = visual.SimDisplay("Full View", w = 600, h = 400)
+    with CytIP3_d:
+        ElementDisplay(rs.cyt, color=[0.941, 1, 0.941, 0.05])
+        ElementDisplay(rs.cyt.IP3, color=[1, 0, 0, 1], spec_size = 0.005)
 
-# Create static mesh components
-ER_view = visual.VisualCompMesh("ER", full_display, mesh, "ER", color = [0.678, 1.000, 0.184, 0.05])
-cyt_view = visual.VisualCompMesh("cyt", full_display, mesh, "cyt", color = [0.941, 1.000, 0.941, 0.05])
-memb_view = visual.VisualPatchMesh("memb", full_display, mesh, "memb", color = [1.000, 0.973, 0.863, 0.05])
+    with CytCa_d:
+        ElementDisplay(rs.cyt, color=[0.941, 1, 0.941, 0.05])
+        ElementDisplay(rs.cyt.Ca, color=[1, 0.647, 0, 1], spec_size = 0.005)
 
-# Create dynamic species components
-Ca_ER = visual.VisualCompSpec("Ca_ER", full_display, mesh, sim, "ER", "Ca", [1.000, 0.647, 0.000, 1.0], spec_size = 0.005)
-IP3_cyt = visual.VisualCompSpec("IP3_cyt", full_display, mesh, sim, "cyt", "IP3", [1.0, 0.0, 0.0, 1.0], spec_size = 0.005)
-Ca_cyt = visual.VisualCompSpec("Ca_cyt", full_display, mesh, sim, "cyt", "Ca", [1.000, 0.647, 0.000, 1.0], spec_size = 0.005)
-IP3R_MEMB = visual.VisualPatchChannel("IP3R_memb", full_display, mesh, sim, "memb", {"R" : [0.0, 0.0, 1.0, 1.0], "RIP3" : [1.0, 0.0, 1.0, 0.2], "Ropen" : [1.0, 0.0, 1.0, 1.0], "RCa" : [0.0, 0.0, 1.0, 0.8], "R2Ca" : [0.0, 0.0, 1.0, 0.6], "R3Ca" : [0.0, 0.0, 1.0, 0.4], "R4Ca" : [0.0, 0.0, 1.0, 0.2]}, spec_size = 0.01)
+    with memb_d:
+        ElementDisplay(rs.memb, color=[1, 0.973, 0.863, 0.05])
 
-# Add associated components to individual displays
-ER_display.addItem(ER_view)
-ER_display.addItem(Ca_ER)
+        # Different colors depending on receptor state
+        spec2Col = {"R" : [0.0, 0.0, 1.0, 1.0], "RIP3" : [1.0, 0.0, 1.0, 0.2], 
+            "Ropen" : [1.0, 0.0, 1.0, 1.0], "RCa" : [0.0, 0.0, 1.0, 0.8], 
+            "R2Ca" : [0.0, 0.0, 1.0, 0.6], "R3Ca" : [0.0, 0.0, 1.0, 0.4], 
+            "R4Ca" : [0.0, 0.0, 1.0, 0.2]
+        }
+        ElementDisplay(rs.memb.MATCH('R.*'), spec_size = 0.01, color=lambda spec: spec2Col[spec.name])
 
-cytCa_display.addItem(cyt_view)
-cytCa_display.addItem(Ca_cyt)
-
-cytIP3_display.addItem(cyt_view)
-cytIP3_display.addItem(IP3_cyt)
-
-memb_display.addItem(memb_view)
-memb_display.addItem(IP3R_MEMB)
-
-# Add simulation and displays to control
-x = visual.SimControl([sim], [ER_display, cytIP3_display, cytCa_display, memb_display, full_display],[plots], end_time= 1.0, upd_interval = 0.0001)
-
+    # Merge all sub-displays to the full one
+    full_d.merge(ER_d, CytIP3_d, CytCa_d, memb_d)
+        
 # Enter visualization loop
-app.exec_()
-
+sc.run()

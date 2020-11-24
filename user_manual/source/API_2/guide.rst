@@ -16,4 +16,6 @@ Contents:
    Interface_Tutorial_3_Diffusion.ipynb
    Interface_Tutorial_4_Complexes.ipynb
    Interface_Tutorial_5_Efield.ipynb
+   Interface_Tutorial_6_MPI.ipynb
+   Interface_Tutorial_7_visual.ipynb
 

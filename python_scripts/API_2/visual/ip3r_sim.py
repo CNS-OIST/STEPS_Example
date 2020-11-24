@@ -22,18 +22,36 @@ DCST_IP3 = 0.283e-9
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
-import ip3r_model 
+mdl = Model()
+r = ReactionManager()
 
-# Import model
-mdl = ip3r_model.getModel()
 with mdl:
+    # chemical species objects
+    Ca, IP3, R, RIP3, Ropen, RCa, R2Ca, R3Ca, R4Ca = Species.Create()
+
+    ssys = SurfaceSystem.Create()
+    with ssys:
+        # Binding reactions
+        (R.s + IP3.o <r[1]> RIP3.s) + Ca.o <r[2]> Ropen.s
+        r[1].setRates(1000000000.0, 25800.0)
+        r[2].setRates(8000000000.0, 2000.0)
+
+        (((R.s + Ca.o <r[3]> RCa.s) + Ca.o <r[4]> R2Ca.s) + Ca.o <r[5]> R3Ca.s) + Ca.o <r[6]> R4Ca.s
+        r[3].setRates(8889000.0, 5.0)
+        r[4].setRates(20000000.0, 10.0)
+        r[5].setRates(40000000.0, 15.0)
+        r[6].setRates(60000000.0, 20.0)
+
+        # Ca ions passing through open IP3R channel
+        Ca.i + Ropen.s <r[1]> Ropen.s + Ca.o
+        # Corresponds to Ca input ~ 20000/ms for open receptor
+        r[1].setRates(8000000.0, 8000000.0)
 
     vsys = VolumeSystem.Create()
     with vsys:
-
-        # Create diffusion rules (fetch reference to Ca and IP3 from mdl)
-        Ca_diff =  Diffusion.Create(mdl.Ca,  DCST_Ca)
-        IP3_diff = Diffusion.Create(mdl.IP3, DCST_IP3)
+        # Create diffusion rules
+        Ca_diff =  Diffusion.Create(Ca,  DCST_Ca)
+        IP3_diff = Diffusion.Create(IP3, DCST_IP3)
 
 mesh = TetMesh.Load('ip3r_mesh')
 
@@ -46,6 +64,8 @@ rng = RNG('mt19937', 512, 456)
 
 # Create reaction-diffusion solver object
 sim = Simulation('Tetexact', mdl, mesh, rng)
+
+sim.newRun()
 
 # Setup initial condition
 sim.cyt.Ca.Count = 1
@@ -64,13 +84,44 @@ sc = SimControl(end_time = 1.0, upd_interval = 0.0001)
 
 with sc:
     # Plots
-    with PlotDisplay('IP3 Receptor Model'):
-        TimePlot(rs.cyt.Ca.Conc, title='Ca_cyt', pen=(255, 0.647 * 255, 0), data_size=1000, y_range=[0, 1e-5], y_label=('Concentration', 'M'))
+    plots_d = PlotDisplay('IP3 Receptor Model')
+    with plots_d:
+
+        TimePlot(rs.cyt.Ca.Conc,
+            title='Ca_cyt',
+            pen=(255, 0.647 * 255, 0),
+            data_size=1000,
+            y_range=[0, 15e-6],
+            y_label=('Concentration', 'M')
+        )
+
+        TimePlot(rs.memb.Ropen.Count,
+            title='Ropen_memb',
+            pen=(255, 0, 255),
+            data_size=1000,
+            y_range=[0, 10],
+            y_label=('Count', '#')
+        )
+
         NewRow()
-        TimePlot(rs.memb.Ropen.Count, title='Ropen_memb', pen=(255, 0, 255), data_size=1000, y_range=[0, 10], y_label=('Concentration', 'M'))
+
+        SpatialPlot(rs.TETS(mesh.cyt.tets).Ca.Count,
+            title='Ca_cyt distribution anlong y-axis',
+            axis=[0, 1, 0],
+            y_range=[0, 30]
+        )
+
+        TimePlot(rs.memb.MATCH('R.*').Count,
+            title='Receptor states',
+            data_size=1000,
+            y_range=[0, 17],
+            y_label=('Count', '#')
+        )
 
     # 3D displays
-    ER_d, CytIP3_d, CytCa_d, memb_d, full_d = SimDisplay.Create('ER', 'Cyt IP3', 'Cyt Calcium', 'memb', 'Full view')
+    ER_d, CytIP3_d, CytCa_d, memb_d, full_d = SimDisplay.Create(
+        'ER', 'Cyt IP3', 'Cyt Calcium', 'memb', 'Full view'
+    )
 
     with ER_d:
         # Static mesh element

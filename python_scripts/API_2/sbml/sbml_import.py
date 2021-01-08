@@ -35,11 +35,15 @@ from steps.rng import *
 from steps.saving import *
 
 from matplotlib import pyplot as plt
+import os
 
 def runSBMLmod(solver):
     rng = RNG('mt19937', 256, 7233)
 
-    sim = SBMLSimulation(solver, 'biomodel/BIOMD0000000098.xml', rng, 0.001, volunits_def=1e-3, volume_def=1e-18)
+    dirPath = os.path.dirname(os.path.abspath(__file__))
+    modelFile = os.path.join(dirPath, 'biomodel/BIOMD0000000098.xml')
+
+    sim = SBMLSimulation(solver, modelFile, rng, 0.001, volunits_def=1e-3, volume_def=1e-18)
 
     rs = ResultSelector(sim)
     allComps = rs.ALL().ALL(Species).Conc

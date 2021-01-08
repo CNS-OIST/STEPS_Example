@@ -41,7 +41,8 @@ import numpy as np
 import os
 import sys
 
-meshPath = 'meshes/coin_10r_1h_13861'
+dirPath = os.path.dirname(os.path.abspath(__file__))
+meshPath = os.path.join(dirPath, 'meshes/coin_10r_1h_13861')
 
 # Number of iterations; plotting dt; sim endtime:
 NITER = 100

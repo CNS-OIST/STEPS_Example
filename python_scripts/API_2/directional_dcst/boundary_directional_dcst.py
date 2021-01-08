@@ -4,12 +4,14 @@ import steps.interface
 
 """ Example of directional dcst."""
 
-import time
 from steps.geom import *
 from steps.model import *
 from steps.rng import *
 from steps.sim import *
 from steps.utils import *
+
+import os
+import time
 
 DCST = 0.2e-9
 
@@ -21,8 +23,12 @@ with model:
     with vsys:
         D_a = Diffusion.Create(SA, DCST)
 
+dirPath = os.path.dirname(os.path.abspath(__file__))
+tetFile = os.path.join(dirPath, "mesh_tet.inp")
+triFile = os.path.join(dirPath, "mesh_tri.inp")
+confFile = os.path.join(dirPath, "mesh_conf")
 
-mesh = TetMesh.LoadAbaqus(("mesh_tet.inp", "mesh_tri.inp"), scale=1e-6, shadow_mesh="mesh_conf")
+mesh = TetMesh.LoadAbaqus((tetFile, triFile), scale=1e-6, shadow_mesh=confFile)
 
 with mesh:
     comp1 = TetComp.Create(mesh.v1_tets.tets, vsys)

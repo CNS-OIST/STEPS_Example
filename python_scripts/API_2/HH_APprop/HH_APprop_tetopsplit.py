@@ -93,7 +93,8 @@ Na_facs = [[0.34412, 0.05733, 0.00327, 6.0e-05],
 
 # # # # # # # # # # # # # # # # # # MESH  # # # # # # # # # # # # # # # # # # # # 
 
-meshPath = 'meshes/axon_cube_L1000um_D443nm_equiv0.5_19087tets.inp'
+dirPath = os.path.dirname(os.path.abspath(__file__))
+meshPath = os.path.join(dirPath, 'meshes/axon_cube_L1000um_D443nm_equiv0.5_19087tets.inp')
 
 # # # # # # # # # # # # # # # SIMULATION CONTROLS # # # # # # # # # # # # # # # #
 

@@ -23,6 +23,8 @@ other modules should be imported in this way in order to avoid name collisions.
     from steps.utils import *
     from steps.visual import *
 
+Note that some functionalites of API_2, like `auto-naming <API_utils.rst#steps.API_2.utils.NamedObject.Create>`_, will not work in an interactive python shell but will work as expected in a python script or a jupyter notebook.
+
 ----------
 
 .. toctree::

@@ -9,6 +9,7 @@ Contents:
    :numbered:
   
    getting_started.ipynb
+   python_interfaces.rst
    well_mixed.ipynb
    ip3.ipynb
    diffusion.ipynb

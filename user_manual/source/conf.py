@@ -138,10 +138,156 @@ html_theme = 'default'
 #  so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+html_js_files = ['js/simpath.js']
+
 #  Add any extra paths that contain custom files (such as robots.txt or
 #  .htaccess) here, relative to this directory. These files are copied
 #  directly to the root of the documentation.
-#  html_extra_path = []
+html_extra_path = ['simpath.json']
+
+# Generate json
+import itertools
+import json
+import os
+import re
+
+DIRPATH = os.path.dirname(os.path.abspath(__file__))
+SOLVER_DOCS = ['API_1/API_solver.rst', 'API_1/API_mpisolver.rst']
+
+LOCATIONS = {
+    'Tet': ('Tetrahedron', ('TET(tet)', 'TETS(tetLst)')), 
+    'Tri': ('Triangle', ('TRI(tri)', 'TRIS(triLst)')), 
+    'Vert': ('Vertex', ('VERT(vert)', 'VERTS(vertLst)')), 
+    'ROI': ('Region of Interest', 'roi'), 
+    'Comp': ('Compartment', 'comp'), 
+    'Patch': ('Patch', 'patch'), 
+    'Memb': ('Membrane', 'memb'), 
+    'DiffBoundary': ('Diff. Boundary', ('diffb', 'diffb(direc=comp2)')),
+    'SDiffBoundary': ('Surf. Diff. Boundary', ('sdiffb', 'diffb(direc=comp2)')),
+}
+OBJECTS = {
+    '': ('Species', 'spec'),
+    'Reac': ('Reaction', ("reac['fwd']", "reac['bkw']")),
+    'SReac': ('Reaction', ("reac['fwd']", "reac['bkw']")),
+    'VDepSReac': ('Reaction', ("reac['fwd']", "reac['bkw']")),
+    'Diff': ('Diffusion', "diff"),
+    'SDiff': ('Diffusion', "sdiff"),
+    'Ohmic': ('Current', 'curr'),
+    'GHK': ('Current', 'curr'),
+}
+OBJ_PROPERTIES = [
+    'Count', 'Conc', 'Amount', 'Clamped', 'K', 'Active',  'D',
+    'C', 'H', 'A', 'Extent', 'I', 'DiffusionActive', 'Dcst', 
+]
+LOC_PROPERTIES = [
+    'Area', 'Vol', 'V', 'VClamped', 'IClamp', 'Potential', 
+    'Capac', 'VolRes', 'Res', 'I',
+]
+
+for dct in [LOCATIONS, OBJECTS]:
+    for loc, val in list(dct.items()):
+        dct['Batch' + loc] = val
+
+allMethodNames = {}
+for comb in itertools.product(['get', 'set'], LOCATIONS.items(), OBJECTS.items(), OBJ_PROPERTIES, ['', 'sNP']):
+    gs, loc, obj, prop, suff = comb
+    name = gs + loc[0] + obj[0] + prop + suff
+    allMethodNames[name] = (gs, loc[1], obj[1], prop)
+for comb in itertools.product(['get', 'set'], LOCATIONS.items(), LOC_PROPERTIES, ['', 'sNP']):
+    gs, loc, prop, suff = comb
+    name = gs + loc[0] + prop + suff
+    allMethodNames[name] = (gs, loc[1], None, prop)
+
+
+def dctFill(dct, val):
+    if val not in dct:
+        dct[val] = {}
+    return dct[val]
+
+
+def processDoc(doc):
+    res = ''
+    lines = []
+    for line in doc.split('\n'):
+        if 'Syntax::' in line:
+            break
+        else:
+            line = line.strip()
+            if len(line) == 0 and len(lines) > 0:
+                res += '<p>' + ' '.join(lines) + '</p>'
+                lines = []
+            else:
+                lines.append(line.strip())
+    if len(lines) > 0:
+        res += '<p>' + ' '.join(lines) + '</p>'
+    return res
+
+
+def getMethodDoc(solver, meth):
+    try:
+        import steps.solver
+        return getattr(getattr(steps.solver, solver), meth).__doc__
+    except:
+        try:
+            import steps.mpi.solver
+            return getattr(getattr(steps.mpi.solver, solver), meth).__doc__
+        except:
+            return ''
+
+
+def parseMethod(dct, solver, meth):
+    if meth in allMethodNames:
+        gs, loc, obj, prop = allMethodNames[meth]
+
+        allLines = ['sim']
+
+        for item in [loc, obj]:
+            if item is not None:
+                item = item[1]
+                if isinstance(item, str):
+                    item = (item,)
+                allLines = [line + f'.{val}' for line in allLines for val in item]
+
+        endLines = []
+        for line in allLines:
+            line += f'.{prop}'
+            if gs == 'get':
+                line = f'val = {line}'
+            else:
+                line = f'{line} = val'
+            endLines.append(line)
+
+        examples = '</br>'.join(endLines)
+
+        dct = dctFill(dct, gs)
+        dct = dctFill(dct, solver)
+        dct = dctFill(dct, loc[0])
+        if  obj is not None:
+            dct = dctFill(dct, obj[0])
+        dct[prop] = examples + '@' + processDoc(getMethodDoc(solver, meth))
+
+
+def GenerateJSON(path):
+    autoclass = re.compile('^\.\. autoclass:: ?([^ ]+)\n$')
+    automethod = re.compile('^ *\.\. automethod:: ?([^ ]+)\n$')
+
+    jsonData = {}
+    for rel in SOLVER_DOCS:
+        with open(os.path.join(DIRPATH, rel), 'r') as f:
+            currClass = None
+            for line in f:
+                m = autoclass.match(line)
+                if m is not None:
+                    currClass = m.group(1)
+                elif currClass is not None:
+                    m = automethod.match(line)
+                    if m is not None:
+                        parseMethod(jsonData, currClass, m.groups(1)[0])
+
+    with open(path, 'w') as f:
+        json.dump(jsonData, f)
+
+GenerateJSON(html_extra_path[0])
 
 #  If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 #  using the given strftime format.

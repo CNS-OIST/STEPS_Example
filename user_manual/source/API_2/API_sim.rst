@@ -4,25 +4,13 @@
 steps.API_2.sim
 ***************
 
-* Simulation
-
- * :py:class:`steps.API_2.sim.Simulation`
- * :py:class:`steps.API_2.sim.SBMLSimulation`
-
-* Simulation utilities
-
- * :py:class:`steps.API_2.sim.SimPath`
-
-* Parallel simulations
-
- * :py:class:`steps.API_2.sim.MPI`
-
+The ``sim`` module contains classes related to both serial and parallel simulations.
 
 ================
 Simulation paths
 ================
 
-Values can be set and retrieved from the simulation by using `SimPaths <API_sim.rst#steps.API_2.sim.SimPath>`_ from the simulation object to the desired value.
+Values can be set and retrieved from the simulation by using `SimPaths <API_sim.rst#steps.API_2.sim.SimPath>`_ from the :py:class:`Simulation` object to the desired value.
 The following tool allows users to know which paths can be set or accessed:
 
 .. raw:: html
@@ -40,6 +28,23 @@ The following tool allows users to know which paths can be set or accessed:
         <h4>Description:</h4>
         <div class="DocDisplay" id="SimPathDoc" style="width:610px;height:200px;color:#666666;"></div>
     </div>
+
+======================
+Detailed documentation
+======================
+
+* Simulation
+
+ * :py:class:`steps.API_2.sim.Simulation`
+ * :py:class:`steps.API_2.sim.SBMLSimulation`
+
+* Simulation utilities
+
+ * :py:class:`steps.API_2.sim.SimPath`
+
+* Parallel simulations
+
+ * :py:class:`steps.API_2.sim.MPI`
 
 ----------
 

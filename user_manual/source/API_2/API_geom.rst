@@ -4,6 +4,13 @@
 steps.API_2.geom
 ****************
 
+The ``geom`` module contains classes related to meshes and geometries: compartments, patches, region of interest, diffusion boundaries, etc.
+It also contains utility classes for handling element lists.
+
+======================
+Detailed documentation
+======================
+
 * Containers
 
  * :py:class:`steps.API_2.geom.Geometry`

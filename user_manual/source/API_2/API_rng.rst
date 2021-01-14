@@ -4,6 +4,12 @@
 steps.API_2.rng
 ***************
 
+The ``rng`` module contains classes related to random number generation.
+
+======================
+Detailed documentation
+======================
+
 * :py:class:`steps.API_2.rng.RNG`
 
 ----------

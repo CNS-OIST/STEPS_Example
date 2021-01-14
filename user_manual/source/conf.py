@@ -163,15 +163,15 @@ LOCATIONS = {
     'Patch': ('Patch', 'patch'), 
     'Memb': ('Membrane', 'memb'), 
     'DiffBoundary': ('Diff. Boundary', ('diffb', 'diffb(direc=comp2)')),
-    'SDiffBoundary': ('Surf. Diff. Boundary', ('sdiffb', 'diffb(direc=comp2)')),
+    'SDiffBoundary': ('Surf. Diff. Boundary', ('sdiffb', 'diffb(direc=patch2)')),
 }
 OBJECTS = {
     '': ('Species', 'spec'),
     'Reac': ('Reaction', ("reac['fwd']", "reac['bkw']")),
     'SReac': ('Reaction', ("reac['fwd']", "reac['bkw']")),
     'VDepSReac': ('Reaction', ("reac['fwd']", "reac['bkw']")),
-    'Diff': ('Diffusion', "diff"),
-    'SDiff': ('Diffusion', "sdiff"),
+    'Diff': ('Diffusion', ("diff", 'diff(direc=tet2)')),
+    'SDiff': ('Diffusion', ("sdiff", 'sdiff(direc=tri2)')),
     'Ohmic': ('Current', 'curr'),
     'GHK': ('Current', 'curr'),
 }
@@ -182,6 +182,19 @@ OBJ_PROPERTIES = [
 LOC_PROPERTIES = [
     'Area', 'Vol', 'V', 'VClamped', 'IClamp', 'Potential', 
     'Capac', 'VolRes', 'Res', 'I',
+]
+
+DOC_REPLACEMENT = {
+    'direction_comp': 'direc',
+    'direction_patch': 'direc',
+    'direction_tet': 'direc',
+    'direction_tri': 'direc',
+}
+
+INVALID_EXAMPLES = [
+    re.compile('^.+diffb\(direc=[^\)]+\)\.[^\.]+\.DiffusionActive.*$'),
+    re.compile('^.+(TETS|TRIS|comp|patch).+diff\(direc=[^\)]+\)\..*$'),
+    re.compile('^.+diff\(direc=[^\)]+\)\.(Active|A).*$'),
 ]
 
 for dct in [LOCATIONS, OBJECTS]:
@@ -213,6 +226,8 @@ def processDoc(doc):
             break
         else:
             line = line.strip()
+            for src, dst in DOC_REPLACEMENT.items():
+                line = line.replace(src, dst)
             if len(line) == 0 and len(lines) > 0:
                 res += '<p>' + ' '.join(lines) + '</p>'
                 lines = []
@@ -255,7 +270,8 @@ def parseMethod(dct, solver, meth):
                 line = f'val = {line}'
             else:
                 line = f'{line} = val'
-            endLines.append(line)
+            if all(p.match(line) is None for p in INVALID_EXAMPLES):
+                endLines.append(line)
 
         examples = '</br>'.join(endLines)
 

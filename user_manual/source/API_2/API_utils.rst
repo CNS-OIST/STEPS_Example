@@ -4,6 +4,12 @@
 steps.API_2.utils
 *****************
 
+The ``utils`` module contains utility classes used by other modules.
+
+======================
+Detailed documentation
+======================
+
 * Utility classes
 
  * :py:class:`steps.API_2.utils.NamedObject`

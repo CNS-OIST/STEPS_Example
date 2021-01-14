@@ -4,6 +4,12 @@
 steps.API_2.saving
 ******************
 
+The ``saving`` module contains classes related to data saving during simulation.
+
+======================
+Detailed documentation
+======================
+
 * Result selectors
 
  * :py:class:`steps.API_2.saving.ResultSelector`

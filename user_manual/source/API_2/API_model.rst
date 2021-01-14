@@ -4,6 +4,12 @@
 steps.API_2.model
 *****************
 
+The ``model`` module contains classes related to model definition: species, complexes, reactions, diffusion rules, channels, etc.
+
+======================
+Detailed documentation
+======================
+
 * Containers
 
  * :py:class:`steps.API_2.model.Model`

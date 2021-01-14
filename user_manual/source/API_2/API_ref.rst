@@ -38,4 +38,3 @@ Note that some functionalites of API_2, like `auto-naming <API_utils.rst#steps.A
    API_sim
    API_utils
    API_visual
-   simpath

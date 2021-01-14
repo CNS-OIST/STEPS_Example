@@ -4,6 +4,12 @@
 steps.API_2.visual
 ******************
 
+The ``visual`` module contains classes for interactively visualizing simulations.
+
+======================
+Detailed documentation
+======================
+
 * :py:class:`steps.API_2.visual.SimControl`
 * :py:class:`steps.API_2.visual.PlotDisplay`
 

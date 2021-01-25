@@ -255,9 +255,9 @@ with mesh_stoch as mesh:
 
     
     ########## Create an intracellular compartment i.e. cytosolic compartment
-    cyto_stoch = TetComp.Create(inner_tets.indices, vsys_stoch)
+    cyto_stoch = Compartment.Create(inner_tets.indices, vsys_stoch)
     ########## Create a membrane as a surface mesh
-    memb_stoch = TetPatch.Create(memb_tris, cyto_stoch, None, ssys_stoch)
+    memb_stoch = Patch.Create(memb_tris, cyto_stoch, None, ssys_stoch)
 
     # For EField calculation
     print("Creating membrane..")
@@ -266,8 +266,8 @@ with mesh_stoch as mesh:
     print("Area: ", memb_stoch.Area)
 
 with mesh_det:
-    cyto_det = TetComp.Create(inner_tets.indices, vsys_det)
-    memb_det = TetPatch.Create(memb_tris.indices, cyto_det, None, ssys_det)
+    cyto_det = Compartment.Create(inner_tets.indices, vsys_det)
+    memb_det = Patch.Create(memb_tris.indices, cyto_det, None, ssys_det)
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # SIMULATION  # # # # # # # # # # # # # # # # # # # # # #
 

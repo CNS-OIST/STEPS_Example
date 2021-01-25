@@ -33,7 +33,7 @@ confFile = os.path.join(dirPath, "mesh_conf")
 mesh = TetMesh.LoadAbaqus((tetFile, triFile), scale=1e-6, shadow_mesh=confFile)
 
 with mesh:
-    comp = TetComp.Create(mesh.tets, vsys)
+    comp = Compartment.Create(mesh.tets, vsys)
 
     pairing = {}
     for tri in mesh.boundary.tris:

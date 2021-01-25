@@ -271,7 +271,7 @@ with mesh_stoch:
     cent_tet = mesh_stoch.tets[0.0, 0.0, 0.0]
 
     ########## Create an intracellular compartment i.e. cytosolic compartment
-    cyto_stoch = TetComp.Create(inner_tets)
+    cyto_stoch = Compartment.Create(inner_tets)
 
     if cyl160:
         # Ensure that we use points a small distance inside the boundary:
@@ -282,7 +282,7 @@ with mesh_stoch:
         memb_tris = inner_tets.surface & outer_tets.surface
 
     ########## Create a membrane as a surface mesh
-    memb_stoch = TetPatch.Create(memb_tris, cyto_stoch, None, ssys_stoch)
+    memb_stoch = Patch.Create(memb_tris, cyto_stoch, None, ssys_stoch)
 
     # For EField calculation
     print("Creating membrane..")

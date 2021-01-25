@@ -88,7 +88,7 @@ with mdl:
 mesh = TetMesh.Load('meshes/'+meshfile)
 with mesh:
     
-    cyto = TetComp.Create(mesh.tets)
+    cyto = Compartment.Create(mesh.tets)
     
     minz, maxz = mesh.bbox.min.z, mesh.bbox.max.z
     memb_tris = TriList(tri for tri in mesh.surface if minz < tri.center.z < maxz)
@@ -104,7 +104,7 @@ with mesh:
     max1000distvert = max(maxzverts, key=lambda vert: np.linalg.norm(vert[:2]))
 
     # Create the membrane with the tris removed at faces
-    memb = TetPatch.Create(memb_tris, cyto, None, ssys)
+    memb = Patch.Create(memb_tris, cyto, None, ssys)
     
     corr_fac_area = memb.Area/surfarea_cyl
     

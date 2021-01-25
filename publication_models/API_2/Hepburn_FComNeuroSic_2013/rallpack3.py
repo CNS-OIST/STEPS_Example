@@ -200,7 +200,7 @@ mesh = TetMesh.Load('./meshes/'+meshfile)
 
 with mesh:
     
-    cyto = TetComp.Create(range(len(mesh.tets)))
+    cyto = Compartment.Create(range(len(mesh.tets)))
     
     # The tetrahedrons from which to record potential
     POT_TET = TetList(mesh.tets[0, 0, z] for z in POT_POS)
@@ -213,7 +213,7 @@ with mesh:
     maxzverts = VertList(vert for vert in sides.verts if vert.z >= maxz)
     
     # Create the membrane with the tris removed at faces
-    memb = TetPatch.Create(memb_tris, cyto, None, ssys)
+    memb = Patch.Create(memb_tris, cyto, None, ssys)
     
     membrane = Membrane.Create([memb], opt_method=2, search_percent=100.0)
 

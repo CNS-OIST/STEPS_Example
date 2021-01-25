@@ -15,9 +15,9 @@ def getGeom(mesh_file_name, morph_file_name = None):
 
     with mesh:
         ########## Create an intracellular compartment i.e. cytosolic compartment
-        cyto = TetComp.Create(mesh.tets, 'vsys')
+        cyto = Compartment.Create(mesh.tets, 'vsys')
         ########## Create a membrane as a surface mesh
-        memb = TetPatch.Create(mesh.surface, cyto, None, 'ssys')
+        memb = Patch.Create(mesh.surface, cyto, None, 'ssys')
     
     if morph_file_name == None:
         return mesh

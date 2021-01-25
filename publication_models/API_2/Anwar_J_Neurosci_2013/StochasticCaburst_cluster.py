@@ -264,10 +264,10 @@ with mesh:
     cent_tet = mesh.tets[0.0, 0.0, 0.0]
 
     ########## Create an intracellular compartment i.e. cytosolic compartment
-    cyto = TetComp.Create(inner_tets, vsys)
+    cyto = Compartment.Create(inner_tets, vsys)
 
     if not cyl160:
-        outer = TetComp.Create(outer_tets)
+        outer = Compartment.Create(outer_tets)
 
     if cyl160:
         # Ensure that we use points a small distance inside the boundary:
@@ -310,9 +310,9 @@ with mesh:
 
     ########## Create a membrane as a surface mesh
     if cyl160: 
-        memb = TetPatch.Create(memb_tris, cyto, None, ssys)
+        memb = Patch.Create(memb_tris, cyto, None, ssys)
     else:
-        memb = TetPatch.Create(memb_tris, cyto, outer, ssys)
+        memb = Patch.Create(memb_tris, cyto, outer, ssys)
 
     # For EField calculation
     print("Creating membrane..")

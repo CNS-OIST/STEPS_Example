@@ -80,10 +80,10 @@ def gen_geom(mdl):
 
     with mesh:
         # Create a compartment containing all tetrahedron
-        cyto = TetComp.Create(mesh.tets)
+        cyto = Compartment.Create(mesh.tets)
 
         # Create the patch
-        patch = TetPatch.Create(patch_tris, cyto, None, mdl.ssys)
+        patch = Patch.Create(patch_tris, cyto, None, mdl.ssys)
 
     # Find the central tri
     ctet = mesh.tets[0, 0, 0.5e-6]

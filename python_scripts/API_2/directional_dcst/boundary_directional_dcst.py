@@ -31,8 +31,8 @@ confFile = os.path.join(dirPath, "mesh_conf")
 mesh = TetMesh.LoadAbaqus((tetFile, triFile), scale=1e-6, shadow_mesh=confFile)
 
 with mesh:
-    comp1 = TetComp.Create(mesh.v1_tets.tets, vsys)
-    comp2 = TetComp.Create(mesh.v2_tets.tets, vsys)
+    comp1 = Compartment.Create(mesh.v1_tets.tets, vsys)
+    comp2 = Compartment.Create(mesh.v2_tets.tets, vsys)
     
     db = DiffBoundary.Create(mesh.boundary.tris)
 

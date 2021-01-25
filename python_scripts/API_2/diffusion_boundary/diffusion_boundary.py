@@ -81,7 +81,7 @@ def gen_geom(mdl):
         tetsB = mesh.tets - tetsA
 
         # Create the mesh compartments
-        compA, compB = TetComp.Create(
+        compA, compB = Compartment.Create(
             Params(tetsA, mdl.vsysA), 
             Params(tetsB, mdl.vsysB)
         )

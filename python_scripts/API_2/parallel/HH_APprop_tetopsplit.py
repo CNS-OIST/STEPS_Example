@@ -182,10 +182,10 @@ pot_tet = [mesh.tets[(0, 0, z)] for z in pot_pos]
 
 with mesh:
     # Create cytosol compartment
-    cyto = TetComp.Create(mesh.tets)
+    cyto = Compartment.Create(mesh.tets)
 
     # Create the patch and associate with surface system ssys
-    patch = TetPatch.Create(memb_tris, cyto, None, ssys)
+    patch = Patch.Create(memb_tris, cyto, None, ssys)
 
     # Create the membrane across which the potential will be solved
     membrane = Membrane.Create([patch], opt_method = 1)

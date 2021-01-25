@@ -276,7 +276,7 @@ mesh_stoch = TetMesh.LoadAbaqus('./meshes/'+meshfile_ab, scale=1e-06)
 
 with mesh_stoch:
     ########## Create an intracellular compartment i.e. cytosolic compartment
-    cyto_stoch = TetComp.Create(mesh_stoch.tets)
+    cyto_stoch = Compartment.Create(mesh_stoch.tets)
     print(f'{len(cyto_stoch.tets)} tets in inner compartment')
 
     #Define geometrical constants for all (100) compartments with concentric shells
@@ -343,7 +343,7 @@ with mesh_stoch:
 
     ########## Create a membrane as a surface mesh
 
-    memb_stoch = TetPatch.Create(mesh_stoch.surface, cyto_stoch, None, ssys_stoch)
+    memb_stoch = Patch.Create(mesh_stoch.surface, cyto_stoch, None, ssys_stoch)
     
     # For EField calculation
     print("Creating membrane..")

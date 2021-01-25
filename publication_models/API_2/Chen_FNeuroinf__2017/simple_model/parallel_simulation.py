@@ -84,7 +84,7 @@ def gen_model():
 def gen_geom():
     mesh = TetMesh.LoadAbaqus(os.path.join("meshes", MESHFILE), scale=1e-06)
     with mesh:
-        comp = TetComp.Create(mesh.tets, 'volsys')
+        comp = Compartment.Create(mesh.tets, 'volsys')
     
     return mesh
 

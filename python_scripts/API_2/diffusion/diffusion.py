@@ -84,7 +84,7 @@ def gen_geom(mdl):
 
     with mesh:
         # Create a compartment containing all tetrahedron
-        cyto = TetComp.Create(mesh.tets, mdl.cytosolv)
+        cyto = Compartment.Create(mesh.tets, mdl.cytosolv)
 
         print("Finding tetrahedron samples...")
         # List to hold tetrahedrons

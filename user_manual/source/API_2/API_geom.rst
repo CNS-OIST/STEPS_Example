@@ -14,14 +14,12 @@ Detailed documentation
 * Containers
 
  * :py:class:`steps.API_2.geom.Geometry`
+ * :py:class:`steps.API_2.geom.TetMesh`
+
+* Geometrical elements
 
   * :py:class:`steps.API_2.geom.Compartment`
   * :py:class:`steps.API_2.geom.Patch`
-
- * :py:class:`steps.API_2.geom.TetMesh`
-
-  * :py:class:`steps.API_2.geom.TetComp`
-  * :py:class:`steps.API_2.geom.TetPatch`
   * :py:class:`steps.API_2.geom.Membrane`
   * :py:class:`steps.API_2.geom.ROI`
   * :py:class:`steps.API_2.geom.DiffBoundary`

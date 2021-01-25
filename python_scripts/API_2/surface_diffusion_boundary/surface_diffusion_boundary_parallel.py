@@ -84,10 +84,10 @@ with mesh:
             else:
                 Btris.append(tri)
 
-    cyto = TetComp.Create(mesh.tets)
+    cyto = Compartment.Create(mesh.tets)
     # Create the patches
-    patchA = TetPatch.Create(Atris, cyto, None, ssys)
-    patchB = TetPatch.Create(Btris, cyto, None, ssys)
+    patchA = Patch.Create(Atris, cyto, None, ssys)
+    patchB = Patch.Create(Btris, cyto, None, ssys)
 
     # Find the set of bars that connect the two patches as the intersecting bars
     sdiffb = SDiffBoundary.Create(Atris.edges & Btris.edges, patchA, patchB)

@@ -143,14 +143,14 @@ with model:
 
         with VGKC[...]:
             Kc.s <r[1]> Ko.s
-            r[1].setRates(_a_n, _b_n)
+            r[1].K = _a_n, _b_n
 
         with VGNaC[...]:
             Na_hi.s <r[1]> Na_ha.s
-            r[1].setRates(_a_h, _b_h)
+            r[1].K = _a_h, _b_h
             
             Na_mc.s <r[1]> Na_mo.s
-            r[1].setRates(_a_m, _b_m)
+            r[1].K = _a_m, _b_m
 
         # Create ohmic current objects
         VGKC_I = OhmicCurr.Create(VGKC[Ko, Ko, Ko, Ko], K_G, K_rev)

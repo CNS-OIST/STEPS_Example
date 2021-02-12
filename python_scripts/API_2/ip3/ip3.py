@@ -25,19 +25,19 @@ with mdl:
     with surfsys:
         # IP3 binding
         (IP3.o + R.s <r[1]> RIP3.s) + Ca.o <r[2]> Ropen.s
-        r[1].setRates(1000e6, 25800)
-        r[2].setRates(8000e6, 2000)
+        r[1].K = 1000e6, 25800
+        r[2].K = 8000e6, 2000
 
         # Ca binding
         (((R.s + Ca.o <r[7]> RCa.s) + Ca.o <r[8]> R2Ca.s) + Ca.o <r[3]> R3Ca.s) + Ca.o <r[4]> R4Ca.s
-        r[7].setRates(8.889e6, 5)
-        r[8].setRates(20e6, 10)
-        r[3].setRates(40e6, 15)
-        r[4].setRates(60e6, 20)
+        r[7].K = 8.889e6, 5
+        r[8].K = 20e6, 10
+        r[3].K = 40e6, 15
+        r[4].K = 60e6, 20
 
         # Ca ions passing through open IP3R channel
         Ca.i + Ropen.s >r[1]> Ropen.s + Ca.o
-        r[1].setRates(2e8)
+        r[1].K = 2e8
 
 #########################
 # Geom setup

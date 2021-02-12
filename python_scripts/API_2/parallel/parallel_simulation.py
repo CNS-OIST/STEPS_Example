@@ -50,10 +50,10 @@ def gen_model():
             SC + SD <r[2]> SE
             SF + SG <r[3]> SH
             SH + SI <r[4]> SJ
-            r[1].setRates(1000000000.0, 100.0)
-            r[2].setRates(100000000.0, 10.0)
-            r[3].setRates(10000000.0, 1.0)
-            r[4].setRates(1000000.0, 0.1*10)
+            r[1].K = 1000000000.0, 100.0
+            r[2].K = 100000000.0, 10.0
+            r[3].K = 10000000.0, 1.0
+            r[4].K = 1000000.0, 0.1*10
 
             # The diffusion rules
             D1 =  Diffusion.Create(SA, 1e-10)

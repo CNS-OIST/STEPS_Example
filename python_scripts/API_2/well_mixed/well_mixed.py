@@ -49,7 +49,7 @@ with mdl:
 
     with vsys:
         molA + molB <r['r1']> molC
-        r['r1'].setRates(0.3e6, 0.7)
+        r['r1'].K = 0.3e6, 0.7
 
 geom = Geometry()
 

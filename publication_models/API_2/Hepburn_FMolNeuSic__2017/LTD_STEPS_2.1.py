@@ -155,276 +155,276 @@ def gen_model():
 
             # Ca influx (Ca = calcium)
             None >r['Cainflux']> Ca
-            r['Cainflux'].setRates(0.0)
+            r['Cainflux'].K = 0.0
 
             # Leak
             None >r[1]> Ca
-            r[1].setRates(150/(Na*0.08e-15))
+            r[1].K = 150/(Na*0.08e-15)
 
             ((PKC + Ca <r[1]> Ca1PKC) + 2*Ca <r[2]> Ca3PKC) + AA <r[3]> AACa3PKC <r[4]> AACa1PKC + 2*Ca
-            r[1].setRates(13.3e6, 12)
-            r[2].setRates(1.e12 , 12)
-            r[3].setRates(1e6 , 10)
-            r[4].setRates(12, 1.0e12 )
+            r[1].K = 13.3e6, 12
+            r[2].K = 1.e12 , 12
+            r[3].K = 1e6 , 10
+            r[4].K = 12, 1.0e12 
 
             ((PLA2 + Ca <r[1]> Ca1PLA2) + Ca <r[2]> Ca2PLA2) + ERKstar <r[3]> ERKstarCa2PLA2 >r[4]> Ca2PLA2star2 + ERKstar
-            r[1].setRates(1.93e6, 108)
-            r[2].setRates(10.8e6 , 108)
-            r[3].setRates(4e6 , 1)
-            r[4].setRates(14)
+            r[1].K = 1.93e6, 108
+            r[2].K = 10.8e6 , 108
+            r[3].K = 4e6 , 1
+            r[4].K = 14
 
             # PV + Mg <-> MgPV <-> Mg2PV, apparent rate constants, [Mg] = 590uM 
             PV <r[1]> MgPV <r[2]> Mg2PV 
-            r[1].setRates(472, 25)
-            r[2].setRates(472, 25)
+            r[1].K = 472, 25
+            r[2].K = 472, 25
 
             (PV + Ca <r[1]> CaPV) + Ca <r[2]> Ca2PV
-            r[1].setRates(107e6 , 0.95)
-            r[2].setRates(107e6 , 0.95)
+            r[1].K = 107e6 , 0.95
+            r[2].K = 107e6 , 0.95
 
             ((Ca + PLA2star2 <r[1]> Ca1PLA2star2) + Ca <r[2]> Ca2PLA2star2) + PP2A <r[3]> PP2ACa2PLA2star2 >r[4]> Ca2PLA2 + PP2A
-            r[1].setRates(1.93e6 , 108)
-            r[2].setRates(10.8e6 , 108)
-            r[3].setRates(1.4e6, 1.5 )
-            r[4].setRates(2.5    )
+            r[1].K = 1.93e6 , 108
+            r[2].K = 10.8e6 , 108
+            r[3].K = 1.4e6, 1.5 
+            r[4].K = 2.5    
 
             (CBs + Ca <r[1]> CaCBs) + Ca <r[2]> Ca2CBs
-            r[1].setRates(5.5e6, 2.6)
-            r[2].setRates(5.5e6 , 2.6)
+            r[1].K = 5.5e6, 2.6
+            r[2].K = 5.5e6 , 2.6
 
             (CBf + Ca <r[1]> CaCBf) + Ca <r[2]> Ca2CBf
-            r[1].setRates(43.5e6 , 35.8)
-            r[2].setRates(43.5e6 , 35.8)
+            r[1].K = 43.5e6 , 35.8
+            r[2].K = 43.5e6 , 35.8
 
             (AA + PKC <r[1]> AAPKC) + Ca <r[2]> AACa1PKC <r[3]> AA + Ca1PKC
-            r[1].setRates(1e6 , 10)
-            r[2].setRates(13.3e6, 12)
-            r[3].setRates(10, 1e6 )
+            r[1].K = 1e6 , 10
+            r[2].K = 13.3e6, 12
+            r[3].K = 10, 1e6 
 
             MEK + Rafstar <r[1]> RafstarMEK >r[2]> MEKp + Rafstar <r[3]> RafstarMEKp >r[4]> MEKstar + Rafstar
-            r[1].setRates(0.65e6 , 0.065)
-            r[2].setRates(1.0)
-            r[3].setRates(0.65e6 , 0.065)
-            r[4].setRates(1.0)
+            r[1].K = 0.65e6 , 0.065
+            r[2].K = 1.0
+            r[3].K = 0.65e6 , 0.065
+            r[4].K = 1.0
 
             MEKstar + PP2A <r[1]> PP2AMEKstar >r[2]> MEKp + PP2A <r[3]> PP2AMEKp >r[4]> MEK + PP2A
-            r[1].setRates(0.75e6 , 2)
-            r[2].setRates(0.5)
-            r[3].setRates(0.75e6 , 2)
-            r[4].setRates(0.5)
+            r[1].K = 0.75e6 , 2
+            r[2].K = 0.5
+            r[3].K = 0.75e6 , 2
+            r[4].K = 0.5
 
             ERK + MEKstar <r[1]> MEKstarERK >r[2]> ERKp + MEKstar <r[3]> MEKstarERKp >r[4]> ERKstar + MEKstar
-            r[1].setRates(16.2e6 , 0.6)
-            r[2].setRates(0.15)
-            r[3].setRates(16.2e6 , 0.6)
-            r[4].setRates(0.3 )
+            r[1].K = 16.2e6 , 0.6
+            r[2].K = 0.15
+            r[3].K = 16.2e6 , 0.6
+            r[4].K = 0.3 
 
             ERKstar + MKP <r[1]> MKPERKstar >r[2]> ERKp + MKP <r[3]> MKPERKp >r[4]> ERK + MKP
-            r[1].setRates(13e6 , 0.396)
-            r[2].setRates(0.099 )
-            r[3].setRates(28e6 , 0.56)
-            r[4].setRates(0.14 )
+            r[1].K = 13e6 , 0.396
+            r[2].K = 0.099 
+            r[3].K = 28e6 , 0.56
+            r[4].K = 0.14 
 
             RKIPstar + RP <r[1]> RKIPstarRP >r[2]> RKIP + RP
-            r[1].setRates(0.92e6, 0.00122)
-            r[2].setRates(0.87)
+            r[1].K = 0.92e6, 0.00122
+            r[2].K = 0.87
 
             PP5 + Rafstar <r[1]> PP5Rafstar >r[2]> PP5 + Raf
-            r[1].setRates(.55e6 , 2)
-            r[2].setRates(0.5)
+            r[1].K = .55e6 , 2
+            r[2].K = 0.5
 
             ERKstar + PLA2 <r[1]> ERKstarPLA2 >r[2]> ERKstar + PLA2star2
-            r[1].setRates(4e6 , 1)
-            r[2].setRates(14)
+            r[1].K = 4e6 , 1
+            r[2].K = 14
 
             Ca1PLA2 + ERKstar <r[1]> ERKstarCa1PLA2 >r[2]> Ca1PLA2star2 + ERKstar
-            r[1].setRates(4e6 , 1)
-            r[2].setRates(14)
+            r[1].K = 4e6 , 1
+            r[2].K = 14
 
             PLA2star2 + PP2A <r[1]> PP2APLA2star2 >r[2]> PLA2 + PP2A
-            r[1].setRates(1.4e6, 1.5)
-            r[2].setRates(2.5)
+            r[1].K = 1.4e6, 1.5
+            r[2].K = 2.5
 
             Ca1PLA2star2 + PP2A <r[1]> PP2ACa1PLA2star2 >r[2]> Ca1PLA2 + PP2A
-            r[1].setRates(1.4e6, 1.5 )
-            r[2].setRates(2.5)
+            r[1].K = 1.4e6, 1.5 
+            r[2].K = 2.5
 
             PLA2star2 + PP1 <r[1]> PP1PLA2star2 >r[2]> PLA2 + PP1
-            r[1].setRates(1.4e6, 1.5)
-            r[2].setRates(2.5)
+            r[1].K = 1.4e6, 1.5
+            r[2].K = 2.5
 
             Ca1PLA2star2 + PP1 <r[1]> PP1Ca1PLA2star2 >r[2]> Ca1PLA2 + PP1
-            r[1].setRates(1.4e6, 1.5)
-            r[2].setRates(2.5)
+            r[1].K = 1.4e6, 1.5
+            r[2].K = 2.5
 
             Ca2PLA2star2 + PP1 <r[1]> PP1Ca2PLA2star2 >r[2]> Ca2PLA2 + PP1
-            r[1].setRates(1.4e6, 1.5)
-            r[2].setRates(2.5)
+            r[1].K = 1.4e6, 1.5
+            r[2].K = 2.5
 
             AMPARcyt_P + PP2A <r[1]> PP2AAMPARcyt_P >r[2]> AMPARcyt + PP2A
-            r[1].setRates(0.6e6, 0.17)
-            r[2].setRates(0.25)
+            r[1].K = 0.6e6, 0.17
+            r[2].K = 0.25
 
             RKIP + Raf <r[1]> RafRKIP
-            r[1].setRates(0.53e6, 0.072)
+            r[1].K = 0.53e6, 0.072
 
             MEK + RKIP <r[1]> MEKRKIP
-            r[1].setRates(0.53e6, 0.072)
+            r[1].K = 0.53e6, 0.072
 
         with memb:
             ((AMPARcyt_P.i <r[1]> AMPARdend_P.s <r[2]> AMPARextra_P.s <r[3]> AMPAR_P.s) + GRIP.s <r[4]> GRIPAMPAR_P.s) + PP2A.i <r[5]> PP2AGRIPAMPAR_P.s >r[6]> GRIPAMPAR.s + PP2A.i
-            r[1].setRates(0.002, 0.003)
-            r[2].setRates(0.00025, 0.02)
-            r[3].setRates(0.02, 0.1)
-            r[4].setRates(1e6*(1.02e-12/1.87e-19), 70)
-            r[5].setRates(0.6e6, 0.17)
-            r[6].setRates(0.25 )
+            r[1].K = 0.002, 0.003
+            r[2].K = 0.00025, 0.02
+            r[3].K = 0.02, 0.1
+            r[4].K = 1e6*(1.02e-12/1.87e-19), 70
+            r[5].K = 0.6e6, 0.17
+            r[6].K = 0.25 
 
             ((AMPARdend.s <r[1]> AMPARextra.s <r[2]> AMPAR.s) + GRIP.s <r[3]> GRIPAMPAR.s) + PKCstar.s <r[4]> PKCstarGRIPAMPAR.s >r[5]> GRIPAMPAR_P.s + PKCstar.s
-            r[1].setRates(0.00025, 0.02)
-            r[2].setRates(0.02, 0.1)
-            r[3].setRates(1e6*(1.02e-12/1.87e-19), 7)
-            r[4].setRates(0.4e6*(1.02e-12/1.87e-19), 0.8)
-            r[5].setRates(0.3)
+            r[1].K = 0.00025, 0.02
+            r[2].K = 0.02, 0.1
+            r[3].K = 1e6*(1.02e-12/1.87e-19), 7
+            r[4].K = 0.4e6*(1.02e-12/1.87e-19), 0.8
+            r[5].K = 0.3
 
             ((Ca3PKC.i <r[1]> PKCstar.s) + AA.i <r[2]> PKCstar4.s) + RafRKIP.i <r[3]> RafRKIPPKCstar4.s >r[4]> PKCstar4.s + RKIPstar.i + Rafstar.i
-            r[1].setRates(11.3  , 0.23 )
-            r[2].setRates(1e6 , 10)
-            r[3].setRates(0.625e6  , 0.00245)
-            r[4].setRates(0.0315)
+            r[1].K = 11.3  , 0.23 
+            r[2].K = 1e6 , 10
+            r[3].K = 0.625e6  , 0.00245
+            r[4].K = 0.0315
 
             (AAPKC.i <r[1]> PKCstar2.s) + Ca.i <r[2]> PKCstar3.s <r[3]> AACa1PKC.i
-            r[1].setRates(0.017 , 0.0055)
-            r[2].setRates(13.3e6, 12)
-            r[3].setRates(0.0055, 0.017 )
+            r[1].K = 0.017 , 0.0055
+            r[2].K = 13.3e6, 12
+            r[3].K = 0.0055, 0.017 
 
             PLA2star1.i >r[1]> Ca.i + Ca1PLA2memb.s >r[2]> PLA2star1.s <r[3]> PLA2star1APC.s >r[4]> AA.i + PLA2star1.s
-            r[1].setRates(2.5)
-            r[2].setRates(10.8e6 )
-            r[3].setRates(43  , 600)
-            r[4].setRates(450)
+            r[1].K = 2.5
+            r[2].K = 10.8e6 
+            r[3].K = 43  , 600
+            r[4].K = 450
 
             Ca1PLA2star2memb.i >r[1]> Ca.i + PLA2star2memb.s >r[2]> Ca1PLA2star2memb.s <r[3]> Ca1PLA2star2membAPC.s >r[4]> AA.i + Ca1PLA2star2memb.s
-            r[1].setRates(0.41)
-            r[2].setRates(1.93e6 )
-            r[3].setRates(43 , 600)
-            r[4].setRates(3600)
+            r[1].K = 0.41
+            r[2].K = 1.93e6 
+            r[3].K = 43 , 600
+            r[4].K = 3600
 
             Ca2PLA2star2memb.i >r[1]> Ca.i + Ca1PLA2star2memb.s >r[2]> Ca2PLA2star2memb.s <r[3]> Ca2PLA2star2membAPC.s >r[4]> AA.i + Ca2PLA2star2memb.s
-            r[1].setRates(2.5)
-            r[2].setRates(10.8e6)
-            r[3].setRates(43 , 600)
-            r[4].setRates(3600)
+            r[1].K = 2.5
+            r[2].K = 10.8e6
+            r[3].K = 43 , 600
+            r[4].K = 3600
 
             Ca1PLA2memb.i >r[1]> Ca.i + PLA2memb.s >r[2]> Ca1PLA2memb.s <r[3]> Ca1PLA2.i
-            r[1].setRates(0.41)
-            r[2].setRates(1.93e6)
-            r[3].setRates(15, 30)
+            r[1].K = 0.41
+            r[2].K = 1.93e6
+            r[3].K = 15, 30
 
             PLA2star2.i <r[1]> PLA2star2memb.s <r[2]> PLA2star2membAPC.s >r[3]> AA.i + PLA2star2memb.s
-            r[1].setRates(50, 15)
-            r[2].setRates(43 , 600)
-            r[3].setRates(3600 )
+            r[1].K = 50, 15
+            r[2].K = 43 , 600
+            r[3].K = 3600 
 
             Ca.i + PMCA.s <r['pump2_f']> Ca1PMCA.s >r[2]> PMCA.s
-            r['pump2_f'].setRates(2500e6, 200 )
-            r[2].setRates(50)
+            r['pump2_f'].K = 2500e6, 200 
+            r[2].K = 50
 
             2*Ca.i + NCX.s <r[1]> Ca2NCX.s >r[2]> NCX.s
-            r[1].setRates(93.827e12  , 4000.0)
-            r[2].setRates(1000)
+            r[1].K = 93.827e12  , 4000.0
+            r[2].K = 1000
 
             2*Ca.i + PKCstar3.s <r[1]> PKCstar4.s <r[2]> AACa3PKC.i
-            r[1].setRates(1.0e12, 12)
-            r[2].setRates(0.23 , 11.3 )
+            r[1].K = 1.0e12, 12
+            r[2].K = 0.23 , 11.3 
 
             PKCstar.s + RafRKIP.i <r[1]> RafRKIPPKCstar.s >r[2]> PKCstar.s + RKIPstar.i + Rafstar.i
-            r[1].setRates(0.625e6, 0.00245)
-            r[2].setRates(0.0315)
+            r[1].K = 0.625e6, 0.00245
+            r[2].K = 0.0315
 
             PKCstar2.s + RafRKIP.i <r[1]> RafRKIPPKCstar2.s >r[2]> PKCstar2.s + RKIPstar.i + Rafstar.i
-            r[1].setRates(0.625e6  , 0.00245)
-            r[2].setRates(0.0315)
+            r[1].K = 0.625e6  , 0.00245
+            r[2].K = 0.0315
 
             PKCstar3.s + RafRKIP.i <r[1]> RafRKIPPKCstar3.s >r[2]> PKCstar3.s + RKIPstar.i + Rafstar.i
-            r[1].setRates(0.625e6  , 0.00245)
-            r[2].setRates(0.0315)
+            r[1].K = 0.625e6  , 0.00245
+            r[2].K = 0.0315
 
             MEKRKIP.i + PKCstar.s <r[1]> MEKRKIPPKCstar.s >r[2]> MEKp.i + PKCstar.s + RKIPstar.i
-            r[1].setRates(0.625e6, 0.00245)
-            r[2].setRates(0.0315)
+            r[1].K = 0.625e6, 0.00245
+            r[2].K = 0.0315
 
             MEKRKIP.i + PKCstar2.s <r[1]> MEKRKIPPKCstar2.s >r[2]> MEKp.i + PKCstar2.s + RKIPstar.i
-            r[1].setRates(0.625e6  , 0.00245)
-            r[2].setRates(0.0315)
+            r[1].K = 0.625e6  , 0.00245
+            r[2].K = 0.0315
 
             MEKRKIP.i + PKCstar3.s <r[1]> MEKRKIPPKCstar3.s >r[2]> MEKp.i + PKCstar3.s + RKIPstar.i
-            r[1].setRates(0.625e6  , 0.00245)
-            r[2].setRates(0.0315)
+            r[1].K = 0.625e6  , 0.00245
+            r[2].K = 0.0315
 
             MEKRKIP.i + PKCstar4.s <r[1]> MEKRKIPPKCstar4.s >r[2]> MEKp.i + PKCstar4.s + RKIPstar.i
-            r[1].setRates(0.625e6  , 0.00245)
-            r[2].setRates(0.0315)
+            r[1].K = 0.625e6  , 0.00245
+            r[2].K = 0.0315
 
             AMPAR.s + PKCstar.s <r[1]> PKCstarAMPAR.s >r[2]> AMPAR_P.s + PKCstar.s
-            r[1].setRates(0.4e6*(1.02e-12/1.87e-19), 0.8)
-            r[2].setRates(0.3)
+            r[1].K = 0.4e6*(1.02e-12/1.87e-19), 0.8
+            r[2].K = 0.3
 
             AMPAR.s + PKCstar2.s <r[1]> PKCstar2AMPAR.s >r[2]> AMPAR_P.s + PKCstar2.s
-            r[1].setRates(0.4e6*(1.02e-12/1.87e-19), 0.8)
-            r[2].setRates(0.3)
+            r[1].K = 0.4e6*(1.02e-12/1.87e-19), 0.8
+            r[2].K = 0.3
 
             AMPAR.s + PKCstar3.s <r[1]> PKCstar3AMPAR.s >r[2]> AMPAR_P.s + PKCstar3.s
-            r[1].setRates(0.4e6*(1.02e-12/1.87e-19)   , 0.8)
-            r[2].setRates(0.3)
+            r[1].K = 0.4e6*(1.02e-12/1.87e-19)   , 0.8
+            r[2].K = 0.3
 
             AMPAR.s + PKCstar4.s <r[1]> PKCstar4AMPAR.s >r[2]> AMPAR_P.s + PKCstar4.s
-            r[1].setRates(0.4e6*(1.02e-12/1.87e-19)  , 0.8 )
-            r[2].setRates(0.3)
+            r[1].K = 0.4e6*(1.02e-12/1.87e-19)  , 0.8 
+            r[2].K = 0.3
 
             AMPAR_P.s + PP2A.i <r[1]> PP2AAMPAR_P.s >r[2]> AMPAR.s + PP2A.i
-            r[1].setRates(0.6e6, 0.17)
-            r[2].setRates(0.25 )
+            r[1].K = 0.6e6, 0.17
+            r[2].K = 0.25 
 
             GRIPAMPAR.s + PKCstar2.s <r[1]> PKCstar2GRIPAMPAR.s >r[2]> GRIPAMPAR_P.s + PKCstar2.s
-            r[1].setRates(0.4e6*(1.02e-12/1.87e-19), 0.8)
-            r[2].setRates(0.3)
+            r[1].K = 0.4e6*(1.02e-12/1.87e-19), 0.8
+            r[2].K = 0.3
 
             GRIPAMPAR.s + PKCstar3.s <r[1]> PKCstar3GRIPAMPAR.s >r[2]> GRIPAMPAR_P.s + PKCstar3.s
-            r[1].setRates(0.4e6*(1.02e-12/1.87e-19)   , 0.8)
-            r[2].setRates(0.3)
+            r[1].K = 0.4e6*(1.02e-12/1.87e-19)   , 0.8
+            r[2].K = 0.3
 
             GRIPAMPAR.s + PKCstar4.s <r[1]> PKCstar4GRIPAMPAR.s >r[2]> GRIPAMPAR_P.s + PKCstar4.s
-            r[1].setRates(0.4e6*(1.02e-12/1.87e-19)  , 0.8 )
-            r[2].setRates(0.3)
+            r[1].K = 0.4e6*(1.02e-12/1.87e-19)  , 0.8 
+            r[2].K = 0.3
 
             AMPARextra_P.s + PP2A.i <r[1]> PP2AAMPARextra_P.s >r[2]> AMPARextra.s + PP2A.i
-            r[1].setRates(0.6e6, 0.17)
-            r[2].setRates(0.25)
+            r[1].K = 0.6e6, 0.17
+            r[2].K = 0.25
 
             AMPARdend_P.s + PP2A.i <r[1]> PP2AAMPARdend_P.s >r[2]> AMPARdend.s + PP2A.i
-            r[1].setRates(0.6e6, 0.17)
-            r[2].setRates(0.25)
+            r[1].K = 0.6e6, 0.17
+            r[2].K = 0.25
 
             PLA2star1.s <r[1]> Ca2PLA2.i
-            r[1].setRates(15, 300 )
+            r[1].K = 15, 300 
 
             Ca1PLA2star2memb.s <r[1]> Ca1PLA2star2.i
-            r[1].setRates(15, 30)
+            r[1].K = 15, 30
 
             Ca2PLA2star2memb.s <r[1]> Ca2PLA2star2.i
-            r[1].setRates(15   , 300)
+            r[1].K = 15   , 300
 
             AA.i >r[1]> None
-            r[1].setRates(.4)
+            r[1].K = .4
 
             PLA2.i <r[1]> PLA2memb.s
-            r[1].setRates(3, 15)
+            r[1].K = 3, 15
 
         with ERmemb:
             2*Ca.o + SERCA.s <r[1]> Ca2SERCA.s >r[2]> 2*Ca.i + SERCA.s
-            r[1].setRates(3428.7485714376226e12 , 199.95577085780272)
-            r[2].setRates(50)
+            r[1].K = 3428.7485714376226e12 , 199.95577085780272
+            r[2].K = 50
     
     return mdl
 

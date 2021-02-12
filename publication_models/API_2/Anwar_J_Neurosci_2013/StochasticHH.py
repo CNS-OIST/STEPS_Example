@@ -102,19 +102,19 @@ with mdl:
     with ssys:
         with Kchan[...]:
             n0.s <r[1]> n1.s <r[2]> n2.s <r[3]> n3.s <r[4]> n4.s
-            r[1].setRates(4 * _a_n, 1 * _b_n)
-            r[2].setRates(3 * _a_n, 2 * _b_n)
-            r[3].setRates(2 * _a_n, 3 * _b_n)
-            r[4].setRates(1 * _a_n, 4 * _b_n)
+            r[1].K = 4 * _a_n, 1 * _b_n
+            r[2].K = 3 * _a_n, 2 * _b_n
+            r[3].K = 2 * _a_n, 3 * _b_n
+            r[4].K = 1 * _a_n, 4 * _b_n
 
         with Nachan[...]:
             h0.s <r[1]> h1.s
-            r[1].setRates(_a_h, _b_h)
+            r[1].K = _a_h, _b_h
 
             m0.s <r[1]> m1.s <r[2]> m2.s <r[3]> m3.s
-            r[1].setRates(3*_a_m,   _b_m)
-            r[2].setRates(2*_a_m, 2*_b_m)
-            r[3].setRates(  _a_m, 3*_b_m)
+            r[1].K = 3*_a_m,   _b_m
+            r[2].K = 2*_a_m, 2*_b_m
+            r[3].K =   _a_m, 3*_b_m
 
         OC_K = OhmicCurr.Create(Kchan[n4], K_G, K_rev)
         OC_Na = OhmicCurr.Create(Nachan[m3, h1], Na_G, Na_rev)

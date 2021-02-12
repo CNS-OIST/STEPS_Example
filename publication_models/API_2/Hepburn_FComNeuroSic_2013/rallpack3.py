@@ -178,19 +178,19 @@ with mdl:
     with ssys:
         with VGKC[...]:
             n0.s <r[1]> n1.s <r[2]> n2.s <r[3]> n3.s <r[4]> n4.s
-            r[1].setRates(4*_a_n,   _b_n)
-            r[2].setRates(3*_a_n, 2*_b_n)
-            r[3].setRates(2*_a_n, 3*_b_n)
-            r[4].setRates(  _a_n, 4*_b_n)
+            r[1].K = 4*_a_n,   _b_n
+            r[2].K = 3*_a_n, 2*_b_n
+            r[3].K = 2*_a_n, 3*_b_n
+            r[4].K =   _a_n, 4*_b_n
 
         with VGNaC[...]:
             h1.s <r[1]> h0.s
-            r[1].setRates(_a_h, _b_h)
+            r[1].K = _a_h, _b_h
 
             m0.s <r[1]> m1.s <r[2]> m2.s <r[3]> m3.s
-            r[1].setRates(3*_a_m,   _b_m)
-            r[2].setRates(2*_a_m, 2*_b_m)
-            r[3].setRates(  _a_m, 3*_b_m)
+            r[1].K = 3*_a_m,   _b_m
+            r[2].K = 2*_a_m, 2*_b_m
+            r[3].K =   _a_m, 3*_b_m
 
         VGKC_I = OhmicCurr.Create(VGKC[n4], K_G / K_ro, K_rev)
         VGNaC_I = OhmicCurr.Create(VGNaC[m3, h0], Na_G / Na_ro, Na_rev)

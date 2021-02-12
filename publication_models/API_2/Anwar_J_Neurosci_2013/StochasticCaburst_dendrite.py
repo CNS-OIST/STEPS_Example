@@ -110,44 +110,44 @@ with mdl_WM:
         PVCa.o <r['diff_PVCa_inward']> PVCa.i
         PVMg.o <r['diff_PVMg_inward']> PVMg.i
 
-        r['diff_Ca_inward'].setRates(0.0, 0.0)
-        r['diff_CBsf_inward'].setRates(0.0, 0.0)
-        r['diff_CBsCa_inward'].setRates(0.0, 0.0)
-        r['diff_CBCaf_inward'].setRates(0.0, 0.0)
-        r['diff_CBCaCa_inward'].setRates(0.0, 0.0)
-        r['diff_PV_inward'].setRates(0.0, 0.0)
-        r['diff_PVCa_inward'].setRates(0.0, 0.0)
-        r['diff_PVMg_inward'].setRates(0.0, 0.0)
+        r['diff_Ca_inward'].K = 0.0, 0.0
+        r['diff_CBsf_inward'].K = 0.0, 0.0
+        r['diff_CBsCa_inward'].K = 0.0, 0.0
+        r['diff_CBCaf_inward'].K = 0.0, 0.0
+        r['diff_CBCaCa_inward'].K = 0.0, 0.0
+        r['diff_PV_inward'].K = 0.0, 0.0
+        r['diff_PVCa_inward'].K = 0.0, 0.0
+        r['diff_PVMg_inward'].K = 0.0, 0.0
 
     with ssys_chans:
         #Pump
         Ca.i + Pump.s <r['PumpD_f']> CaPump.s
-        r['PumpD_f'].setRates(P_f_kcst, P_b_kcst)
+        r['PumpD_f'].K = P_f_kcst, P_b_kcst
         
         CaPump.s >r['PumpD_k']> Pump.s
-        r['PumpD_k'].setRates(P_k_kcst)
+        r['PumpD_k'].K = P_k_kcst
 
         ###### CaP channel ##############
     
         CaP_m0.s <r['CaPm0m1']> CaP_m1.s <r['CaPm1m2']> CaP_m2.s <r['CaPm2m3']> CaP_m3.s
-        r['CaPm0m1'].setRates(0.0, 0.0)
-        r['CaPm1m2'].setRates(0.0, 0.0)
-        r['CaPm2m3'].setRates(0.0, 0.0)
+        r['CaPm0m1'].K = 0.0, 0.0
+        r['CaPm1m2'].K = 0.0, 0.0
+        r['CaPm2m3'].K = 0.0, 0.0
 
         ######## CaT channel ##########
 
         CaT_m0h0.s <r['CaTm0h0_m1h0']> CaT_m1h0.s <r['CaTm1h0_m2h0']> CaT_m2h0.s <r['CaTm2h0_m2h1']> CaT_m2h1.s
-        r['CaTm0h0_m1h0'].setRates(0.0, 0.0)
-        r['CaTm1h0_m2h0'].setRates(0.0, 0.0)
-        r['CaTm2h0_m2h1'].setRates(0.0, 0.0)
+        r['CaTm0h0_m1h0'].K = 0.0, 0.0
+        r['CaTm1h0_m2h0'].K = 0.0, 0.0
+        r['CaTm2h0_m2h1'].K = 0.0, 0.0
 
         CaT_m1h0.s <r['CaTm1h0_m1h1']> CaT_m1h1.s
-        r['CaTm1h0_m1h1'].setRates(0.0, 0.0)
+        r['CaTm1h0_m1h1'].K = 0.0, 0.0
         
         CaT_m0h0.s <r['CaTm0h0_m0h1']> CaT_m0h1.s <r['CaTm0h1_m1h1']> CaT_m1h1.s <r['CaTm1h1_m2h1']> CaT_m2h1.s
-        r['CaTm0h0_m0h1'].setRates(0.0, 0.0)
-        r['CaTm1h1_m2h1'].setRates(0.0, 0.0)
-        r['CaTm0h1_m1h1'].setRates(0.0, 0.0)
+        r['CaTm0h0_m0h1'].K = 0.0, 0.0
+        r['CaTm1h1_m2h1'].K = 0.0, 0.0
+        r['CaTm0h1_m1h1'].K = 0.0, 0.0
 
         ##### BK channel ####################
 
@@ -155,86 +155,86 @@ with mdl_WM:
                    + Ca.i <r['BKCAC1']> BK_C2.s)\
                    + Ca.i <r['BKCAC2']> BK_C3.s)\
                    + Ca.i <r['BKCAC3']> BK_C4.s
-        r['BKCAC0'].setRates(c_01, c_10)
-        r['BKCAC1'].setRates(c_12, c_21)
-        r['BKCAC2'].setRates(c_23, c_32)
-        r['BKCAC3'].setRates(c_34, c_43)
+        r['BKCAC0'].K = c_01, c_10
+        r['BKCAC1'].K = c_12, c_21
+        r['BKCAC2'].K = c_23, c_32
+        r['BKCAC3'].K = c_34, c_43
 
         (((BK_O0.s + Ca.i <r['BKCAO0']> BK_O1.s)\
                    + Ca.i <r['BKCAO1']> BK_O2.s)\
                    + Ca.i <r['BKCAO2']> BK_O3.s)\
                    + Ca.i <r['BKCAO3']> BK_O4.s
-        r['BKCAO0'].setRates(o_01, o_10)
-        r['BKCAO1'].setRates(o_12, o_21)
-        r['BKCAO2'].setRates(o_23, o_32)
-        r['BKCAO3'].setRates(o_34, o_43)
+        r['BKCAO0'].K = o_01, o_10
+        r['BKCAO1'].K = o_12, o_21
+        r['BKCAO2'].K = o_23, o_32
+        r['BKCAO3'].K = o_34, o_43
         
         BK_C0.s <r['BKC0O0']> BK_O0.s
         BK_C1.s <r['BKC1O1']> BK_O1.s
         BK_C2.s <r['BKC2O2']> BK_O2.s
         BK_C3.s <r['BKC3O3']> BK_O3.s
         BK_C4.s <r['BKC4O4']> BK_O4.s
-        r['BKC0O0'].setRates(0, 0)
-        r['BKC1O1'].setRates(0, 0)
-        r['BKC2O2'].setRates(0, 0)
-        r['BKC3O3'].setRates(0, 0)
-        r['BKC4O4'].setRates(0, 0)
+        r['BKC0O0'].K = 0, 0
+        r['BKC1O1'].K = 0, 0
+        r['BKC2O2'].K = 0, 0
+        r['BKC3O3'].K = 0, 0
+        r['BKC4O4'].K = 0, 0
 
         ###### SK channel ################## DETERMINISTIC
 
         ((SK_C1.s + Ca.i <r['SKCAC1']> SK_C2.s)\
                   + Ca.i <r['SKCAC2']> SK_C3.s)\
                   + Ca.i <r['SKCAC3']> SK_C4.s
-        r['SKCAC1'].setRates(dirc2_t, invc1_t)
-        r['SKCAC2'].setRates(dirc3_t, invc2_t)
-        r['SKCAC3'].setRates(dirc4_t, invc3_t)
+        r['SKCAC1'].K = dirc2_t, invc1_t
+        r['SKCAC2'].K = dirc3_t, invc2_t
+        r['SKCAC3'].K = dirc4_t, invc3_t
         
         SK_C3.s <r['SKC3O1']> SK_O1.s
         SK_C4.s <r['SKC4O2']> SK_O2.s
-        r['SKC3O1'].setRates(diro1_t, invo1_t)
-        r['SKC4O2'].setRates(diro2_t, invo2_t)
+        r['SKC3O1'].K = diro1_t, invo1_t
+        r['SKC4O2'].K = diro2_t, invo2_t
 
     with vsys_buffs:
         
         #iCBsf-fast
         Ca + iCBsf <r['iCBsf1_f']> iCBsCa
-        r['iCBsf1_f'].setRates(iCBsf1_f_kcst, iCBsf1_b_kcst)
+        r['iCBsf1_f'].K = iCBsf1_f_kcst, iCBsf1_b_kcst
         
         #iCBsCa
         Ca + iCBsCa <r['iCBsCa_f']> iCBCaCa
-        r['iCBsCa_f'].setRates(iCBsCa_f_kcst, iCBsCa_b_kcst)
+        r['iCBsCa_f'].K = iCBsCa_f_kcst, iCBsCa_b_kcst
         
         #iCBsf_slow
         Ca + iCBsf <r['iCBsf2_f']> iCBCaf
-        r['iCBsf2_f'].setRates(iCBsf2_f_kcst, iCBsf2_b_kcst)
+        r['iCBsf2_f'].K = iCBsf2_f_kcst, iCBsf2_b_kcst
         
         #iCBCaf
         Ca + iCBCaf <r['iCBCaf_f']> iCBCaCa
-        r['iCBCaf_f'].setRates(iCBCaf_f_kcst, iCBCaf_b_kcst)
+        r['iCBCaf_f'].K = iCBCaf_f_kcst, iCBCaf_b_kcst
         
         #CBsf-fast
         CBsf + Ca <r['CBsf1_f']> CBsCa
-        r['CBsf1_f'].setRates(CBsf1_f_kcst, CBsf1_b_kcst)
+        r['CBsf1_f'].K = CBsf1_f_kcst, CBsf1_b_kcst
         
         #CBsCa
         CBsCa + Ca <r['CBsCa_f']> CBCaCa
-        r['CBsCa_f'].setRates(CBsCa_f_kcst, CBsCa_b_kcst)
+        r['CBsCa_f'].K = CBsCa_f_kcst, CBsCa_b_kcst
         
         #CBsf_slow
         CBsf + Ca <r['CBsf2_f']> CBCaf
-        r['CBsf2_f'].setRates(CBsf2_f_kcst, CBsf2_b_kcst)
+        r['CBsf2_f'].K = CBsf2_f_kcst, CBsf2_b_kcst
         
         #CBCaf
         CBCaf + Ca <r['CBCaf_f']> CBCaCa
-        r['CBCaf_f'].setRates(CBCaf_f_kcst, CBCaf_b_kcst)
+        r['CBCaf_f'].K = CBCaf_f_kcst, CBCaf_b_kcst
         
         #PVca
         Ca + PV <r['PVca_f']> PVCa
-        r['PVca_f'].setRates(PVca_f_kcst, PVca_b_kcst)
+        r['PVca_f'].K = PVca_f_kcst, PVca_b_kcst
         
         #PVmg
         Mg + PV <r['PVmg_f']> PVMg
-        r['PVmg_f'].setRates(PVmg_f_kcst, PVmg_b_kcst)
+        r['PVmg_f'].K = PVmg_f_kcst, PVmg_b_kcst
 
 with mdl_stoch:
     #for EField

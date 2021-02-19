@@ -28,7 +28,7 @@ are run in parallel under the MPI protocol.
 
 Several EField solution are provided in the current parallel implementation.
 For large scale parallel simulation with hundreds of processes we recommand `EF_DV_PETSC`.
-For small scale simulation with several process we recommand `EF_DV_SLUSYS`.
+For small scale simulation with several process we recommand `EF_DV_BDSYS`.
 
 .. autoclass:: TetOpSplit
 
@@ -42,7 +42,7 @@ For small scale simulation with several process we recommand `EF_DV_SLUSYS`.
 
          Run serial EField simulation (Tetexact version) on process 0.
 
-    * .. data:: steps.API_1.mpi.solver.EF_DV_SLUSYS
+    * .. data:: steps.API_1.mpi.solver.EF_DV_BDSYS
 
          Use parallel SuperLU EField solver.
 

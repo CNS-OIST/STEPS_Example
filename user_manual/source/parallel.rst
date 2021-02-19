@@ -290,7 +290,7 @@ Here are the possible options:
 
     Run serial EField simulation (Tetexact version) on process 0.
 
-* .. data:: steps.mpi.solver.EF_DV_SLUSYS
+* .. data:: steps.mpi.solver.EF_DV_BDSYS
 
     Use parallel SuperLU EField solver.
 
@@ -298,7 +298,7 @@ Here are the possible options:
 
     Use parallel PETSc EField solver.
 
-The default value is `EF_NONE`, i.e. no EField is simulated. For scale EFIeld simulation we recommand the `EF_DV_SLUSYS` solver, for large scale EField simulation we recommand the `EF_DV_PETSC` solver.
+The default value is `EF_NONE`, i.e. no EField is simulated. For scale EFIeld simulation we recommand the `EF_DV_BDSYS` solver, for large scale EField simulation we recommand the `EF_DV_PETSC` solver.
 
 Here is an example of the Hodgkin-Huxley Action Potential propagation simulation (see :doc:`/memb_pot`) using parallel TetOpSplit with SuperLU EField solver.
 

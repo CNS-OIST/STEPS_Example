@@ -4,7 +4,7 @@
 Visualization Toolkit
 ****************************************
 
-The simulation scripts described in this chapter are available at `STEPS_Example repository <https://github.com/CNS-OIST/STEPS_Example/tree/master/publication_models/Chen_FNeuroinf_2014>`_.
+The simulation scripts described in this chapter are available at `STEPS_Example repository <https://github.com/CNS-OIST/STEPS_Example/tree/master/publication_models/API_1/Chen_FNeuroinf_2014>`_.
 
 In this chapter, we'll use simple models as examples to introduce the use of visualization toolkit described in `Python-based geometry preparation and simulation visualization toolkits for STEPS <http://journal.frontiersin.org/Journal/10.3389/fninf.2014.00037/abstract>`_.
 

@@ -10,7 +10,7 @@ file is StochasticCaburst.py which is available at http://senselab.med.yale.edu/
 be run within the complete modelling package because it depends on other files such as /extra/constants.py.*
 
 
-The simulation script described in this chapter is also available at `STEPS_Example repository <https://github.com/CNS-OIST/STEPS_Example/tree/master/publication_models/Anwar_J%20Neurosci_2013>`_.
+The simulation script described in this chapter is also available at `STEPS_Example repository <https://github.com/CNS-OIST/STEPS_Example/tree/master/publication_models/API_1/Anwar_J%20Neurosci_2013>`_.
 
 This chapter builds on previous chapters by simulating a model that includes both a reaction-diffusion component as well as  
 electrical excitability. As described in [#f1]_, the two are closely coupled and this model contains ion channels where

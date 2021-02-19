@@ -138,10 +138,172 @@ html_theme = 'default'
 #  so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+html_js_files = ['js/simpath.js']
+
 #  Add any extra paths that contain custom files (such as robots.txt or
 #  .htaccess) here, relative to this directory. These files are copied
 #  directly to the root of the documentation.
-#  html_extra_path = []
+html_extra_path = ['simpath.json']
+
+# Generate json
+import itertools
+import json
+import os
+import re
+
+DIRPATH = os.path.dirname(os.path.abspath(__file__))
+SOLVER_DOCS = ['API_1/API_solver.rst', 'API_1/API_mpisolver.rst']
+
+LOCATIONS = {
+    'Tet': ('Tetrahedron', ('TET(tet)', 'TETS(tetLst)')), 
+    'Tri': ('Triangle', ('TRI(tri)', 'TRIS(triLst)')), 
+    'Vert': ('Vertex', ('VERT(vert)', 'VERTS(vertLst)')), 
+    'ROI': ('Region of Interest', 'roi'), 
+    'Comp': ('Compartment', 'comp'), 
+    'Patch': ('Patch', 'patch'), 
+    'Memb': ('Membrane', 'memb'), 
+    'DiffBoundary': ('Diff. Boundary', ('diffb', 'diffb(direc=comp2)')),
+    'SDiffBoundary': ('Surf. Diff. Boundary', ('sdiffb', 'diffb(direc=patch2)')),
+}
+OBJECTS = {
+    '': ('Species', 'spec'),
+    'Reac': ('Reaction', ("reac['fwd']", "reac['bkw']")),
+    'SReac': ('Reaction', ("reac['fwd']", "reac['bkw']")),
+    'VDepSReac': ('Reaction', ("reac['fwd']", "reac['bkw']")),
+    'Diff': ('Diffusion', ("diff", 'diff(direc=tet2)')),
+    'SDiff': ('Diffusion', ("sdiff", 'sdiff(direc=tri2)')),
+    'Ohmic': ('Current', 'curr'),
+    'GHK': ('Current', 'curr'),
+}
+OBJ_PROPERTIES = [
+    'Count', 'Conc', 'Amount', 'Clamped', 'K', 'Active',  'D',
+    'C', 'H', 'A', 'Extent', 'I', 'DiffusionActive', 'Dcst', 
+]
+LOC_PROPERTIES = [
+    'Area', 'Vol', 'V', 'VClamped', 'IClamp', 'Potential', 
+    'Capac', 'VolRes', 'Res', 'I',
+]
+
+DOC_REPLACEMENT = {
+    'direction_comp': 'direc',
+    'direction_patch': 'direc',
+    'direction_tet': 'direc',
+    'direction_tri': 'direc',
+}
+
+INVALID_EXAMPLES = [
+    re.compile('^.+diffb\(direc=[^\)]+\)\.[^\.]+\.DiffusionActive.*$'),
+    re.compile('^.+(TETS|TRIS|comp|patch).+diff\(direc=[^\)]+\)\..*$'),
+    re.compile('^.+diff\(direc=[^\)]+\)\.(Active|A).*$'),
+]
+
+for dct in [LOCATIONS, OBJECTS]:
+    for loc, val in list(dct.items()):
+        dct['Batch' + loc] = val
+
+allMethodNames = {}
+for comb in itertools.product(['get', 'set'], LOCATIONS.items(), OBJECTS.items(), OBJ_PROPERTIES, ['', 'sNP']):
+    gs, loc, obj, prop, suff = comb
+    name = gs + loc[0] + obj[0] + prop + suff
+    allMethodNames[name] = (gs, loc[1], obj[1], prop)
+for comb in itertools.product(['get', 'set'], LOCATIONS.items(), LOC_PROPERTIES, ['', 'sNP']):
+    gs, loc, prop, suff = comb
+    name = gs + loc[0] + prop + suff
+    allMethodNames[name] = (gs, loc[1], None, prop)
+
+
+def dctFill(dct, val):
+    if val not in dct:
+        dct[val] = {}
+    return dct[val]
+
+
+def processDoc(doc):
+    res = ''
+    lines = []
+    for line in doc.split('\n'):
+        if 'Syntax::' in line:
+            break
+        else:
+            line = line.strip()
+            for src, dst in DOC_REPLACEMENT.items():
+                line = line.replace(src, dst)
+            if len(line) == 0 and len(lines) > 0:
+                res += '<p>' + ' '.join(lines) + '</p>'
+                lines = []
+            else:
+                lines.append(line.strip())
+    if len(lines) > 0:
+        res += '<p>' + ' '.join(lines) + '</p>'
+    return res
+
+
+def getMethodDoc(solver, meth):
+    try:
+        import steps.solver
+        return getattr(getattr(steps.solver, solver), meth).__doc__
+    except:
+        try:
+            import steps.mpi.solver
+            return getattr(getattr(steps.mpi.solver, solver), meth).__doc__
+        except:
+            return ''
+
+
+def parseMethod(dct, solver, meth):
+    if meth in allMethodNames:
+        gs, loc, obj, prop = allMethodNames[meth]
+
+        allLines = ['sim']
+
+        for item in [loc, obj]:
+            if item is not None:
+                item = item[1]
+                if isinstance(item, str):
+                    item = (item,)
+                allLines = [line + f'.{val}' for line in allLines for val in item]
+
+        endLines = []
+        for line in allLines:
+            line += f'.{prop}'
+            if gs == 'get':
+                line = f'val = {line}'
+            else:
+                line = f'{line} = val'
+            if all(p.match(line) is None for p in INVALID_EXAMPLES):
+                endLines.append(line)
+
+        examples = '</br>'.join(endLines)
+
+        dct = dctFill(dct, gs)
+        dct = dctFill(dct, solver)
+        dct = dctFill(dct, loc[0])
+        if  obj is not None:
+            dct = dctFill(dct, obj[0])
+        dct[prop] = examples + '@' + processDoc(getMethodDoc(solver, meth))
+
+
+def GenerateJSON(path):
+    autoclass = re.compile('^\.\. autoclass:: ?([^ ]+)\n$')
+    automethod = re.compile('^ *\.\. automethod:: ?([^ ]+)\n$')
+
+    jsonData = {}
+    for rel in SOLVER_DOCS:
+        with open(os.path.join(DIRPATH, rel), 'r') as f:
+            currClass = None
+            for line in f:
+                m = autoclass.match(line)
+                if m is not None:
+                    currClass = m.group(1)
+                elif currClass is not None:
+                    m = automethod.match(line)
+                    if m is not None:
+                        parseMethod(jsonData, currClass, m.groups(1)[0])
+
+    with open(path, 'w') as f:
+        json.dump(jsonData, f)
+
+GenerateJSON(html_extra_path[0])
 
 #  If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 #  using the given strftime format.
@@ -286,3 +448,131 @@ intersphinx_mapping = {'http://docs.python.org/': None}
 
 [extensions]
 todo_include_todos = True
+
+
+####################################################
+# Configuration for generating API_2 documentation #
+####################################################
+
+
+import types
+
+import steps
+from steps.API_2 import model, geom, utils, sim
+
+# Not sure if there is a better way to do this but if we do not return the descriptor itself
+# during documentation, the __doc__ from the original function is not taken into account. 
+# This might be due to how sphinx gets class attributes which trigger the call of the descriptor's
+# __get__ method instead of returning the descriptor itself. To avoid this, we monkey patch the
+# descriptor's __get__ method to return the descriptor instead of the normal value.
+steps.API_2.utils.classproperty.__get__ = lambda self, *args: self
+
+# -- Project information -----------------------------------------------------
+
+
+
+# -- General configuration ---------------------------------------------------
+
+# Add any Sphinx extension module names here, as strings. They can be
+# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
+# ones.
+extensions += [
+    'sphinx.ext.autosummary',
+]
+
+autodoc_default_options = {
+    # 'members': True,
+    'member-order': 'bysource',
+    # 'special-members': True,
+    # 'inherited-members': 'ndarray',
+    # 'undoc-members': True,
+    # 'exclude-members': '__weakref__'
+}
+
+def AllSubclasses(cls):
+    for cls2 in cls.__subclasses__():
+        yield cls2
+        for cls3 in AllSubclasses(cls2):
+            yield cls3
+
+visualClasses = ['SimControl', 'PlotDisplay', 'TimePlot', 'SpatialPlot', 'NewRow', 'SimDisplay', 'ElementDisplay']
+
+def autodoc_skip_member(app, what, name, obj, skip, options):
+    if obj is not None and hasattr(obj, '__doc__'):
+        if name.startswith('__'):
+            if obj.__doc__ is not None and ':meta public:' in obj.__doc__:
+                return False
+            else:
+                return True
+        elif obj.__doc__ is not None and ':meta private:' in obj.__doc__:
+            return True
+        elif isinstance(obj, types.MethodType) and obj.__self__.__name__ in visualClasses:
+            if obj.__name__ == 'Create' :
+                return True
+    return skip
+
+replace_map = {
+    '{{model.Reaction._FwdSpecifier}}': steps.API_2.model.Reaction._FwdSpecifier,
+    '{{model.Reaction._BkwSpecifier}}': steps.API_2.model.Reaction._BkwSpecifier,
+}
+
+def autodoc_process_docstring(app, what, name, obj, options, lines):
+    if isinstance(obj, types.MethodType) and obj.__name__ == 'Create' and obj.__self__.__name__ != 'NamedObject':
+        lines[:] = [f"""
+            Auto naming creation method, see :py:func:`steps.API_2.utils.NamedObject.Create` for auto naming syntax and :py:class:`{obj.__self__.__name__}` for arguments.
+        """]
+    # Replace the dosctring of ALL(...) methods
+    if isinstance(obj, types.FunctionType) and obj.__name__ == 'ALL':
+        if len(name.split('.')) > 2:
+            *_, clsname, methname = name.split('.')
+            if clsname not in ['NamedObject', 'SimPath', 'Simulation']:
+                lines[:] = [f"""
+                    Access the children of the object, see :py:func:`steps.API_2.utils.NamedObject.ALL` for details.
+                """]
+    # Replace the docstring of special methods in classes inheriting from RefList
+    if isinstance(obj, types.FunctionType) and obj.__name__.startswith('__'):
+        if len(name.split('.')) > 2:
+            *_, clsname, methname = name.split('.')
+            if methname == '__getattr__' and clsname not in ['NamedObject', 'SimPath', 'Simulation', 'ResultSelector']:
+                lines[:] = [f"""
+                    Access the children of the object as if they were an attribute, see :py:func:`steps.API_2.utils.NamedObject.__getattr__` for details.
+                """]
+            elif clsname in [cls.__name__ for cls in steps.API_2.geom.RefList.__subclasses__()]:
+                clsval = [cls for cls in steps.API_2.geom.RefList.__subclasses__() if cls.__name__ == clsname][0]
+                refcls = clsval._refCls
+                funcCls = obj.__qualname__.split('.')[0]
+                if funcCls == steps.API_2.geom.RefList.__name__:
+                    lines[:] = [f"""{lines[0]}
+
+                        See :py:func:`RefList.{methname}` for details, replace 'RefList' by '{clsname}' and 'Reference' by '{refcls.__name__}' in the examples.
+                    """]
+            elif clsname in [cls.__name__ for cls in AllSubclasses(steps.API_2.model.ReactionElement)]:
+                funcCls = obj.__qualname__.split('.')[0]
+                if funcCls == steps.API_2.model.ReactionElement.__name__:
+                    lines[:] = [f"""{lines[0]}
+
+                        See :py:func:`ReactionElement.{methname}` for details.
+                    """]
+    for i in range(len(lines)):
+        for key, repl in replace_map.items():
+            if key in lines[i]:
+                lines[i] = lines[i].replace(key, repl)
+
+def autodoc_process_signature(app, what, name, obj, options, signature, return_annotation):
+    sig = tuple()
+    if signature is not None:
+        for param in signature.strip('()').split(','):
+            param = param.strip()
+            if not (param.startswith('_') and '=' in param):
+                sig += (param,)
+        return ('(' + ', '.join(sig) + ')', return_annotation)
+    else:
+        return (signature, return_annotation)
+
+def setup(app):
+    app.connect('autodoc-skip-member', autodoc_skip_member)
+    app.connect('autodoc-process-docstring', autodoc_process_docstring)
+    app.connect('autodoc-process-signature', autodoc_process_signature)
+
+
+

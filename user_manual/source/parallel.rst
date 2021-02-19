@@ -4,7 +4,7 @@
 From Serial to Parallel (Parallel TetOpSplit Solver)
 ********************************************************************
 
-The simulation script described in this chapter is available at `STEPS_Example repository <https://github.com/CNS-OIST/STEPS_Example/tree/master/python_scripts/parallel>`_.
+The simulation script described in this chapter is available at `STEPS_Example repository <https://github.com/CNS-OIST/STEPS_Example/tree/master/python_scripts/API_1/parallel>`_.
 
 The TetOpSplit solver is avialble for STEPS 3.0.0 and above.
 Please note that the solver is still under active  development
@@ -60,13 +60,13 @@ it provides two important variables for parallel simulation, :data:`steps.mpi.nh
 the number of MPI processes used in the simulation, and the :data:`steps.mpi.rank` provides
 the MPI rank of the current process.
 
-The :mod:`steps.utilities.geom_decompose` module contains functions for
+The :mod:`steps.API_1.utilities.geom_decompose` module contains functions for
 mesh partitioning, which are often used in parallel STEPS simulations.
 
 Partition the mesh
 ------------------
 In the current parallel implementation, a partitioning list is required to distribute the
-tetrahedrons and triangles to each MPI process. the :func:`steps.utilities.geom_decompose.linearPartition`
+tetrahedrons and triangles to each MPI process. the :func:`steps.API_1.utilities.geom_decompose.linearPartition`
 function provides a grid based partitioning solution for simple geometry:
 
 .. code-block:: python
@@ -86,7 +86,7 @@ For complex geometries such as a dendrite tree, grid-based partitioning may not 
 In this case, other third party partitioning software such as Metis can be used. We will come back
 to this topic later.
 
-If your model has patches, the :func:`steps.utilities.geom_decompose.partitionTris` function can
+If your model has patches, the :func:`steps.API_1.utilities.geom_decompose.partitionTris` function can
 automatically partition the patch triangles according to the tetrahedron partitioning list.
 
 .. code-block:: python
@@ -145,9 +145,9 @@ or secondly, each process record a copy of the data
     summary_file.write("Simulation Time,A,B,C,D,E,F,G,H,I,J\n")
 
 Which approach you use depends on what data you want to record, functions like
-:func:`steps.mpi.solver.TetOpSplit.getCompCount` needs to be called in every process and returns
+:func:`steps.API_1.mpi.solver.TetOpSplit.getCompCount` needs to be called in every process and returns
 the same result to each process when called; on the other hand,
-:func:`steps.mpi.solver.TetOpSplit.getIdleTime` returns different result for each process,
+:func:`steps.API_1.mpi.solver.TetOpSplit.getIdleTime` returns different result for each process,
 in which case the second recording method is necessary.
 
 Create solver and run the simulation
@@ -182,7 +182,7 @@ if you use a specific process for data recording, you need to ask the assigned p
         (current_simtime, A_count, B_count, C_count, D_count, E_count, \
         F_count, G_count, H_count, I_count, J_count))
 
-Also note that :func:`steps.mpi.solver.TetOpSplit.getCompCount` is a global collective
+Also note that :func:`steps.API_1.mpi.solver.TetOpSplit.getCompCount` is a global collective
 function that needs to be called in every process at the same time (including most functions inherited from Tetexact),
 so you cannot do the following
 
@@ -213,7 +213,7 @@ Complex Mesh Partitioning
 =========================
 
 The grid-based partitioning approach may not be suitable for complex geometries, such as a dendritic tree,
-in this case, we suggest use third party partitioning tools such as `Metis <http://glaros.dtc.umn.edu/gkhome/metis/metis/overview>`_. The :mod:`steps.utilities.metis_support` module provides supporting functions
+in this case, we suggest use third party partitioning tools such as `Metis <http://glaros.dtc.umn.edu/gkhome/metis/metis/overview>`_. The :mod:`steps.API_1.utilities.metis_support` module provides supporting functions
 for data exchange between STEPS and Metis. To partition a STEPS Tetmesh using Metis, we need to first convert
 the tetrahedron connectivity information in the mesh to Metis format,
 
@@ -290,7 +290,7 @@ Here are the possible options:
 
     Run serial EField simulation (Tetexact version) on process 0.
 
-* .. data:: steps.mpi.solver.EF_DV_SLUSYS
+* .. data:: steps.mpi.solver.EF_DV_BDSYS
 
     Use parallel SuperLU EField solver.
 
@@ -298,11 +298,11 @@ Here are the possible options:
 
     Use parallel PETSc EField solver.
 
-The default value is `EF_NONE`, i.e. no EField is simulated. For scale EFIeld simulation we recommand the `EF_DV_SLUSYS` solver, for large scale EField simulation we recommand the `EF_DV_PETSC` solver.
+The default value is `EF_NONE`, i.e. no EField is simulated. For scale EFIeld simulation we recommand the `EF_DV_BDSYS` solver, for large scale EField simulation we recommand the `EF_DV_PETSC` solver.
 
 Here is an example of the Hodgkin-Huxley Action Potential propagation simulation (see :doc:`/memb_pot`) using parallel TetOpSplit with SuperLU EField solver.
 
-.. literalinclude:: examples/parallel/HH_APprop_tetopsplit.py
+.. literalinclude:: ../../python_scripts/parallel/HH_APprop_tetopsplit.py
 
 
 

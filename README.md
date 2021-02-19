@@ -8,6 +8,6 @@ Example and tutorial scripts for STEPS simulator.
 * `other_tutorials/` contains tutorial scripts for special events.
 
 ## Python APIs
-STEPS 3.6 is released with a [new python API](http://steps.sourceforge.net/manual/python_interfaces.html). Scripts using the original API are inside `API_1` subfolders while their counterparts using the new API are in `API_2` subfolders.
+STEPS 3.6 and above support a [new python API](http://steps.sourceforge.net/manual/python_interfaces.html). The original API is still usable without any modification to existing scripts. In this repository, scripts using the original API are inside `API_1` subfolders while their counterparts using the new API are in `API_2` subfolders.
 
 If you find any problem running the examples, please open an issue so that we can look at it in detail.

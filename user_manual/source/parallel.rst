@@ -33,11 +33,11 @@ Reaction-Diffusion Simulation
 Let's first see how to convert a normal serial Tetexact reaction-diffusion simulation to
 a parallel TetOpSplit simulation. Below is the Tetexact simulation script,
 
-.. literalinclude:: ../../python_scripts/parallel/ssa_simulation.py
+.. literalinclude:: ../../python_scripts/API_1/parallel/ssa_simulation.py
 
 And here is the parallel TetOpSplit version,
 
-.. literalinclude:: ../../python_scripts/parallel/parallel_simulation.py
+.. literalinclude:: ../../python_scripts/API_1/parallel/parallel_simulation.py
 
 So what are the differences? Actually not that many. Parallel TetOpSplit is designed in the way that
 a serial Tetexact simulation can be easily converted to the parallel version with
@@ -302,7 +302,7 @@ The default value is `EF_NONE`, i.e. no EField is simulated. For scale EFIeld si
 
 Here is an example of the Hodgkin-Huxley Action Potential propagation simulation (see :doc:`/memb_pot`) using parallel TetOpSplit with SuperLU EField solver.
 
-.. literalinclude:: ../../python_scripts/parallel/HH_APprop_tetopsplit.py
+.. literalinclude:: ../../python_scripts/API_1/parallel/HH_APprop_tetopsplit.py
 
 
 

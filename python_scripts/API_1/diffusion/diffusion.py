@@ -32,6 +32,7 @@ from __future__ import print_function
 import math
 import random
 import time
+import os
 
 import numpy
 
@@ -46,6 +47,9 @@ try:
     from steps.geom import UNKNOWN_TET
 except ImportError:
     UNKNOWN_TET = -1
+
+dirPath = os.path.dirname(os.path.abspath(__file__))
+meshPath = os.path.join(dirPath, '../../meshes/diffusion/sphere_rad10_11Ktets')
 
 
 ########################################################################
@@ -106,7 +110,7 @@ def gen_model():
 def gen_geom():
 
     print("Loading mesh...")
-    mesh = smeshio.loadMesh('meshes/sphere_rad10_11Ktets')[0]
+    mesh = smeshio.loadMesh(meshPath)[0]
     print("Mesh Loaded")
 
     # Find the total number of tetrahedrons in the mesh

@@ -30,6 +30,7 @@
 from __future__ import print_function
 
 import math
+import os
 
 import pylab
 import steps.geom as stetmesh
@@ -70,7 +71,9 @@ def gen_model():
 
 
 def gen_geom():
-    mesh = smeshio.loadMesh('meshes/coin_10r_1h_13861')[0]
+    dirPath = os.path.dirname(os.path.abspath(__file__))
+    meshPath = os.path.join(dirPath, '../../meshes/surface_diffusion/coin_10r_1h_13861')
+    mesh = smeshio.loadMesh(meshPath)[0]
 
     ntets = mesh.countTets()
     comp = stetmesh.TmComp('cyto', mesh, range(ntets))

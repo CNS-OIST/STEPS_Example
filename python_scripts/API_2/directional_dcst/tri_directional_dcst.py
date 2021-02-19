@@ -26,9 +26,9 @@ with model:
 DCST = 0.2e-9
 
 dirPath = os.path.dirname(os.path.abspath(__file__))
-tetFile = os.path.join(dirPath, "mesh_tet.inp")
-triFile = os.path.join(dirPath, "mesh_tri.inp")
-confFile = os.path.join(dirPath, "mesh_conf")
+tetFile = os.path.join(dirPath, "../../meshes/directional_dcst/mesh_tet.inp")
+triFile = os.path.join(dirPath, "../../meshes/directional_dcst/mesh_tri.inp")
+confFile = os.path.join(dirPath, "../../meshes/directional_dcst/mesh_conf")
 
 mesh = TetMesh.LoadAbaqus((tetFile, triFile), scale=1e-6, shadow_mesh=confFile)
 

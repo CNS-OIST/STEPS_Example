@@ -1,5 +1,7 @@
 #  IP3 receptor mesh simulation
 
+import os
+
 import ip3r_model
 import pyqtgraph as pg
 import steps.model as smodel
@@ -36,7 +38,10 @@ Ca_diff = smodel.Diff('Ca_diff', volsys, Ca, DCST_Ca)
 IP3_diff = smodel.Diff('IP3_diff', volsys, IP3, DCST_IP3)
 
 
-mesh = meshio.loadMesh("ip3r_mesh")[0]
+dirPath = os.path.dirname(os.path.abspath(__file__))
+meshFile = os.path.join(dirPath, '../../meshes/visual/ip3r_mesh')
+
+mesh = meshio.loadMesh(meshFile)[0]
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

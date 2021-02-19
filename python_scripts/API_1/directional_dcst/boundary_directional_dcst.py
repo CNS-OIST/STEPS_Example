@@ -4,6 +4,7 @@
 
 from __future__ import print_function
 
+import os
 import time
 
 import steps.geom as sgeom
@@ -20,7 +21,12 @@ volsys = smodel.Volsys('vsys', model)
 D_a = smodel.Diff('D_a', volsys, A)
 D_a.setDcst(DCST)
 
-mesh = meshio.importAbaqus2("mesh_tet.inp", "mesh_tri.inp", 1e-6, "mesh_conf")[0]
+dirPath = os.path.dirname(os.path.abspath(__file__))
+tetFile = os.path.join(dirPath, "../../meshes/directional_dcst/mesh_tet.inp")
+triFile = os.path.join(dirPath, "../../meshes/directional_dcst/mesh_tri.inp")
+confFile = os.path.join(dirPath, "../../meshes/directional_dcst/mesh_conf")
+
+mesh = meshio.importAbaqus2(tetFile, triFile, 1e-6, confFile)[0]
 
 boundary_tris = mesh.getROIData("boundary")
 v1_tets = mesh.getROIData("v1_tets")

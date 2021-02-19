@@ -45,7 +45,7 @@ import sys
 ########################################################################
 
 dirPath = os.path.dirname(os.path.abspath(__file__))
-meshPath = os.path.join(dirPath, 'meshes/sphere_rad10_11Ktets')
+meshPath = os.path.join(dirPath, '../../meshes/diffusion/sphere_rad10_11Ktets')
 
 # The number of iterations to run 
 NITER = 10

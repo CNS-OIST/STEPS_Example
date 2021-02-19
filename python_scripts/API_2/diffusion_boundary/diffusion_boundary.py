@@ -44,7 +44,7 @@ from pylab import *
 ########################################################################
 
 dirPath = os.path.dirname(os.path.abspath(__file__))
-meshPath = os.path.join(dirPath, 'meshes/cyl_len10_diam1')
+meshPath = os.path.join(dirPath, '../../meshes/diffusion_boundary/cyl_len10_diam1')
 
 DT = 0.001
 

@@ -1,6 +1,6 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #  STEPS - STochastic Engine for Pathway Simulation
-#  Copyright (C) 2007-2017 Okinawa Institute of Science and Technology, Japan.
+#  Copyright (C) 2007-2014 Okinawa Institute of Science and Technology, Japan.
 #  Copyright (C) 2003-2006 University of Antwerp, Belgium.
 #
 #  See the file AUTHORS for details.
@@ -30,12 +30,15 @@
 from __future__ import print_function
 
 import math
+import os
 
 import pylab
 import steps.geom as stetmesh
 import steps.model as smodel
+import steps.mpi
+import steps.mpi.solver as solvmod
 import steps.rng as srng
-import steps.solver as solvmod
+import steps.utilities.geom_decompose as gd
 import steps.utilities.meshio as smeshio
 
 #  Number of iterations; plotting dt; sim endtime:
@@ -69,13 +72,16 @@ def gen_model():
 
 ########################################################################
 
-mesh = smeshio.loadMesh('meshes/coin_10r_1h_13861')[0]
+dirPath = os.path.dirname(os.path.abspath(__file__))
+meshPath = os.path.join(dirPath, '../../meshes/surface_diffusion_boundary/coin_10r_1h_13861')
+
+mesh = smeshio.loadMesh(meshPath)[0]
 
 ntets = mesh.countTets()
 comp = stetmesh.TmComp('cyto', mesh, range(ntets))
-
-
+tet_hosts = gd.linearPartition(mesh, [steps.mpi.nhosts, 1, 1])
 alltris = mesh.getSurfTris()
+tri_hosts = gd.partitionTris(mesh, tet_hosts, alltris)
 
 #  Sort patch triangles as those of positive z: A +ve x, B -ve x
 patchA_tris = []
@@ -161,11 +167,11 @@ for i in range(len(patchB_tris)):
 model = gen_model()
 
 #  Create rnadom number generator object
-rng = srng.create('mt19937', 512)
+rng = srng.create('r123', 512)
 rng.initialize(234)
 
 #  Create solver object
-sim = solvmod.Tetexact(model, mesh, rng)
+sim = solvmod.TetOpSplit(model, mesh, rng, solvmod.EF_NONE, tet_hosts, tri_hosts)
 
 #  Create the simulation data structures
 tpnts = pylab.arange(0.0, INT, DT)
@@ -195,6 +201,8 @@ res_B_mean = pylab.mean(res_B, axis=0)
 
 
 def plotres(tidx):
+    if steps.mpi.rank != 0:
+        return
     if tidx >= INT / DT:
         print("Time index is out of range.")
         return

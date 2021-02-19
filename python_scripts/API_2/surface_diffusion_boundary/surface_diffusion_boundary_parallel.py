@@ -42,7 +42,7 @@ import os
 import sys
 
 dirPath = os.path.dirname(os.path.abspath(__file__))
-meshPath = os.path.join(dirPath, 'meshes/coin_10r_1h_13861')
+meshPath = os.path.join(dirPath, '../../meshes/surface_diffusion_boundary/coin_10r_1h_13861')
 
 # Number of iterations; plotting dt; sim endtime:
 NITER = 10

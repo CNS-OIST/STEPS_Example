@@ -17,6 +17,7 @@
 from __future__ import print_function
 
 import math
+import os
 import time
 from random import *
 
@@ -78,7 +79,8 @@ Na_facs = [0.34412, 0.05733, 0.00327, 6.0e-05, 0.50558, 0.08504, 0.00449, 0.0001
 
 # # # # # # # # # # # # # # # # # # MESH  # # # # # # # # # # # # # # # # # # # #
 
-meshfile_ab = 'axon_cube_L1000um_D443nm_equiv0.5_19087tets.inp'
+dirPath = os.path.dirname(os.path.abspath(__file__))
+meshPath = os.path.join(dirPath, '../../meshes/parallel/axon_cube_L1000um_D443nm_equiv0.5_19087tets.inp')
 
 # # # # # # # # # # # # # # # SIMULATION CONTROLS # # # # # # # # # # # # # # # #
 
@@ -400,7 +402,7 @@ OC_L = smodel.OhmicCurr('OC_L', ssys, chanstate=Leak, g=L_G, erev=leak_rev)
 # # # # # # # # # # # # # # # TETRAHEDRAL MESH  # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-mesh = meshio.importAbaqus(meshfile_ab, 1e-6)[0]
+mesh = meshio.importAbaqus(meshPath, 1e-6)[0]
 tet_hosts = gd.binTetsByAxis(mesh, steps.mpi.nhosts)
 tri_hosts = gd.partitionTris(mesh, tet_hosts, mesh.getSurfTris())
 
@@ -463,7 +465,7 @@ r.initialize(int(time.time() % 10000))
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 #  Create solver object using SuperLU EField solver
-sim = mpi_solver.TetOpSplit(mdl, mesh, r, mpi_solver.EF_DV_SLUSYS, tet_hosts, tri_hosts)
+sim = mpi_solver.TetOpSplit(mdl, mesh, r, mpi_solver.EF_DV_BDSYS, tet_hosts, tri_hosts)
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

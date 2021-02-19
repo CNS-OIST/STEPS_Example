@@ -14,8 +14,9 @@ import steps.rng as srng
 import steps.utilities.geom_decompose as gd
 import steps.utilities.meshio as meshio
 
-MESHFILE = '10x10x100_3363tets.inp'
-RESULT_DIR = "parallel_result"
+dirPath = os.path.dirname(os.path.abspath(__file__))
+MESHFILE = os.path.join(dirPath, '../../meshes/parallel/10x10x100_3363tets.inp')
+RESULT_DIR = os.path.join(dirPath, "parallel_result")
 
 #  The initial molecule counts
 N0A = 1000

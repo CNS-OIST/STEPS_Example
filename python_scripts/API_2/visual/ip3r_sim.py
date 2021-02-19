@@ -56,7 +56,7 @@ with mdl:
         IP3_diff = Diffusion.Create(IP3, DCST_IP3)
 
 dirPath = os.path.dirname(os.path.abspath(__file__))
-meshFile = os.path.join(dirPath, 'ip3r_mesh')
+meshFile = os.path.join(dirPath, '../../meshes/visual/ip3r_mesh')
 
 mesh = TetMesh.Load(meshFile)
 

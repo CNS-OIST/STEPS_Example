@@ -30,6 +30,7 @@
 from __future__ import print_function
 
 import numpy
+import os
 
 import steps.geom as sgeom
 import steps.model as smodel
@@ -37,6 +38,9 @@ import steps.rng as srng
 import steps.solver as solvmod
 import steps.utilities.meshio as meshio
 from pylab import *
+
+dirPath = os.path.dirname(os.path.abspath(__file__))
+meshPath = os.path.join(dirPath, '../../meshes/diffusion_boundary/cyl_len10_diam1')
 
 ########################################################################
 
@@ -73,7 +77,7 @@ def gen_model():
 
 
 def gen_geom():
-    mesh = meshio.loadMesh('meshes/cyl_len10_diam1')[0]
+    mesh = meshio.loadMesh(meshPath)[0]
     ntets = mesh.countTets()
 
     tets_compA = []

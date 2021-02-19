@@ -13,7 +13,7 @@ import time
 import os
 
 dirPath = os.path.dirname(os.path.abspath(__file__))
-MESHFILE = os.path.join(dirPath, '10x10x100_3363tets.inp')
+MESHFILE = os.path.join(dirPath, '../../meshes/parallel/10x10x100_3363tets.inp')
 RESULT_DIR = os.path.join(dirPath, "serial_result")
 
 # The initial molecule counts

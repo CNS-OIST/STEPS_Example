@@ -11,8 +11,9 @@ import steps.rng as srng
 import steps.solver as ssa_solver
 import steps.utilities.meshio as meshio
 
-MESHFILE = '10x10x100_3363tets.inp'
-RESULT_DIR = "serial_result"
+dirPath = os.path.dirname(os.path.abspath(__file__))
+MESHFILE = os.path.join(dirPath, '../../meshes/parallel/10x10x100_3363tets.inp')
+RESULT_DIR = os.path.join(dirPath, "serial_result")
 
 #  The initial molecule counts
 N0A = 1000

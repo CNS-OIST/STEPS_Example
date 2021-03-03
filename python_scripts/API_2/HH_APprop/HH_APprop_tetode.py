@@ -91,6 +91,16 @@ K_facs = [ 0.21768, 0.40513, 0.28093, 0.08647, 0.00979 ]
 Na_facs = [[0.34412, 0.05733, 0.00327, 6.0e-05],
            [0.50558, 0.08504, 0.00449, 0.00010]]
 
+# # # # # # # # # # # # # # # # # # RATE FUNCTION # # # # # # # # # # # # # # # #
+
+def HHRateFunction(A, B, C, D, F, H, V, abs_tol=1e-13):
+    num = A + B * V
+    denom = C + H * math.exp((V + D) / F)
+    if math.isclose(num, 0, abs_tol=abs_tol) and math.isclose(denom, 0, abs_tol=abs_tol):
+        return F * B / (H * math.exp((V + D) / F))
+    else:
+        return num / denom
+
 # # # # # # # # # # # # # # # # # # MESH  # # # # # # # # # # # # # # # # # # # # 
 
 dirPath = os.path.dirname(os.path.abspath(__file__))
@@ -146,16 +156,16 @@ with model:
     # Hodgkin-Huxley gating kinetics
 
     # Temperature dependence
-    thi = math.pow(3.0, ((celsius-6.3)/10.0)) * 1.0e3
+    thi = math.pow(3.0, ((celsius-6.3)/10.0))
 
-    _a_n = VDepRate(lambda V: thi*((0.01*(10-(V*1e3+65))/(math.exp((10-(V*1e3+65))/10)-1))), vrange=Vrange)
-    _b_n = VDepRate(lambda V: thi*((0.125*math.exp(-(V*1e3+65)/80))), vrange=Vrange)
+    _a_n = VDepRate(lambda V: thi * 1e3 * HHRateFunction(-0.55, -0.01, -1, 55, -10, 1, V*1e3), vrange=Vrange)
+    _b_n = VDepRate(lambda V: thi * 1e3 * HHRateFunction(1, 0, 0, 65, 80, 8, V*1e3), vrange=Vrange)
     
-    _a_m = VDepRate(lambda V: thi*((0.1*(25-(V*1e3+65))/(math.exp((25-(V*1e3+65))/10)-1))), vrange=Vrange)
-    _b_m = VDepRate(lambda V: thi*((4*math.exp(-(V*1e3+65)/18))), vrange=Vrange)
+    _a_m = VDepRate(lambda V: thi * 1e3 * HHRateFunction(-4, -0.1, -1, 40, -10, 1, V*1e3), vrange=Vrange)
+    _b_m = VDepRate(lambda V: thi * 1e3 * HHRateFunction(1, 0, 0, 65, 18, 0.25, V*1e3), vrange=Vrange)
 
-    _a_h = VDepRate(lambda V: thi*((0.07*math.exp(-(V*1e3+65)/20))), vrange=Vrange)
-    _b_h = VDepRate(lambda V: thi*((1/(math.exp((30-(V*1e3+65))/10)+1))), vrange=Vrange)
+    _a_h = VDepRate(lambda V: thi * 1e3 * HHRateFunction(1, 0, 0, 65, 20, 1 / 0.07, V*1e3), vrange=Vrange)
+    _b_h = VDepRate(lambda V: thi * 1e3 * HHRateFunction(1, 0, 1, 35, -10, 1, V*1e3), vrange=Vrange)
 
     with ssys:
 

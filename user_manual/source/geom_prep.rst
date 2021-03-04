@@ -132,7 +132,7 @@ Spatial IP3 Receptor Model
 --------------------------
 This example is a spatial extension of the model described in :ref:`/ip3.ipynb`. To create a suitable 
 geometry for the simulation, we extract a triangular spine morphology from an electron microscopic
-reconstruction of spiny dendrites (`<http://synapses.clm.utexas.edu/anatomy/Ca1pyrmd/radiatum/K24/K24.stm>`_)
+reconstruction of spiny dendrites (`<https://synapseweb.clm.utexas.edu/sites/default/files/synapseweb/files/k24.zip>`_)
 and artificially create a triangle mesh inside to represent the ER membrane of the spine.
 This combined triangular surface mesh is then converted to a tetrahedral mesh in CUBIT. A CUBIT format of the 
 mesh is provided in the example package (ip3r.cub).
@@ -204,7 +204,7 @@ and to associate with :class:`steps.model.Surfsys` named "ssys".
     cubit.cmd('block 1 tri in surface 21 ')
     cubit.cmd('export Abaqus "tris.inp" Block 1 dimension 3 overwrite  cubitids ')
 
-Please refer to `CUBIT documentation <https://cubit.sandia.gov/public/documentation.html>`_ for details 
+Please refer to `CUBIT documentation <https://cubit.sandia.gov/documentation.html>`_ for details 
 of above exporting command.
 
 6. We also export the preparation information to a file ::
@@ -264,7 +264,7 @@ selected from the component panel. In this case, CUBIT provides a Box/Polygon se
 picking elements directly from the Main Window. X-ray selection is also possible so that not only "skin" 
 elements, but also the ones hidden behind are selectable.
 
-Please refer to `CUBIT manual <https://cubit.sandia.gov/public/14.1/help_manual/WebHelp/cubithelp.htm>`_ 
+Please refer to `CUBIT manual <https://cubit.sandia.gov/15.7/help_manual/WebHelp/cubithelp.htm>`_ 
 for the use of this selection method.
 
 Related API Functions:

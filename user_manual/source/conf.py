@@ -533,7 +533,7 @@ def autodoc_process_docstring(app, what, name, obj, options, lines):
     if isinstance(obj, types.FunctionType) and obj.__name__.startswith('__'):
         if len(name.split('.')) > 2:
             *_, clsname, methname = name.split('.')
-            if methname == '__getattr__' and clsname not in ['NamedObject', 'SimPath', 'Simulation', 'ResultSelector']:
+            if methname == '__getattr__' and clsname not in ['NamedObject', 'SimPath', 'Simulation', 'ResultSelector', 'Parameter']:
                 lines[:] = [f"""
                     Access the children of the object as if they were an attribute, see :py:func:`steps.API_2.utils.NamedObject.__getattr__` for details.
                 """]

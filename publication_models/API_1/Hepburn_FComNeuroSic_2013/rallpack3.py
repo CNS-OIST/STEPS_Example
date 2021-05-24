@@ -3,6 +3,7 @@
 # Rallpack3 model
 # Author Iain Hepburn
 
+# Updated for STEPS 3.6.0
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 from __future__ import print_function
@@ -243,16 +244,16 @@ bt_srftriidx = []
 
 for i in range(mesh.ntets):
 	tettemp = mesh.getTetTetNeighb(i)
-	if (tettemp[0] ==-1 or tettemp[1] == -1 or tettemp[2] == -1 or tettemp[3] == -1): 
+	if (tettemp[0] ==sgeom.UNKNOWN_TET or tettemp[1] == sgeom.UNKNOWN_TET or tettemp[2] == sgeom.UNKNOWN_TET or tettemp[3] == sgeom.UNKNOWN_TET):
 		boundtets.append(i)
 		templist = []
-		if (tettemp[0] == -1): 
+		if (tettemp[0] == sgeom.UNKNOWN_TET):
 			templist.append(0)
-		if (tettemp[1] == -1): 
+		if (tettemp[1] == sgeom.UNKNOWN_TET):
 			templist.append(1)
-		if (tettemp[2] == -1): 
+		if (tettemp[2] == sgeom.UNKNOWN_TET):
 			templist.append(2)
-		if (tettemp[3] == -1): 
+		if (tettemp[3] == sgeom.UNKNOWN_TET):
 			templist.append(3)
 		bt_srftriidx.append(templist)
 

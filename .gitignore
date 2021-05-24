@@ -8,3 +8,4 @@ user_manual/build/
 *.md
 *.pyc
 *.DS_Store
+*myeasylog.log

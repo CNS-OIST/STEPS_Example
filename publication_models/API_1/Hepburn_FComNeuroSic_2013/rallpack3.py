@@ -2,7 +2,7 @@
 
 # Rallpack3 model
 # Author Iain Hepburn
-
+# Updated for STEPS 3.6.0
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 from __future__ import print_function

@@ -20,7 +20,7 @@ import math
 # # # # # # # # # # # # # # # # SIMULATION CONTROLS # # # # # # # # # # # # #
 
 EF_DT = 2.0e-5          # The EField dt
-NTIMEPOINTS =  20#25001 
+NTIMEPOINTS =  25001 
  
 TIMECONVERTER =  2.0e-5
 

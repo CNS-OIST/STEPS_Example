@@ -565,6 +565,9 @@ def autodoc_process_docstring(app, what, name, obj, options, lines):
             if cls.__name__.startswith(py_prefix):
                 lines[:] = lines + obj.__init__.__doc__.split('\n')
                 break
+    elif obj.__class__.__name__ == 'builtin_function_or_method' and obj.__name__.startswith(py_prefix):
+        if re.match('\s*\w+\([\w\s,=]*\)', lines[0]) is not None:
+            lines[:] = lines[1:]
 
 
 def autodoc_process_signature(app, what, name, obj, options, signature, return_annotation):
@@ -575,8 +578,18 @@ def autodoc_process_signature(app, what, name, obj, options, signature, return_a
             for cls in obj.__mro__:
                 if cls.__name__.startswith(py_prefix):
                     signature = cls.__doc__.split('\n')[0].strip()
-                    signature = signature[signature.index('('):]
+                    if '(' in signature:
+                        signature = signature[signature.index('('):]
+                    else:
+                        signature = None
                     break
+
+    if obj.__class__.__name__ == 'builtin_function_or_method' and obj.__name__.startswith(py_prefix):
+        signature = obj.__doc__.split('\n')[0].strip()
+        if '(' in signature:
+            signature = signature[signature.index('('):]
+        else:
+            signature = None
 
     if signature is not None:
         for param in signature.strip('()').split(','):

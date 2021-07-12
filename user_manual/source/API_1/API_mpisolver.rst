@@ -217,6 +217,12 @@ For small scale simulation with several process we recommand `EF_DV_BDSYS`.
     .. automethod:: getBatchTriCounts
     .. automethod:: getBatchTetCountsNP
     .. automethod:: getBatchTriCountsNP
+    .. automethod:: getBatchTriOhmicIsNP
+    .. automethod:: getBatchTriGHKIsNP
+    .. automethod:: getBatchTriVsNP
+    .. automethod:: getBatchTetVsNP
+    .. automethod:: getBatchTriBatchOhmicIsNP
+    .. automethod:: getBatchTriBatchGHKIsNP
     .. automethod:: sumBatchTetCountsNP
     .. automethod:: sumBatchTriCountsNP
     .. automethod:: sumBatchTriGHKIsNP

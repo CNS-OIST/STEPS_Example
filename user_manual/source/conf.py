@@ -515,6 +515,7 @@ replace_map = {
     '{{model.Reaction._FwdSpecifier}}': steps.API_2.model.Reaction._FwdSpecifier,
     '{{model.Reaction._BkwSpecifier}}': steps.API_2.model.Reaction._BkwSpecifier,
 }
+py_prefix = '_py_'
 
 def autodoc_process_docstring(app, what, name, obj, options, lines):
     if isinstance(obj, types.MethodType) and obj.__name__ == 'Create' and obj.__self__.__name__ != 'NamedObject':
@@ -533,7 +534,7 @@ def autodoc_process_docstring(app, what, name, obj, options, lines):
     if isinstance(obj, types.FunctionType) and obj.__name__.startswith('__'):
         if len(name.split('.')) > 2:
             *_, clsname, methname = name.split('.')
-            if methname == '__getattr__' and clsname not in ['NamedObject', 'SimPath', 'Simulation', 'ResultSelector']:
+            if methname == '__getattr__' and clsname not in ['NamedObject', 'SimPath', 'Simulation', 'ResultSelector', 'Parameter']:
                 lines[:] = [f"""
                     Access the children of the object as if they were an attribute, see :py:func:`steps.API_2.utils.NamedObject.__getattr__` for details.
                 """]
@@ -558,13 +559,46 @@ def autodoc_process_docstring(app, what, name, obj, options, lines):
             if key in lines[i]:
                 lines[i] = lines[i].replace(key, repl)
 
+    if isinstance(obj, type) and 'API_1' in obj.__module__ and obj.__init__.__class__.__name__ == 'wrapper_descriptor':
+        # Add __init__ docstring to the python class for cython classes
+        for cls in obj.__mro__:
+            if cls.__name__.startswith(py_prefix):
+                lines[:] = lines + obj.__init__.__doc__.split('\n')
+                break
+    elif obj.__class__.__name__ == 'builtin_function_or_method' and obj.__name__.startswith(py_prefix):
+        if re.match('\s*\w+\([\w\s,=]*\)', lines[0]) is not None:
+            lines[:] = lines[1:]
+
+
 def autodoc_process_signature(app, what, name, obj, options, signature, return_annotation):
     sig = tuple()
+    if signature is None:
+        # Try to build a signature from cython bindings
+        if isinstance(obj, type) and 'API_1' in obj.__module__ and obj.__init__.__class__.__name__ == 'wrapper_descriptor':
+            for cls in obj.__mro__:
+                if cls.__name__.startswith(py_prefix):
+                    signature = cls.__doc__.split('\n')[0].strip()
+                    if '(' in signature:
+                        signature = signature[signature.index('('):]
+                    else:
+                        signature = None
+                    break
+
+    if obj.__class__.__name__ == 'builtin_function_or_method' and obj.__name__.startswith(py_prefix):
+        signature = obj.__doc__.split('\n')[0].strip()
+        if '(' in signature:
+            signature = signature[signature.index('('):]
+        else:
+            signature = None
+
     if signature is not None:
         for param in signature.strip('()').split(','):
             param = param.strip()
-            if not (param.startswith('_') and '=' in param):
-                sig += (param,)
+            if not (param.startswith('_') and '=' in param) and param != 'self':
+                if ' ' in param:
+                    sig += (param.split(' ')[-1],)
+                else:
+                    sig += (param,)
         return ('(' + ', '.join(sig) + ')', return_annotation)
     else:
         return (signature, return_annotation)
@@ -573,6 +607,5 @@ def setup(app):
     app.connect('autodoc-skip-member', autodoc_skip_member)
     app.connect('autodoc-process-docstring', autodoc_process_docstring)
     app.connect('autodoc-process-signature', autodoc_process_signature)
-
 
 

@@ -351,7 +351,7 @@ OC_L = smodel.OhmicCurr('OC_L', ssys, chanstate = Leak, erev = L_rev, g = L_G)
 
 mesh = meshio.loadMesh('./meshes/'+meshfile_ab)[0]
 
-outer_tets = range(mesh.ntets)
+outer_tets = list(range(mesh.ntets))
 
 ###USE OF gettets
 #getcyl(tetmesh, rad,  zmin, zmax, binnum=120, x = 0.0, y = 0.0):

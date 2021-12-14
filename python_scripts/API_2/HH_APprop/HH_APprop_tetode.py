@@ -193,7 +193,7 @@ mesh = TetMesh.LoadAbaqus(meshPath, scale=1e-6)
 
 # # # # # # # # # # # # # # # MESH MANIPULATION # # # # # # # # # # # # # # # # #
 
-facetris = TriList(tri for tri in mesh.tris if tri.center.z == mesh.bbox.min.z)
+facetris = TriList([tri for tri in mesh.tris if tri.center.z == mesh.bbox.min.z])
 injverts = facetris.verts
 
 print("Found ", len(injverts), "I_inject vertices")

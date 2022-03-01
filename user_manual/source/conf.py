@@ -153,9 +153,6 @@ import json
 import os
 import re
 
-DIRPATH = os.path.dirname(os.path.abspath(__file__))
-SOLVER_DOCS = ['API_1/API_solver.rst', 'API_1/API_mpisolver.rst']
-
 LOCATIONS = {
     'Tet': ('Tetrahedron', ('TET(tet)', 'TETS(tetLst)')), 
     'Tri': ('Triangle', ('TRI(tri)', 'TRIS(triLst)')), 
@@ -223,7 +220,7 @@ def dctFill(dct, val):
 def processDoc(doc):
     res = ''
     lines = []
-    for line in doc.split('\n'):
+    for line in doc.split('\n')[1:]:
         if 'Syntax::' in line:
             break
         else:
@@ -239,68 +236,59 @@ def processDoc(doc):
         res += '<p>' + ' '.join(lines) + '</p>'
     return res
 
+def parseMethod(dct, solverName, meth):
+    gs, loc, obj, prop = allMethodNames[meth.__name__]
 
-def getMethodDoc(solver, meth):
-    try:
-        import steps.solver
-        return getattr(getattr(steps.solver, solver), meth).__doc__
-    except:
-        try:
-            import steps.mpi.solver
-            return getattr(getattr(steps.mpi.solver, solver), meth).__doc__
-        except:
-            return ''
+    allLines = ['sim']
 
+    for item in [loc, obj]:
+        if item is not None:
+            item = item[1]
+            if isinstance(item, str):
+                item = (item,)
+            allLines = [line + f'.{val}' for line in allLines for val in item]
 
-def parseMethod(dct, solver, meth):
-    if meth in allMethodNames:
-        gs, loc, obj, prop = allMethodNames[meth]
+    endLines = []
+    for line in allLines:
+        line += f'.{prop}'
+        if gs == 'get':
+            line = f'val = {line}'
+        else:
+            line = f'{line} = val'
+        if all(p.match(line) is None for p in INVALID_EXAMPLES):
+            endLines.append(line)
 
-        allLines = ['sim']
+    examples = '</br>'.join(endLines)
 
-        for item in [loc, obj]:
-            if item is not None:
-                item = item[1]
-                if isinstance(item, str):
-                    item = (item,)
-                allLines = [line + f'.{val}' for line in allLines for val in item]
+    dct = dctFill(dct, gs)
+    dct = dctFill(dct, solverName)
+    dct = dctFill(dct, loc[0])
+    if obj is not None:
+        dct = dctFill(dct, obj[0])
+    dct[prop] = examples + '@' + processDoc(meth.__doc__)
 
-        endLines = []
-        for line in allLines:
-            line += f'.{prop}'
-            if gs == 'get':
-                line = f'val = {line}'
-            else:
-                line = f'{line} = val'
-            if all(p.match(line) is None for p in INVALID_EXAMPLES):
-                endLines.append(line)
-
-        examples = '</br>'.join(endLines)
-
-        dct = dctFill(dct, gs)
-        dct = dctFill(dct, solver)
-        dct = dctFill(dct, loc[0])
-        if  obj is not None:
-            dct = dctFill(dct, obj[0])
-        dct[prop] = examples + '@' + processDoc(getMethodDoc(solver, meth))
-
+def getSolverClass(solverStr):
+    from steps import stepslib
+    import steps.API_2.sim as sim
+    import steps.API_2.utils as utils
+    if solverStr in sim.Simulation.SERIAL_SOLVERS:
+        return getattr(stepslib, utils._CYTHON_PREFIX + solverStr)
+    elif solverStr in sim.Simulation.PARALLEL_SOLVERS:
+        return sim.MPI._getSolver(solverStr)
+    return None
 
 def GenerateJSON(path):
-    autoclass = re.compile('^\.\. autoclass:: ?([^ ]+)\n$')
-    automethod = re.compile('^ *\.\. automethod:: ?([^ ]+)\n$')
-
+    import steps.API_2.sim as sim
     jsonData = {}
-    for rel in SOLVER_DOCS:
-        with open(os.path.join(DIRPATH, rel), 'r') as f:
-            currClass = None
-            for line in f:
-                m = autoclass.match(line)
-                if m is not None:
-                    currClass = m.group(1)
-                elif currClass is not None:
-                    m = automethod.match(line)
-                    if m is not None:
-                        parseMethod(jsonData, currClass, m.groups(1)[0])
+    solvers = sim.Simulation.SERIAL_SOLVERS + sim.Simulation.PARALLEL_SOLVERS
+    for solverName in solvers:
+        solvCls = getSolverClass(solverName)
+        if solvCls is not None:
+            for objName in dir(solvCls):
+                obj = getattr(solvCls, objName)
+                if callable(obj) and objName in allMethodNames:
+                    print(solverName, objName)
+                    parseMethod(jsonData, solverName, obj)
 
     with open(path, 'w') as f:
         json.dump(jsonData, f)

@@ -57,39 +57,7 @@ Detailed documentation
 
 ----------
 
-.. autoclass:: steps.API_2.geom.Compartment
-    :members:
-    :undoc-members:
-    :inherited-members: ndarray
-    :special-members:
-
-**Properties only available for compartments in tetrahedral meshes:**
-
-    .. autodata:: steps.API_2.geom._TetCompartment.bbox
-        :annotation:
-    .. autodata:: steps.API_2.geom._TetCompartment.tets
-        :annotation:
-    .. autodata:: steps.API_2.geom._TetCompartment.surface
-        :annotation:
-
-.. autoclass:: steps.API_2.geom.Patch
-    :members:
-    :undoc-members:
-    :inherited-members: ndarray
-    :special-members:
-
-**Properties only available for patches in tetrahedral meshes:**
-
-    .. autodata:: steps.API_2.geom._TetPatch.bbox
-        :annotation:
-    .. autodata:: steps.API_2.geom._TetPatch.tris
-        :annotation:
-    .. autodata:: steps.API_2.geom._TetPatch.edges
-        :annotation:
-
-
 .. automodule:: steps.API_2.geom
-    :exclude-members: Compartment, Patch
     :members:
     :undoc-members:
     :inherited-members: ndarray

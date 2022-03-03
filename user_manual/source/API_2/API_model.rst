@@ -62,6 +62,6 @@ Detailed documentation
 .. automodule:: steps.API_2.model
     :members:
     :undoc-members:
-    :inherited-members: ndarray
     :special-members:
+    :show-inheritance:
 

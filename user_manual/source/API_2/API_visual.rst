@@ -28,6 +28,6 @@ Detailed documentation
 .. automodule:: steps.API_2.visual
     :members:
     :undoc-members:
-    :inherited-members: ndarray
     :special-members:
+    :show-inheritance:
 

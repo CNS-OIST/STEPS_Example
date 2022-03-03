@@ -60,6 +60,6 @@ Detailed documentation
 .. automodule:: steps.API_2.geom
     :members:
     :undoc-members:
-    :inherited-members: ndarray
     :special-members:
+    :show-inheritance:
 

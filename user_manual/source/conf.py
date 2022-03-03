@@ -12,7 +12,17 @@
 #  All configuration values have a default; values that are commented out
 #  serve to show the default.
 
+import inspect
+import itertools
+import json
+import os
+import re
 import steps
+import sys
+import types
+
+from steps import stepslib
+from steps.API_2 import model, geom, utils, sim
 
 #  If extensions (or modules to document with autodoc) are in another directory,
 #  add these directories to sys.path here. If the directory is relative to the
@@ -23,6 +33,8 @@ import steps
 
 #  If your documentation needs a minimal Sphinx version, state it here.
 #  needs_sphinx = '1.0'
+
+sys.path.append(os.path.abspath("./_ext"))
 
 #  Add any Sphinx extension module names here, as strings. They can be
 #  extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -36,7 +48,9 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
+    'sphinx.ext.inheritance_diagram',
     'nbsphinx',
+    'autodoc_facade',
 ]
 
 #  Add any paths that contain templates here, relative to this directory.
@@ -148,10 +162,6 @@ html_js_files = ['js/simpath.js']
 html_extra_path = ['simpath.json']
 
 # Generate json
-import itertools
-import json
-import os
-import re
 
 LOCATIONS = {
     'Tet': ('Tetrahedron', ('TET(tet)', 'TETS(tetLst)')), 
@@ -268,9 +278,6 @@ def parseMethod(dct, solverName, meth):
     dct[prop] = examples + '@' + processDoc(meth.__doc__)
 
 def getSolverClass(solverStr):
-    from steps import stepslib
-    import steps.API_2.sim as sim
-    import steps.API_2.utils as utils
     if solverStr in sim.Simulation.SERIAL_SOLVERS:
         return getattr(stepslib, utils._CYTHON_PREFIX + solverStr)
     elif solverStr in sim.Simulation.PARALLEL_SOLVERS:
@@ -278,7 +285,6 @@ def getSolverClass(solverStr):
     return None
 
 def GenerateJSON(path):
-    import steps.API_2.sim as sim
     jsonData = {}
     solvers = sim.Simulation.SERIAL_SOLVERS + sim.Simulation.PARALLEL_SOLVERS
     for solverName in solvers:
@@ -444,11 +450,6 @@ todo_include_todos = True
 ####################################################
 
 
-import types
-
-import steps
-from steps.API_2 import model, geom, utils, sim
-
 # Not sure if there is a better way to do this but if we do not return the descriptor itself
 # during documentation, the __doc__ from the original function is not taken into account. 
 # This might be due to how sphinx gets class attributes which trigger the call of the descriptor's
@@ -593,207 +594,28 @@ def autodoc_process_signature(app, what, name, obj, options, signature, return_a
         return (signature, return_annotation)
 
 
-import sphinx.ext.autodoc as ad
-from sphinx.ext.autodoc.importer import get_class_members
-from docutils.statemachine import StringList
-from sphinx.pycode import ModuleAnalyzer, PycodeError
-from sphinx.ext.autodoc.mock import ismock
-import copy
-import inspect
-
-class SpeMethDocumenter(ad.MethodDocumenter):
-    def format_name(self) -> str:
-        return super().format_name().split('.')[-1]
-
-class SubFacadeDocumenter(ad.ClassDocumenter):
-    def __init__(self, excluded, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._excluded = excluded
-        self.doc_as_attr = None
-
-    def filter_members(self, members, want_all):
-        filtered = super().filter_members(members, want_all)
-        return [(name, obj, val) for name, obj, val in filtered if name not in self._excluded]
-
-    @property
-    def documenters(self):
-        """Returns registered Documenter classes"""
-        docs = copy.copy(self.env.app.registry.documenters)
-        for name, docCls in docs.items():
-            class TmpDocClass(docCls):
-                def format_name(self):
-                    return super().format_name().split('.')[-1]
-            docs[name] = TmpDocClass
-        return docs
-
-    def generate(self, more_content=None, real_modname=None,
-                 check_module=False, all_members=False):
-        """Generate reST for the object given by *self.name*, and possibly for
-        its members.
-        If *more_content* is given, include that content. If *real_modname* is
-        given, use that module name to find attribute docs. If *check_module* is
-        True, only generate if the object is defined in the module name it is
-        imported from. If *all_members* is True, document all members.
-        """
-        if not self.parse_name():
-            # need a module to import
-            logger.warning(
-                __('don\'t know which module to import for autodocumenting '
-                   '%r (try placing a "module" or "currentmodule" directive '
-                   'in the document, or giving an explicit module name)') %
-                self.name, type='autodoc')
-            return
-
-        # now, import the module and get object to document
-        if not self.import_object():
-            return
-
-        # If there is no real module defined, figure out which to use.
-        # The real module is used in the module analyzer to look up the module
-        # where the attribute documentation would actually be found in.
-        # This is used for situations where you have a module that collects the
-        # functions and classes of internal submodules.
-        guess_modname = self.get_real_modname()
-        self.real_modname: str = real_modname or guess_modname
-
-        # try to also get a source code analyzer for attribute docs
-        try:
-            self.analyzer = ModuleAnalyzer.for_module(self.real_modname)
-            # parse right now, to get PycodeErrors on parsing (results will
-            # be cached anyway)
-            self.analyzer.find_attr_docs()
-        except PycodeError as exc:
-            logger.debug('[autodoc] module analyzer failed: %s', exc)
-            # no source file -- e.g. for builtin and C modules
-            self.analyzer = None
-            # at least add the module.__file__ as a dependency
-            if hasattr(self.module, '__file__') and self.module.__file__:
-                self.directive.record_dependencies.add(self.module.__file__)
-        else:
-            self.directive.record_dependencies.add(self.analyzer.srcname)
-
-        if self.real_modname != guess_modname:
-            # Add module to dependency list if target object is defined in other module.
+# Only display bases classes that are documented
+def autodoc_process_bases(app, name, obj, options, bases):
+    added = True
+    while added:
+        added = False
+        for i, b in reversed(list(enumerate(bases))):
+            mod = inspect.getmodule(b)
             try:
-                analyzer = ModuleAnalyzer.for_module(guess_modname)
-                self.directive.record_dependencies.add(analyzer.srcname)
-            except PycodeError:
-                pass
-
-        docstrings: List[str] = sum(self.get_doc() or [], [])
-        if ismock(self.object) and not docstrings:
-            logger.warning(__('A mocked object is detected: %r'),
-                           self.name, type='autodoc')
-
-        # check __module__ of object (for members not given explicitly)
-        if check_module:
-            if not self.check_module():
-                return
-
-        sourcename = self.get_sourcename()
-
-        # make sure that the result starts with an empty line.  This is
-        # necessary for some situations where another directive preprocesses
-        # reST and no starting newline is present
-        self.add_line('', sourcename)
-
-        # format the object's signature, if any
-        try:
-            sig = self.format_signature()
-        except Exception as exc:
-            logger.warning(__('error while formatting signature for %s: %s'),
-                           self.fullname, exc, type='autodoc')
-            return
-
-        # generate the directive header and options, if applicable
-        # self.add_directive_header(sig)
-        # self.add_line('', sourcename)
-
-        # e.g. the module directive doesn't have content
-        self.indent += self.content_indent
-
-        # add all content (from docstrings, attribute docs etc.)
-        # self.add_content(more_content)
-
-        # document members, if possible
-        self.document_members(all_members)
-
-class ClassDocumenter(ad.ClassDocumenter):
-    @staticmethod
-    def getSubClasses(cls):
-        subClasses = set()
-        for subcls in cls.__subclasses__():
-            subClasses.add(subcls)
-            subClasses |= ClassDocumenter.getSubClasses(subcls)
-        return subClasses
-
-    def generate(self, *args, **kwargs):
-        super().generate(*args, **kwargs)
-
-        if issubclass(self.object, utils.Facade):
-            subclasses = sorted(self.getSubClasses(self.object), key=lambda c: (inspect.getmodule(c), inspect.getsourcelines(c)[1]))
-            # print(inspect.getsourcelines(list(subclasses)[0]))
-            # print(subclasses)
-            for subcls in subclasses:
-                try:
-                    sectionTitle = getattr(subcls, utils.Facade._FACADE_ATTR_NAME)
-                    if sectionTitle is not None:
-                        self.add_line(f'**{sectionTitle}**', self.get_sourcename())
-                        full_name = subcls.__module__ + '.' + subcls.__qualname__
-                        excluded = set()
-                        for parent in subcls.__bases__:
-                            excluded |= set(dir(parent))
-                        documenter = SubFacadeDocumenter(excluded, self.directive, full_name, self.indent + '   ')
-                        documenter.generate()
-                except:
-                    pass
-
-
-        # print(self.object)
-        # # print(ad.MethodDocumenter.can_document_member(geom._DistRefList.isLocal, 'isLocal', False, geom._DistRefList))
-        # # full_mname = self.modname + '::' + '.'.join(['_DistRefList'] + ['isLocal'])
-        # full_mname = 'steps.API_2.geom' + '::' + '.'.join(['_DistRefList'] + ['isLocal'])
-        # documenter = SpeMethDocumenter(self.directive, full_mname, self.indent + '  ')
-
-        # # self.add_line('.. admonition:: Special Title', self.get_sourcename())
-        # self.add_line('**Special Title**', self.get_sourcename())
-        # documenter.generate()
-
-        # documenter.generate(all_members=True, real_modname=self.real_modname)
-        # self.
-        # classes = [cls for cls in self.documenters.values()
-                       # if cls.can_document_member(member, mname, isattr, self)]
-            # if not classes:
-                # # don't know how to document this member
-                # continue
-            # # prefer the documenter with the highest priority
-            # classes.sort(key=lambda cls: cls.priority)
-            # # give explicitly separated module name, so that members
-            # # of inner classes can be documented
-            # full_mname = self.modname + '::' + '.'.join(self.objpath + [mname])
-            # documenter = classes[-1](self.directive, full_mname, self.indent)
-            # memberdocumenters.append((documenter, isattr))
-
-        # member_order = self.options.member_order or self.config.autodoc_member_order
-        # memberdocumenters = self.sort_members(memberdocumenters, member_order)
-
-        # for documenter, isattr in memberdocumenters:
-            # documenter.generate(
-                # all_members=True, real_modname=self.real_modname,
-                # check_module=members_check_module and not isattr)
-
-    # def add_content(self, more_content, no_docstring=False):
-        # more_content = StringList(['TEST1', 'TEST2'], source='')
-        # super().add_content(more_content, no_docstring)
-
-    # def add_directive_header(self, sig: str) -> None:
-        # super().add_directive_header(sig)
-        # print(sig)
+                _all = mod.__all__
+            except:
+                _all = []
+            if b.__name__ not in _all:
+                for b2 in b.__bases__:
+                    if b2 not in bases:
+                        bases.append(b2)
+                        added = True
+                del bases[i]
 
 def setup(app):
     app.connect('autodoc-skip-member', autodoc_skip_member)
     app.connect('autodoc-process-docstring', autodoc_process_docstring)
     app.connect('autodoc-process-signature', autodoc_process_signature)
-    #
-    app.add_autodocumenter(ClassDocumenter, override=True)
+    app.connect('autodoc-process-bases', autodoc_process_bases)
 
+    # app.add_autodocumenter(ClassDocumenter, override=True)

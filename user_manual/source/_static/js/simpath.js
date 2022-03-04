@@ -42,7 +42,7 @@ $(document).ready(function(){
 
             currId = ids[sid];
             while (currId in ids) {
-                if (typeof tmp_dict[key] === 'string') {
+                if ('@code' in tmp_dict[key]) {
                     currId = "None";
                     break;
                 }
@@ -59,11 +59,11 @@ $(document).ready(function(){
                 }
             }
             if (currId === "None") {
-                var str = tmp_dict[key];
-                var line = str.substr(0, str.indexOf("@"));
-                var doc = str.substr(str.indexOf("@")+1);
-                $('.DisplayBox#SimPath').html(line);
-                $('.DocDisplay#SimPathDoc').html(doc);
+                var lines = tmp_dict[key]['@code'];
+                for (var i = 0 ; i < lines.length ; i++) {
+                    $('<code class="py py-class">' + lines[i] + '</code><br>').appendTo($('.DisplayBox#SimPath'));
+                }
+                $('.DocDisplay#SimPathDoc').html(tmp_dict[key]['@doc']);
             }
         });
     }

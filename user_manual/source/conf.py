@@ -123,12 +123,12 @@ pygments_style = 'sphinx'
 
 #  The theme to use for HTML and HTML Help pages.  See the documentation for
 #  a list of builtin themes.
-html_theme = 'sphinx_rtd_theme'#'default'
+html_theme = 'sphinx_rtd_theme'
 
 #  Theme options are theme-specific and customize the look and feel of a theme
 #  further.  For a list of options available for each theme, see the
 #  documentation.
-#  html_theme_options = {}
+html_theme_options = {'logo_only': True}
 
 #  Add any paths that contain custom themes here, relative to this directory.
 #  html_theme_path = []
@@ -142,7 +142,7 @@ html_theme = 'sphinx_rtd_theme'#'default'
 
 #  The name of an image file (relative to this directory) to place at the top
 #  of the sidebar.
-#  html_logo = None
+html_logo = '_static/logo.svg'
 
 #  The name of an image file (within the static path) to use as favicon of the
 #  docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -268,14 +268,15 @@ def parseMethod(dct, solverName, meth):
         if all(p.match(line) is None for p in INVALID_EXAMPLES):
             endLines.append(line)
 
-    examples = '</br>'.join(endLines)
+    # examples = '</br>'.join(endLines)
 
     dct = dctFill(dct, gs)
     dct = dctFill(dct, solverName)
     dct = dctFill(dct, loc[0])
     if obj is not None:
         dct = dctFill(dct, obj[0])
-    dct[prop] = examples + '@' + processDoc(meth.__doc__)
+    # dct[prop] = examples + '@' + processDoc(meth.__doc__)
+    dct[prop] = {'@code': endLines, '@doc':processDoc(meth.__doc__)}
 
 def getSolverClass(solverStr):
     if solverStr in sim.Simulation.SERIAL_SOLVERS:
@@ -617,5 +618,3 @@ def setup(app):
     app.connect('autodoc-process-docstring', autodoc_process_docstring)
     app.connect('autodoc-process-signature', autodoc_process_signature)
     app.connect('autodoc-process-bases', autodoc_process_bases)
-
-    # app.add_autodocumenter(ClassDocumenter, override=True)

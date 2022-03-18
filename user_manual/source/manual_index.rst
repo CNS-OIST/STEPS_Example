@@ -34,22 +34,15 @@ Contents:
   
    getting_started.ipynb
    python_interfaces.rst
-   well_mixed.ipynb
-   ip3.ipynb
-   diffusion.ipynb
-   surface_diffusion.ipynb
-   diffusion_boundary.ipynb
-   surface_diffusion_boundary.ipynb
-   memb_pot.ipynb
-   stoch_spikes.rst
-   parallel.rst
-   visual.rst
-   API_2/guide.rst
-   sbml_importer.ipynb
-   preliminary_func.rst
-   matlab_support.ipynb
-   geom_prep.rst
-   API_1/API_ref.rst
+   API_2/Interface_Tutorial_1_wm.ipynb
+   API_2/Interface_Tutorial_2_IP3.ipynb
+   API_2/Interface_Tutorial_3_Diffusion.ipynb
+   API_2/Interface_Tutorial_4_Complexes.ipynb
+   API_2/Interface_Tutorial_5_Efield.ipynb
+   API_2/Interface_Tutorial_6_MPI.ipynb
+   API_2/Interface_Tutorial_7_visual.ipynb
+   API_2/Interface_Tutorial_8_CaBurst.rst
+   API_1_guide.rst
    API_2/API_ref.rst
    
 Indices and tables

@@ -1,5 +1,3 @@
-import steps.interface
-
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Okinawa Institute of Science and Technology, Japan.
@@ -97,10 +95,10 @@ def tau_cap(V):
         return (0.6923 * math.exp((V-vshift)/1089.372))
 
 def alpha_cap(V):
-    return (minf_cap(V)/tau_cap(V))
+    return (minf_cap(1e3 * V)/tau_cap(1e3 * V)) * Qt * 1e3
 
 def beta_cap(V):
-    return ((1.0-minf_cap(V))/tau_cap(V))
+    return ((1.0-minf_cap(V * 1e3))/tau_cap(V * 1e3)) * Qt * 1e3
 
 
 ## Intitial conditions
@@ -147,16 +145,16 @@ def tauh_cat(V):
     return (15.0 + 1.0 / (math.exp((V+32.0-vshift)/7.0)))
 
 def alpham_cat(V):
-    return (minf_cat(V)/taum_cat(V))
+    return (minf_cat(1e3 * V)/taum_cat(1e3 * V)) * 1e3
 
 def betam_cat(V):
-    return ((1-minf_cat(V))/taum_cat(V))
+    return ((1-minf_cat(1e3 * V))/taum_cat(1e3 * V)) * 1e3
 
 def alphah_cat(V):
-    return (hinf_cat(V)/tauh_cat(V))
+    return (hinf_cat(1e3 * V)/tauh_cat(1e3 * V)) * 1e3
 
 def betah_cat(V):
-    return ((1-hinf_cat(V))/tauh_cat(V))
+    return ((1-hinf_cat(1e3 * V))/tauh_cat(1e3 * V)) * 1e3
 
 ## Initial conditions
 

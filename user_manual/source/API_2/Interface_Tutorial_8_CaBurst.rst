@@ -589,7 +589,7 @@ on the sign of the current and the valence of the ions.
 
 Many of the values required for calculating a GHK current are simulation variables, such as concentrations and voltage, simulation constants such as 
 temperature, or fixed constants such as the Faraday constant and the gas constant. Such values are either known or can be found by STEPS during runtime and so are not part of 
-object construction, with the exception of single-channel permeability which we will come to later. Like we saw in :doc:`Interface_Tutorial_5_EField`, we then create the `GHKCurr` object. There are also optional keyword arguments ('virtual_oconc' and 'computeflux') and we'll 
+object construction, with the exception of single-channel permeability which we will come to later. Like we saw in :doc:`Interface_Tutorial_5_Efield`, we then create the `GHKCurr` object. There are also optional keyword arguments ('virtual_oconc' and 'computeflux') and we'll 
 see that which of these optional arguments are used depends on whether the mesh has an extracellular 'outer' compartment available (e.g. the 10um, 20um, 40um and 
 80um meshes) or not (e.g. the 160um mesh)::
 

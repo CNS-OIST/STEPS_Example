@@ -12,7 +12,17 @@
 #  All configuration values have a default; values that are commented out
 #  serve to show the default.
 
+import inspect
+import itertools
+import json
+import os
+import re
 import steps
+import sys
+import types
+
+from steps import stepslib
+from steps.API_2 import model, geom, utils, sim
 
 #  If extensions (or modules to document with autodoc) are in another directory,
 #  add these directories to sys.path here. If the directory is relative to the
@@ -23,6 +33,8 @@ import steps
 
 #  If your documentation needs a minimal Sphinx version, state it here.
 #  needs_sphinx = '1.0'
+
+sys.path.append(os.path.abspath("./_ext"))
 
 #  Add any Sphinx extension module names here, as strings. They can be
 #  extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -36,7 +48,9 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
+    'sphinx.ext.inheritance_diagram',
     'nbsphinx',
+    'autodoc_facade',
 ]
 
 #  Add any paths that contain templates here, relative to this directory.
@@ -44,6 +58,8 @@ templates_path = ['_templates']
 
 #  The suffix of source filenames.
 source_suffix = '.rst'
+
+add_module_names = False
 
 #  The encoding of source files.
 #  source_encoding = 'utf-8-sig'
@@ -107,12 +123,12 @@ pygments_style = 'sphinx'
 
 #  The theme to use for HTML and HTML Help pages.  See the documentation for
 #  a list of builtin themes.
-html_theme = 'default'
+html_theme = 'sphinx_rtd_theme'
 
 #  Theme options are theme-specific and customize the look and feel of a theme
 #  further.  For a list of options available for each theme, see the
 #  documentation.
-#  html_theme_options = {}
+html_theme_options = {'logo_only': True}
 
 #  Add any paths that contain custom themes here, relative to this directory.
 #  html_theme_path = []
@@ -126,7 +142,7 @@ html_theme = 'default'
 
 #  The name of an image file (relative to this directory) to place at the top
 #  of the sidebar.
-#  html_logo = None
+html_logo = '_static/logo.svg'
 
 #  The name of an image file (within the static path) to use as favicon of the
 #  docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -146,13 +162,6 @@ html_js_files = ['js/simpath.js']
 html_extra_path = ['simpath.json']
 
 # Generate json
-import itertools
-import json
-import os
-import re
-
-DIRPATH = os.path.dirname(os.path.abspath(__file__))
-SOLVER_DOCS = ['API_1/API_solver.rst', 'API_1/API_mpisolver.rst']
 
 LOCATIONS = {
     'Tet': ('Tetrahedron', ('TET(tet)', 'TETS(tetLst)')), 
@@ -221,7 +230,7 @@ def dctFill(dct, val):
 def processDoc(doc):
     res = ''
     lines = []
-    for line in doc.split('\n'):
+    for line in doc.split('\n')[1:]:
         if 'Syntax::' in line:
             break
         else:
@@ -237,68 +246,55 @@ def processDoc(doc):
         res += '<p>' + ' '.join(lines) + '</p>'
     return res
 
+def parseMethod(dct, solverName, meth):
+    gs, loc, obj, prop = allMethodNames[meth.__name__]
 
-def getMethodDoc(solver, meth):
-    try:
-        import steps.solver
-        return getattr(getattr(steps.solver, solver), meth).__doc__
-    except:
-        try:
-            import steps.mpi.solver
-            return getattr(getattr(steps.mpi.solver, solver), meth).__doc__
-        except:
-            return ''
+    allLines = ['sim']
 
+    for item in [loc, obj]:
+        if item is not None:
+            item = item[1]
+            if isinstance(item, str):
+                item = (item,)
+            allLines = [line + f'.{val}' for line in allLines for val in item]
 
-def parseMethod(dct, solver, meth):
-    if meth in allMethodNames:
-        gs, loc, obj, prop = allMethodNames[meth]
+    endLines = []
+    for line in allLines:
+        line += f'.{prop}'
+        if gs == 'get':
+            line = f'val = {line}'
+        else:
+            line = f'{line} = val'
+        if all(p.match(line) is None for p in INVALID_EXAMPLES):
+            endLines.append(line)
 
-        allLines = ['sim']
+    # examples = '</br>'.join(endLines)
 
-        for item in [loc, obj]:
-            if item is not None:
-                item = item[1]
-                if isinstance(item, str):
-                    item = (item,)
-                allLines = [line + f'.{val}' for line in allLines for val in item]
+    dct = dctFill(dct, gs)
+    dct = dctFill(dct, solverName)
+    dct = dctFill(dct, loc[0])
+    if obj is not None:
+        dct = dctFill(dct, obj[0])
+    # dct[prop] = examples + '@' + processDoc(meth.__doc__)
+    dct[prop] = {'@code': endLines, '@doc':processDoc(meth.__doc__)}
 
-        endLines = []
-        for line in allLines:
-            line += f'.{prop}'
-            if gs == 'get':
-                line = f'val = {line}'
-            else:
-                line = f'{line} = val'
-            if all(p.match(line) is None for p in INVALID_EXAMPLES):
-                endLines.append(line)
-
-        examples = '</br>'.join(endLines)
-
-        dct = dctFill(dct, gs)
-        dct = dctFill(dct, solver)
-        dct = dctFill(dct, loc[0])
-        if  obj is not None:
-            dct = dctFill(dct, obj[0])
-        dct[prop] = examples + '@' + processDoc(getMethodDoc(solver, meth))
-
+def getSolverClass(solverStr):
+    if solverStr in sim.Simulation.SERIAL_SOLVERS:
+        return getattr(stepslib, utils._CYTHON_PREFIX + solverStr)
+    elif solverStr in sim.Simulation.PARALLEL_SOLVERS:
+        return sim.MPI._getSolver(solverStr)
+    return None
 
 def GenerateJSON(path):
-    autoclass = re.compile('^\.\. autoclass:: ?([^ ]+)\n$')
-    automethod = re.compile('^ *\.\. automethod:: ?([^ ]+)\n$')
-
     jsonData = {}
-    for rel in SOLVER_DOCS:
-        with open(os.path.join(DIRPATH, rel), 'r') as f:
-            currClass = None
-            for line in f:
-                m = autoclass.match(line)
-                if m is not None:
-                    currClass = m.group(1)
-                elif currClass is not None:
-                    m = automethod.match(line)
-                    if m is not None:
-                        parseMethod(jsonData, currClass, m.groups(1)[0])
+    solvers = sim.Simulation.SERIAL_SOLVERS + sim.Simulation.PARALLEL_SOLVERS
+    for solverName in solvers:
+        solvCls = getSolverClass(solverName)
+        if solvCls is not None:
+            for objName in dir(solvCls):
+                obj = getattr(solvCls, objName)
+                if callable(obj) and objName in allMethodNames:
+                    parseMethod(jsonData, solverName, obj)
 
     with open(path, 'w') as f:
         json.dump(jsonData, f)
@@ -455,11 +451,6 @@ todo_include_todos = True
 ####################################################
 
 
-import types
-
-import steps
-from steps.API_2 import model, geom, utils, sim
-
 # Not sure if there is a better way to do this but if we do not return the descriptor itself
 # during documentation, the __doc__ from the original function is not taken into account. 
 # This might be due to how sphinx gets class attributes which trigger the call of the descriptor's
@@ -515,6 +506,7 @@ replace_map = {
     '{{model.Reaction._FwdSpecifier}}': steps.API_2.model.Reaction._FwdSpecifier,
     '{{model.Reaction._BkwSpecifier}}': steps.API_2.model.Reaction._BkwSpecifier,
 }
+py_prefix = '_py_'
 
 def autodoc_process_docstring(app, what, name, obj, options, lines):
     if isinstance(obj, types.MethodType) and obj.__name__ == 'Create' and obj.__self__.__name__ != 'NamedObject':
@@ -533,7 +525,7 @@ def autodoc_process_docstring(app, what, name, obj, options, lines):
     if isinstance(obj, types.FunctionType) and obj.__name__.startswith('__'):
         if len(name.split('.')) > 2:
             *_, clsname, methname = name.split('.')
-            if methname == '__getattr__' and clsname not in ['NamedObject', 'SimPath', 'Simulation', 'ResultSelector']:
+            if methname == '__getattr__' and clsname not in ['NamedObject', 'SimPath', 'Simulation', 'ResultSelector', 'Parameter']:
                 lines[:] = [f"""
                     Access the children of the object as if they were an attribute, see :py:func:`steps.API_2.utils.NamedObject.__getattr__` for details.
                 """]
@@ -558,21 +550,71 @@ def autodoc_process_docstring(app, what, name, obj, options, lines):
             if key in lines[i]:
                 lines[i] = lines[i].replace(key, repl)
 
+    if isinstance(obj, type) and 'API_1' in obj.__module__ and obj.__init__.__class__.__name__ == 'wrapper_descriptor':
+        # Add __init__ docstring to the python class for cython classes
+        for cls in obj.__mro__:
+            if cls.__name__.startswith(py_prefix):
+                lines[:] = lines + obj.__init__.__doc__.split('\n')
+                break
+    elif obj.__class__.__name__ == 'builtin_function_or_method' and obj.__name__.startswith(py_prefix):
+        if re.match('\s*\w+\([\w\s,=]*\)', lines[0]) is not None:
+            lines[:] = lines[1:]
+
+
 def autodoc_process_signature(app, what, name, obj, options, signature, return_annotation):
     sig = tuple()
+    if signature is None:
+        # Try to build a signature from cython bindings
+        if isinstance(obj, type) and 'API_1' in obj.__module__ and obj.__init__.__class__.__name__ == 'wrapper_descriptor':
+            for cls in obj.__mro__:
+                if cls.__name__.startswith(py_prefix):
+                    signature = cls.__doc__.split('\n')[0].strip()
+                    if '(' in signature:
+                        signature = signature[signature.index('('):]
+                    else:
+                        signature = None
+                    break
+
+    if obj.__class__.__name__ == 'builtin_function_or_method' and obj.__name__.startswith(py_prefix):
+        signature = obj.__doc__.split('\n')[0].strip()
+        if '(' in signature:
+            signature = signature[signature.index('('):]
+        else:
+            signature = None
+
     if signature is not None:
         for param in signature.strip('()').split(','):
             param = param.strip()
-            if not (param.startswith('_') and '=' in param):
-                sig += (param,)
+            if not (param.startswith('_') and '=' in param) and param != 'self':
+                if ' ' in param:
+                    sig += (param.split(' ')[-1],)
+                else:
+                    sig += (param,)
         return ('(' + ', '.join(sig) + ')', return_annotation)
     else:
         return (signature, return_annotation)
+
+
+# Only display bases classes that are documented
+def autodoc_process_bases(app, name, obj, options, bases):
+    added = True
+    while added:
+        added = False
+        for i, b in reversed(list(enumerate(bases))):
+            mod = inspect.getmodule(b)
+            try:
+                _all = mod.__all__
+            except:
+                _all = []
+            if b.__name__ not in _all:
+                for b2 in b.__bases__:
+                    if b2 not in bases:
+                        bases.append(b2)
+                        added = True
+                del bases[i]
 
 def setup(app):
     app.connect('autodoc-skip-member', autodoc_skip_member)
     app.connect('autodoc-process-docstring', autodoc_process_docstring)
     app.connect('autodoc-process-signature', autodoc_process_signature)
-
-
-
+    app.connect('autodoc-process-bases', autodoc_process_bases)

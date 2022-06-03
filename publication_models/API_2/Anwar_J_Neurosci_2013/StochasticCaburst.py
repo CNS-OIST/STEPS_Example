@@ -50,46 +50,41 @@
 
 import steps.interface
 
-import math
-import time
-from random import *
 from steps.model import *
 from steps.geom import *
 from steps.rng import *
 from steps.sim import *
 from steps.saving import *
-import os
 
 from extra.constants import *
 
+import math
+import os
 import sys
+import time
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 _, meshfile_ab, root, iter_n = sys.argv
 
-if meshfile_ab == 'Cylinder2_dia2um_L160um_outer0_0.3shell_0.3size_279152tets_adaptive.inp':
-    cyl160=True
-else:
-    cyl160=False
+cyl160 = meshfile_ab == 'Cylinder2_dia2um_L160um_outer0_0.3shell_0.3size_279152tets_adaptive.inp'
 
 ########################### BIOCHEMICAL MODEL ###############################
 
 mdl = Model()
 r = ReactionManager()
-
 with mdl:
     
+    # Vol/surface systems
+    vsys = VolumeSystem.Create()
+    ssys = SurfaceSystem.Create()
+
     # Calcium
     Ca = Species.Create(valence=2)
     
     # Species
     Pump, CaPump, iCBsf, iCBsCa, iCBCaf, iCBCaCa, CBsf, CBsCa, CBCaf, CBCaCa, PV, PVMg, PVCa, Mg = Species.Create()
     
-    # Vol/surface systems
-    vsys = VolumeSystem.Create()
-    ssys = SurfaceSystem.Create()
-
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
     # # # # # # # # # # # # # # # CHANNELS  # # # # # # # # # # # # # # # # # # 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -154,23 +149,23 @@ with mdl:
 
         with CaPchan[...]:
             CaP_m0.s <r['CaPm0m1']> CaP_m1.s <r['CaPm1m2']> CaP_m2.s <r['CaPm2m3']> CaP_m3.s
-            r['CaPm0m1'].K = VDepRate(lambda V: 1.0e3 *3.* alpha_cap(V*1.0e3)* Qt), VDepRate(lambda V: 1.0e3 *1.* beta_cap(V*1.0e3)* Qt)
-            r['CaPm1m2'].K = VDepRate(lambda V: 1.0e3 *2.* alpha_cap(V*1.0e3)* Qt), VDepRate(lambda V: 1.0e3 *2.* beta_cap(V*1.0e3)* Qt)
-            r['CaPm2m3'].K = VDepRate(lambda V: 1.0e3 *1.* alpha_cap(V*1.0e3)* Qt), VDepRate(lambda V: 1.0e3 *3.* beta_cap(V*1.0e3)* Qt)
+            r['CaPm0m1'].K = 3 * VDepRate(alpha_cap), 1 * VDepRate(beta_cap)
+            r['CaPm1m2'].K = 2 * VDepRate(alpha_cap), 2 * VDepRate(beta_cap)
+            r['CaPm2m3'].K = 1 * VDepRate(alpha_cap), 3 * VDepRate(beta_cap)
 
         with CaTchan[...]:
             CaT_m0h0.s <r['CaTm0h0_m1h0']> CaT_m1h0.s <r['CaTm1h0_m2h0']> CaT_m2h0.s <r['CaTm2h0_m2h1']> CaT_m2h1.s
-            r['CaTm0h0_m1h0'].K = VDepRate(lambda V: 1.0e3 *2.* alpham_cat(V*1.0e3)), VDepRate(lambda V: 1.0e3 *1.* betam_cat(V*1.0e3))
-            r['CaTm1h0_m2h0'].K = VDepRate(lambda V: 1.0e3 *1.* alpham_cat(V*1.0e3)), VDepRate(lambda V: 1.0e3 *2.* betam_cat(V*1.0e3))
-            r['CaTm2h0_m2h1'].K = VDepRate(lambda V: 1.0e3 *1.* alphah_cat(V*1.0e3)), VDepRate(lambda V: 1.0e3 *1.* betah_cat(V*1.0e3))
+            r['CaTm0h0_m1h0'].K = 2 * VDepRate(alpham_cat), 1 * VDepRate(betam_cat)
+            r['CaTm1h0_m2h0'].K = 1 * VDepRate(alpham_cat), 2 * VDepRate(betam_cat)
+            r['CaTm2h0_m2h1'].K = 1 * VDepRate(alphah_cat), 1 * VDepRate(betah_cat)
 
             CaT_m1h0.s <r['CaTm1h0_m1h1']> CaT_m1h1.s
-            r['CaTm1h0_m1h1'].K = VDepRate(lambda V: 1.0e3 *1.* alphah_cat(V*1.0e3)), VDepRate(lambda V: 1.0e3 *1.* betah_cat(V*1.0e3))
+            r['CaTm1h0_m1h1'].K = VDepRate(alphah_cat), VDepRate(betah_cat)
             
             CaT_m0h0.s <r['CaTm0h0_m0h1']> CaT_m0h1.s <r['CaTm0h1_m1h1']> CaT_m1h1.s <r['CaTm1h1_m2h1']> CaT_m2h1.s
-            r['CaTm0h0_m0h1'].K = VDepRate(lambda V: 1.0e3 *1.* alphah_cat(V*1.0e3)), VDepRate(lambda V: 1.0e3 *1.* betah_cat(V*1.0e3))
-            r['CaTm1h1_m2h1'].K = VDepRate(lambda V: 1.0e3 *1.* alpham_cat(V*1.0e3)), VDepRate(lambda V: 1.0e3 *2.* betam_cat(V*1.0e3))
-            r['CaTm0h1_m1h1'].K = VDepRate(lambda V: 1.0e3 *2.* alpham_cat(V*1.0e3)), VDepRate(lambda V: 1.0e3 *1.* betam_cat(V*1.0e3))
+            r['CaTm0h0_m0h1'].K = 1 * VDepRate(alphah_cat), 1 * VDepRate(betah_cat)
+            r['CaTm1h1_m2h1'].K = 1 * VDepRate(alpham_cat), 2 * VDepRate(betam_cat)
+            r['CaTm0h1_m1h1'].K = 2 * VDepRate(alpham_cat), 1 * VDepRate(betam_cat)
 
         with BKchan[...]:
             (((BK_C0.s + Ca.i <r['BKCAC0']> BK_C1.s)\
@@ -217,9 +212,12 @@ with mdl:
         
         if cyl160:
             OC_CaP = GHKCurr.Create(CaPchan[CaP_m3], Ca, CaP_P, virtual_oconc=Ca_oconc, computeflux=True)
-            OC_CaT = GHKCurr.Create(CaTchan[CaT_m2h1], Ca, CaT_P, virtual_oconc=Ca_oconc, computeflux=True)
         else:
             OC_CaP = GHKCurr.Create(CaPchan[CaP_m3], Ca, CaP_P, computeflux=True)
+
+        if cyl160:
+            OC_CaT = GHKCurr.Create(CaTchan[CaT_m2h1], Ca, CaT_P, virtual_oconc=Ca_oconc, computeflux=True)
+        else:
             OC_CaT = GHKCurr.Create(CaTchan[CaT_m2h1], Ca, CaT_P, computeflux=True)
 
         OC_BK = OhmicCurr.Create(BKchan[BK_O0|BK_O1|BK_O2|BK_O3|BK_O4], BK_G, BK_rev)
@@ -276,11 +274,9 @@ with mesh:
     submemb_tets = submemb_tets & inner_tets
 
     print(len(submemb_tets))
+    print('Volume of submembrane region is', submemb_tets.Vol)
 
-    vol = sum(tet.Vol for tet in submemb_tets)
-    print('Volume of submembrane region is', vol)
-
-    ########## Create a membrane as a surface mesh
+    ########## Create a membrane
     if cyl160: 
         memb = Patch.Create(memb_tris, cyto, None, ssys)
     else:

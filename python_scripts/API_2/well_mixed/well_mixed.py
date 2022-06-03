@@ -60,6 +60,28 @@ rng = RNG('mt19937', 256, seed=23412)
 
 sim = Simulation('Wmdirect', mdl, geom, rng)
 
+# Manual data saving
+
+sim.newRun()
+
+sim.comp.molA.Conc = 31.4e-6
+sim.comp.molB.Conc = 22.3e-6
+
+tpnts = np.arange(0.0, 2.001, 0.001)
+values = []
+for t in tpnts:
+    sim.run(t)
+    values.append(sim.comp.LIST(molA, molB, molC).Count)
+
+plt.figure(figsize=(12, 8))
+plt.plot(tpnts, values)
+plt.legend(['molA', 'molB', 'molC'])
+plt.xlabel('Time [s]')
+plt.ylabel('#molecules')
+plt.show()
+
+# Automatic data saving
+
 rs = ResultSelector(sim)
 
 saver = rs.comp.LIST(molA, molB, molC).Count
@@ -67,8 +89,6 @@ saver = rs.comp.LIST(molA, molB, molC).Count
 sim.toSave(saver, dt=0.001)
 
 NITER = 100
-
-#####
 
 for i in range(NITER):
     sim.newRun()

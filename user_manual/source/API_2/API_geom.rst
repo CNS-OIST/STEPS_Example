@@ -15,6 +15,7 @@ Detailed documentation
 
  * :py:class:`steps.API_2.geom.Geometry`
  * :py:class:`steps.API_2.geom.TetMesh`
+ * :py:class:`steps.API_2.geom.DistMesh`
 
 * Geometrical elements
 
@@ -51,6 +52,7 @@ Detailed documentation
 * Convenience classes
 
  * :py:class:`steps.API_2.geom.Point`
+ * :py:class:`steps.API_2.geom.BoundingBox`
  * :py:class:`steps.API_2.geom.Morph`
 
 ----------
@@ -58,6 +60,6 @@ Detailed documentation
 .. automodule:: steps.API_2.geom
     :members:
     :undoc-members:
-    :inherited-members: ndarray
     :special-members:
+    :show-inheritance:
 

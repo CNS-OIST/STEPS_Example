@@ -1,5 +1,3 @@
-import steps.interface
-
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Okinawa Institute of Science and Technology, Japan.
@@ -87,25 +85,20 @@ def minf_cap(V):
     cvm = 8.429
     vshift = 0.0
     
-    # WARNING: Using a variable name that is reserved (['V']).
     return (1.0/(1.0 + math.exp(-(V-vhalfm-vshift)/cvm)))
 
 def tau_cap(V):
     vshift = 0.0
     if (V-vshift) >= -40:
-        # WARNING: Using a variable name that is reserved (['V', 'V']).
         return (0.2702 + 1.1622 * math.exp(-(V+26.798-vshift)*(V+26.798-vshift)/164.19))
     else:
-        # WARNING: Using a variable name that is reserved (['V']).
         return (0.6923 * math.exp((V-vshift)/1089.372))
 
 def alpha_cap(V):
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    return (minf_cap(V)/tau_cap(V))
+    return (minf_cap(1e3 * V)/tau_cap(1e3 * V)) * Qt * 1e3
 
 def beta_cap(V):
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    return ((1.0-minf_cap(V))/tau_cap(V))
+    return ((1.0-minf_cap(V * 1e3))/tau_cap(V * 1e3)) * Qt * 1e3
 
 
 ## Intitial conditions
@@ -132,13 +125,11 @@ def minf_cat(V):
     cvm = -5.0
     vshift = 0.0
     
-    # WARNING: Using a variable name that is reserved (['V']).
     return (1.0/(1.0 + math.exp((V-vhalfm-vshift)/cvm)))
 
 def taum_cat(V):
     vshift = 0.0
     if V > -90.0:
-        # WARNING: Using a variable name that is reserved (['V', 'V']).
         return (1.0 + 1.0 / (math.exp((V+40.0-vshift)/9.0) + math.exp(-(V+102.0-vshift)/18.0)))
     else:
         return 1.0
@@ -147,29 +138,23 @@ def hinf_cat(V):
     vhalfh = -72.0
     cvh = 7.0
     vshift = 0.0
-    # WARNING: Using a variable name that is reserved (['V']).
     return (1.0/(1.0 + math.exp((V-vhalfh-vshift)/cvh)))
 
 def tauh_cat(V):
     vshift = 0.0
-    # WARNING: Using a variable name that is reserved (['V']).
     return (15.0 + 1.0 / (math.exp((V+32.0-vshift)/7.0)))
 
 def alpham_cat(V):
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    return (minf_cat(V)/taum_cat(V))
+    return (minf_cat(1e3 * V)/taum_cat(1e3 * V)) * 1e3
 
 def betam_cat(V):
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    return ((1-minf_cat(V))/taum_cat(V))
+    return ((1-minf_cat(1e3 * V))/taum_cat(1e3 * V)) * 1e3
 
 def alphah_cat(V):
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    return (hinf_cat(V)/tauh_cat(V))
+    return (hinf_cat(1e3 * V)/tauh_cat(1e3 * V)) * 1e3
 
 def betah_cat(V):
-    # WARNING: Using a variable name that is reserved (['V', 'V']).
-    return ((1-hinf_cat(V))/tauh_cat(V))
+    return ((1-hinf_cat(1e3 * V))/tauh_cat(1e3 * V)) * 1e3
 
 ## Initial conditions
 

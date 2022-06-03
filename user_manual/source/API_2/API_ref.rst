@@ -1,13 +1,10 @@
 .. _API_2_ref:
 
-****************
-API_2 References
-****************
+**************
+API References
+**************
 
-Using API_2
-===========
-
-In order to use API_2, python scripts must start with the ``import steps.interface`` directive. 
+In order to use the most recent STEPS API, python scripts must start with the ``import steps.interface`` directive. 
 STEPS modules should preferentially be imported using the ``from steps.X import *`` syntax but no 
 other modules should be imported in this way in order to avoid name collisions.
 
@@ -23,7 +20,7 @@ other modules should be imported in this way in order to avoid name collisions.
     from steps.utils import *
     from steps.visual import *
 
-Note that some functionalites of API_2, like `auto-naming <API_utils.rst#steps.API_2.utils.NamedObject.Create>`_, will not work in an interactive python shell but will work as expected in a python script or a jupyter notebook.
+Note that some functionalites of STEPS API, like `auto-naming <API_utils.rst#steps.API_2.utils.NamedObject.Create>`_, will not work in an interactive python shell but will work as expected in a python script or a jupyter notebook.
 
 ----------
 
@@ -38,3 +35,4 @@ Note that some functionalites of API_2, like `auto-naming <API_utils.rst#steps.A
    API_sim
    API_utils
    API_visual
+   ../API_1/API_ref

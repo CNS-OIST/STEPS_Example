@@ -33,7 +33,7 @@ Contents:
    :numbered:
   
    getting_started.ipynb
-   python_interfaces.rst
+   Python_interfaces.ipynb
    API_2/Interface_Tutorial_1_wm.ipynb
    API_2/Interface_Tutorial_2_IP3.ipynb
    API_2/Interface_Tutorial_3_Diffusion.ipynb

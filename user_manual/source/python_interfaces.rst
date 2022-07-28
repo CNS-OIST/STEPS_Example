@@ -29,3 +29,32 @@ Chapters 3 to 9 introduce STEPS concepts in details through examples:
 Equivalent chapters using API_1 are still available for reference (see :doc:`API_1_guide`).
 
 Finally, :doc:`API_2/API_ref` provides detailed documentation of STEPS API, documentation relative to API_1 is still available (:doc:`API_1/API_ref`).
+
+All chapters from the guide are runnable with [jupyter lab](https://jupyter.org/). The corresponding `*.ipynb` files are
+available in the [STEPS_Example](https://github.com/CNS-OIST/STEPS_Example/tree/master/user_manual/source/API_2) github repository.
+
+In the chapters, jupyter code cells are represented with e.g.:
+
+.. raw:: html
+
+    <div class="nbinput nblast docutils container">
+    <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+    </pre></div>
+    </div>
+    <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">steps.interface</span>
+
+    <span class="kn">from</span> <span class="nn">steps.model</span> <span class="kn">import</span> <span class="o">*</span>
+    <span class="kn">from</span> <span class="nn">steps.geom</span> <span class="kn">import</span> <span class="o">*</span>
+    <span class="kn">from</span> <span class="nn">steps.rng</span> <span class="kn">import</span> <span class="o">*</span>
+    <span class="kn">from</span> <span class="nn">steps.sim</span> <span class="kn">import</span> <span class="o">*</span>
+    <span class="kn">from</span> <span class="nn">steps.saving</span> <span class="kn">import</span> <span class="o">*</span>
+
+    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+    <span class="n">mdl</span> <span class="o">=</span> <span class="n">Model</span><span class="p">()</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="n">ReactionManager</span><span class="p">()</span>
+    </pre></div>
+    </div>
+    </div>

@@ -37,6 +37,7 @@ Contents:
    API_2/Interface_Tutorial_1_wm.ipynb
    API_2/Interface_Tutorial_2_IP3.ipynb
    API_2/Interface_Tutorial_3_Diffusion.ipynb
+   API_2/Interface_Tutorial_3.1_Paraview.ipynb
    API_2/Interface_Tutorial_4_Complexes.ipynb
    API_2/Interface_Tutorial_5_Efield.ipynb
    API_2/Interface_Tutorial_6_MPI.ipynb

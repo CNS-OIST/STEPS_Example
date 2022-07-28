@@ -65,7 +65,7 @@ add_module_names = False
 #  source_encoding = 'utf-8-sig'
 
 #  The master toctree document.
-master_doc = 'manual_index'
+master_doc = 'index'
 
 #  General information about the project.
 project = u'STochastic Engine for Pathway Simulation'
@@ -153,6 +153,8 @@ html_logo = '_static/logo.svg'
 #  relative to this directory. They are copied after the builtin static files,
 #  so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+html_css_files = ['css/paraview.css', 'css/user_guide.css']
 
 html_js_files = ['js/simpath.js']
 
@@ -281,7 +283,7 @@ def parseMethod(dct, solverName, meth):
 def getSolverClass(solverStr):
     if solverStr in sim.Simulation.SERIAL_SOLVERS:
         return getattr(stepslib, utils._CYTHON_PREFIX + solverStr)
-    elif solverStr in sim.Simulation.PARALLEL_SOLVERS:
+    elif solverStr in sim.Simulation.PARALLEL_SOLVERS and solverStr != 'TetVesicle':
         return sim.MPI._getSolver(solverStr)
     return None
 

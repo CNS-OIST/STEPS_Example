@@ -42,7 +42,7 @@ Contents:
    API_2/Interface_Tutorial_5_Efield.ipynb
    API_2/Interface_Tutorial_6_MPI.ipynb
    API_2/Interface_Tutorial_7_visual.ipynb
-   API_2/Interface_Tutorial_8_CaBurst.rst
+   API_2/Interface_Tutorial_8_Caburst.ipynb
    API_1_guide.rst
    API_2/API_ref.rst
    

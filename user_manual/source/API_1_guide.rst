@@ -4,7 +4,7 @@
 Original STEPS API guides
 *************************
 
-These guides use the original STEPS API ('API_1', see :doc:`python_interfaces`).
+These guides use the original STEPS API ('API_1', see :doc:`Python_interfaces`).
 
 Contents:
 

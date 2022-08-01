@@ -161,7 +161,10 @@ html_js_files = ['js/simpath.js']
 #  Add any extra paths that contain custom files (such as robots.txt or
 #  .htaccess) here, relative to this directory. These files are copied
 #  directly to the root of the documentation.
-html_extra_path = ['simpath.json']
+html_extra_path = [
+    'simpath.json',
+    'data/square_A0.3_B3_D1e-13_Run_0.vtkjs'
+]
 
 # Generate json
 
@@ -499,8 +502,8 @@ def autodoc_skip_member(app, what, name, obj, skip, options):
                 return True
         elif obj.__doc__ is not None and ':meta private:' in obj.__doc__:
             return True
-        elif isinstance(obj, types.MethodType) and obj.__self__.__name__ in visualClasses:
-            if obj.__name__ == 'Create' :
+        elif isinstance(obj, types.MethodType):
+            if obj.__self__.__name__ in visualClasses and obj.__name__ == 'Create' :
                 return True
     return skip
 
@@ -527,7 +530,8 @@ def autodoc_process_docstring(app, what, name, obj, options, lines):
     if isinstance(obj, types.FunctionType) and obj.__name__.startswith('__'):
         if len(name.split('.')) > 2:
             *_, clsname, methname = name.split('.')
-            if methname == '__getattr__' and clsname not in ['NamedObject', 'SimPath', 'Simulation', 'ResultSelector', 'Parameter']:
+            if methname == '__getattr__' and clsname not in ['NamedObject', 'SimPath', 'Simulation',
+                    'ResultSelector', 'Parameter', 'SQLiteGroup', 'HDF5Group']:
                 lines[:] = [f"""
                     Access the children of the object as if they were an attribute, see :py:func:`steps.API_2.utils.NamedObject.__getattr__` for details.
                 """]

@@ -1,3 +1,7 @@
+.ParaviewFrameWrapper {
+    height: 620px;
+}
+
 .ParaviewFrame {
     width: 140%;
     height: 800px;

@@ -163,7 +163,6 @@ html_js_files = ['js/simpath.js']
 #  directly to the root of the documentation.
 html_extra_path = [
     'simpath.json',
-    'data/square_A0.3_B3_D1e-13_Run_0.vtkjs'
 ]
 
 # Generate json

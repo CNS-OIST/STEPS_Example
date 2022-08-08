@@ -34,15 +34,15 @@ Contents:
   
    getting_started.ipynb
    Python_interfaces.ipynb
-   API_2/Interface_Tutorial_1_wm.ipynb
-   API_2/Interface_Tutorial_2_IP3.ipynb
-   API_2/Interface_Tutorial_3_Diffusion.ipynb
-   API_2/Interface_Tutorial_3.1_Paraview.ipynb
-   API_2/Interface_Tutorial_4_Complexes.ipynb
-   API_2/Interface_Tutorial_5_Efield.ipynb
-   API_2/Interface_Tutorial_6_MPI.ipynb
-   API_2/Interface_Tutorial_7_visual.ipynb
-   API_2/Interface_Tutorial_8_Caburst.ipynb
+   API_2/STEPS_Tutorial_wm.ipynb
+   API_2/STEPS_Tutorial_IP3.ipynb
+   API_2/STEPS_Tutorial_Diffusion.ipynb
+   API_2/STEPS_Tutorial_DataSaving.ipynb
+   API_2/STEPS_Tutorial_Complexes.ipynb
+   API_2/STEPS_Tutorial_Efield.ipynb
+   API_2/STEPS_Tutorial_MPI.ipynb
+   API_2/STEPS_Tutorial_Visual.ipynb
+   API_2/STEPS_Tutorial_CaBurst.ipynb
    API_1_guide.rst
    API_2/API_ref.rst
    

@@ -204,7 +204,7 @@ and to associate with :class:`steps.model.Surfsys` named "ssys".
     cubit.cmd('block 1 tri in surface 21 ')
     cubit.cmd('export Abaqus "tris.inp" Block 1 dimension 3 overwrite  cubitids ')
 
-Please refer to `CUBIT documentation <https://cubit.sandia.gov/documentation.html>`_ for details 
+Please refer to `CUBIT documentation <https://cubit.sandia.gov/documentation/>`_ for details 
 of above exporting command.
 
 6. We also export the preparation information to a file ::
@@ -264,7 +264,7 @@ selected from the component panel. In this case, CUBIT provides a Box/Polygon se
 picking elements directly from the Main Window. X-ray selection is also possible so that not only "skin" 
 elements, but also the ones hidden behind are selectable.
 
-Please refer to `CUBIT manual <https://cubit.sandia.gov/15.7/help_manual/WebHelp/cubithelp.htm>`_ 
+Please refer to `CUBIT manual <https://sandia.gov/files/cubit/16.06/help_manual/WebHelp/cubithelp.htm>`_ 
 for the use of this selection method.
 
 Related API Functions:

@@ -180,7 +180,7 @@ LOCATIONS = {
 }
 
 OBJECTS = {
-    'Spec': ('Species', 'spec'),
+    '': ('Species', 'spec'),
     'Reac': ('Reaction', ("reac['fwd']", "reac['bkw']")),
     'SReac': ('Reaction', ("sreac['fwd']", "sreac['bkw']")),
     'VDepSReac': ('Reaction', ("reac['fwd']", "reac['bkw']")),
@@ -237,6 +237,7 @@ INVALID_EXAMPLES = [
     re.compile('^.+diffb\(direc=[^\)]+\)\.[^\.]+\.DiffusionActive.*$'),
     re.compile('^.+(TETS|TRIS|comp|patch).+diff\(direc=[^\)]+\)\..*$'),
     re.compile('^.+diff\(direc=[^\)]+\)\.(Active|A|Extent).*$'),
+    re.compile('^.+direction_(tet|tri)=.+$'),
     re.compile('^.+local=False.+$'),
 ]
 
@@ -319,8 +320,8 @@ def parseMethod(dct, solverName, meth):
                 for name, val in kwargs:
                     line += f', {name}={val}'
                 line += ')'
-            if all(p.match(line) is None for p in INVALID_EXAMPLES):
-                endLines.append(line)
+                if all(p.match(line) is None for p in INVALID_EXAMPLES):
+                    endLines.append(line)
 
     dct = dct.setdefault(gs, {}).setdefault(solverName, {}).setdefault(loc[0], {})
     if obj is not None:
@@ -341,7 +342,6 @@ def GenerateJSON(path):
     for solverName in solvers:
         solvCls = getSolverClass(solverName)
         if solvCls is not None:
-            # TMP
             for methodName in allMethodNames:
                 if (solverName, methodName) in INVALID_METHODS:
                     continue
@@ -351,11 +351,6 @@ def GenerateJSON(path):
                     continue
                 if callable(obj):
                     parseMethod(jsonData, solverName, obj)
-            #
-            # for objName in dir(solvCls):
-                # obj = getattr(solvCls, objName)
-                # if callable(obj) and objName in allMethodNames:
-                    # parseMethod(jsonData, solverName, obj)
 
     with open(path, 'w') as f:
         json.dump(jsonData, f)

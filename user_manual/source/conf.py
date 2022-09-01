@@ -267,7 +267,7 @@ def processDoc(doc, loc):
     res = ''
     signature, *doc = doc.split('\n')
     # Extract kwargs
-    kwargs = re.findall(r'(\w+)\s*=\s*([\w\.]+)', signature)
+    kwargs = re.findall(r'(\w+)\s*=\s*(?:_py_)?([\w\.]+)', signature)
 
     lines = []
     for line in doc:

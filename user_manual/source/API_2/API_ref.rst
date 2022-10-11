@@ -22,6 +22,11 @@ other modules should be imported in this way in order to avoid name collisions.
 
 Note that some functionalites of STEPS API, like `auto-naming <API_utils.rst#steps.API_2.utils.NamedObject.Create>`_, will not work in an interactive python shell but will work as expected in a python script or a jupyter notebook.
 
+The currently used API can be get / set with functions from the ``steps`` module:
+
+.. automodule:: steps
+    :members:
+
 ----------
 
 .. toctree::

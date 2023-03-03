@@ -109,7 +109,7 @@ def plotTriangles(ax, tris, color):
     ))
 
 fig = plt.figure(figsize=(10, 10))
-ax = fig.gca(projection='3d')
+ax = fig.add_subplot(projection='3d')
 
 plotTriangles(ax, mesh.surface, (0.5, 0.5, 0.5, 0.1))
 plotTriangles(ax, patch1.tris,  (0.5, 1.0, 0.5, 0.5))

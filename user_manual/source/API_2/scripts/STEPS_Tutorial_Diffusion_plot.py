@@ -11,6 +11,7 @@ from steps.geom import *
 import matplotlib.pyplot as plt
 from matplotlib.collections import PolyCollection
 from matplotlib.colors import Normalize
+from matplotlib import colormaps
 import matplotlib.cm as cm
 import numpy as np
 
@@ -77,7 +78,7 @@ plt.show()
 # # # # # # # # # # # # # # # # # #
 
 def PlotProjectedSurface(fig, ax, triangles, values, proj, xlabel, ylabel, clabel):
-    cmap = cm.get_cmap('viridis')
+    cmap = colormaps['viridis']
     maxVal = max(values)
 
     projTris = [[v @ proj.T for v in tri.verts] for tri in triangles]
@@ -127,7 +128,7 @@ def PlotSliceConc(results, runStart, runEnd, mesh, tinds, proj, xlabel, ylabel, 
 
 # # # # # # # # # # # # # # # # # #
 
-mesh = TetMesh.LoadAbaqus('meshes/cylinder_86k.inp', 1e-6)
+mesh = TetMesh.LoadAbaqus('../meshes/cylinder_86k.inp', 1e-6)
 
 XCountSlice = ResultSelector.FromFile('XCountSlice.dat')
 

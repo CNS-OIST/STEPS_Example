@@ -43,6 +43,7 @@ Contents:
    API_2/STEPS_Tutorial_MPI.ipynb
    API_2/STEPS_Tutorial_Visual.ipynb
    API_2/STEPS_Tutorial_CaBurst.ipynb
+   API_2/STEPS_Tutorial_Distributed.ipynb
    API_1_guide.rst
    API_2/API_ref.rst
    

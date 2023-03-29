@@ -15,7 +15,7 @@ import numpy as np
 # Simulation Parameters
 ###########################################################
 
-ENDT = 0.08
+ENDT = 0.06
 
 DT =  2.0e-5
 
@@ -44,7 +44,7 @@ Qt_mslo = Q10 ** ((TEMPERATURE - (25 + 273.15))/10)
 init_pot = Parameter(-60, 'mV', Description='Initial membrane potential')
 Ra = Parameter(235.7*1.0e-2, 'ohm m', Description='Bulk resistivity')
 Cm = 0.64e-2
-memb_capac_proximal = Parameter(1.2*Cm, 'F m^-2', Description='Proximal membrane capacitance')
+memb_capac_proximal = Parameter(1.2*Cm, 'F m^-2', Description='Smooth membrane capacitance')
 memb_capac_spiny = Parameter(5.3*Cm, 'F m^-2', Description='Spiny membrane capacitance')
 
 #######################################
@@ -258,8 +258,7 @@ SK_O2_p= 7.7967e-05
 #######################################
 
 AMPA_G = Parameter(7, 'pS', Description="AMPA channel conductance")
-AMPA_TotalG = Parameter(500, 'nS', Description="Total AMPA conductance")
-AMPA_receptors = AMPA_TotalG/AMPA_G
+AMPA_Ro = Parameter(20, 'um^-2', Description="AMPA channek density")
 AMPA_rev = Parameter(0, 'mV', Description="AMPA channel reversal potential")
 
 #Units (/s M)
@@ -279,7 +278,7 @@ rr = 0.064e3
 
 # Units (s)
 
-glut_start = 10e-3
+glut_start = 5e-3
 
 # Units (M), Reference (Rudolph et al. 2011)
 def Glut(t):
@@ -528,6 +527,7 @@ rs = ResultSelector(sim)
 with mesh.asLocal():
     Pots = rs.VERTS(mesh.surface.verts).V
     CaConc = rs.TETS().Ca.Conc
+    CaConc.metaData['Vols'] = [tet.Vol for tet in mesh.tets]
     Currents = rs.TRIS(mesh.surface).OC_CaP.I
 
 sim.toSave(Pots, CaConc, Currents, dt=DT)
@@ -561,9 +561,10 @@ with XDMFHandler('DistCaburst') as hdf:
         patch.SKchan[SK_O1].Count = round(SK_ro*area*SK_O1_p)
         patch.SKchan[SK_O2].Count = round(SK_ro*area*SK_O2_p)
 
-        patch.L[Leak].Count = round(L_ro_spiny * area)
+    sim.spiny.L[Leak].Count = round(L_ro_spiny * spinyArea)
+    sim.smooth.L[Leak].Count = round(L_ro_proximal * smoothArea)
 
-    sim.smooth.AMPA[AMPA_C].Count = round(AMPA_receptors)
+    sim.smooth.AMPA[AMPA_C].Count = round(AMPA_Ro * smoothArea)
 
     sim.cyto.Ca.Conc = Ca_iconc
     sim.cyto.Mg.Conc = Mg_conc

@@ -65,7 +65,7 @@ add_module_names = False
 #  source_encoding = 'utf-8-sig'
 
 #  The master toctree document.
-master_doc = 'manual_index'
+master_doc = 'index'
 
 #  General information about the project.
 project = u'STochastic Engine for Pathway Simulation'
@@ -154,89 +154,127 @@ html_logo = '_static/logo.svg'
 #  so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+html_css_files = ['css/paraview.css', 'css/user_guide.css']
+
 html_js_files = ['js/simpath.js']
 
 #  Add any extra paths that contain custom files (such as robots.txt or
 #  .htaccess) here, relative to this directory. These files are copied
 #  directly to the root of the documentation.
-html_extra_path = ['simpath.json']
+html_extra_path = [
+    'simpath.json',
+]
 
 # Generate json
 
 LOCATIONS = {
-    'Tet': ('Tetrahedron', ('TET(tet)', 'TETS(tetLst)')), 
-    'Tri': ('Triangle', ('TRI(tri)', 'TRIS(triLst)')), 
-    'Vert': ('Vertex', ('VERT(vert)', 'VERTS(vertLst)')), 
-    'ROI': ('Region of Interest', 'roi'), 
     'Comp': ('Compartment', 'comp'), 
     'Patch': ('Patch', 'patch'), 
     'Memb': ('Membrane', 'memb'), 
     'DiffBoundary': ('Diff. Boundary', ('diffb', 'diffb(direc=comp2)')),
     'SDiffBoundary': ('Surf. Diff. Boundary', ('sdiffb', 'diffb(direc=patch2)')),
+    'ROI': ('Region of Interest', 'roi'), 
+    'Tet': ('Tetrahedron', ('TET(tet)', 'TETS(tetLst)')), 
+    'Tri': ('Triangle', ('TRI(tri)', 'TRIS(triLst)')), 
+    'Vert': ('Vertex', ('VERT(vert)', 'VERTS(vertLst)')), 
 }
+
 OBJECTS = {
     '': ('Species', 'spec'),
     'Reac': ('Reaction', ("reac['fwd']", "reac['bkw']")),
-    'SReac': ('Reaction', ("reac['fwd']", "reac['bkw']")),
+    'SReac': ('Reaction', ("sreac['fwd']", "sreac['bkw']")),
     'VDepSReac': ('Reaction', ("reac['fwd']", "reac['bkw']")),
     'Diff': ('Diffusion', ("diff", 'diff(direc=tet2)')),
     'SDiff': ('Diffusion', ("sdiff", 'sdiff(direc=tri2)')),
     'Ohmic': ('Current', 'curr'),
     'GHK': ('Current', 'curr'),
 }
-OBJ_PROPERTIES = [
-    'Count', 'Conc', 'Amount', 'Clamped', 'K', 'Active',  'D',
-    'C', 'H', 'A', 'Extent', 'I', 'DiffusionActive', 'Dcst', 
-]
-LOC_PROPERTIES = [
-    'Area', 'Vol', 'V', 'VClamped', 'IClamp', 'Potential', 
-    'Capac', 'VolRes', 'Res', 'I',
-]
+
+OBJ_PROPERTIES = {
+    # Prop: (getValue, setValue)
+    'Count': ('cnt', 'n'),
+    'Conc': ('conc', 'conc'),
+    'Amount': ('val', 'a'),
+    'Clamped': ('clamped', 'clamped'),
+    'K': ('val', 'kf'),
+    'Active': ('active', 'active'),
+    'D': ('dcst', 'dcst'),
+    'C': ('val', 'val'),
+    'H': ('val', 'val'),
+    'A': ('val', 'val'),
+    'Extent': ('val', 'val'),
+    'I': ('val', 'val'),
+    'DiffusionActive': ('val', 'val'),
+    'Dcst': ('val', 'val'),
+}
+
+LOC_PROPERTIES = {
+    # Prop: (getValue, setValue)
+    'Area': ('val', 'val'),
+    'Vol': ('val', 'val'),
+    'V': ('val', 'val'),
+    'VClamped': ('clamped', 'clamped'),
+    'IClamp': ('val', 'i'),
+    'Potential': ('val', 'val'),
+    'Capac': ('cap', 'cap'),
+    'VolRes': ('val', 'val'),
+    'Res': ('ro, vrev', 'steps.utils.Params(ro, vrev)'),
+    'I': ('val', 'val'),
+}
+
+REV_LOC_MAP = {long: short for short, (long, _) in LOCATIONS.items()}
 
 DOC_REPLACEMENT = {
     'direction_comp': 'direc',
     'direction_patch': 'direc',
     'direction_tet': 'direc',
     'direction_tri': 'direc',
+    'with\sindex\sidx': lambda loc: REV_LOC_MAP[loc].lower(),
+    'ohmic\scurrent': 'ohmic or GHK current with string identifier curr',
 }
 
 INVALID_EXAMPLES = [
     re.compile('^.+diffb\(direc=[^\)]+\)\.[^\.]+\.DiffusionActive.*$'),
     re.compile('^.+(TETS|TRIS|comp|patch).+diff\(direc=[^\)]+\)\..*$'),
-    re.compile('^.+diff\(direc=[^\)]+\)\.(Active|A).*$'),
+    re.compile('^.+diff\(direc=[^\)]+\)\.(Active|A|Extent).*$'),
+    re.compile('^.+direction_(tet|tri)=.+$'),
+    re.compile('^.+local=False.+$'),
 ]
+
+TET_SOLVERS = [
+    solv for solv in sim.Simulation.SERIAL_SOLVERS + sim.Simulation.PARALLEL_SOLVERS if 'tet' in solv.lower()
+]
+
+INVALID_METHODS = [(solv, 'setCompVol') for solv in TET_SOLVERS]
+INVALID_METHODS += [(solv, 'setPatchArea') for solv in TET_SOLVERS]
 
 for dct in [LOCATIONS, OBJECTS]:
     for loc, val in list(dct.items()):
         dct['Batch' + loc] = val
 
 allMethodNames = {}
-for comb in itertools.product(['get', 'set'], LOCATIONS.items(), OBJECTS.items(), OBJ_PROPERTIES, ['', 'sNP']):
+for comb in itertools.product(['get', 'set'], LOCATIONS.items(), OBJECTS.items(), OBJ_PROPERTIES.items(), ['', 'sNP']):
     gs, loc, obj, prop, suff = comb
-    name = gs + loc[0] + obj[0] + prop + suff
+    name = gs + loc[0] + obj[0] + prop[0] + suff
     allMethodNames[name] = (gs, loc[1], obj[1], prop)
-for comb in itertools.product(['get', 'set'], LOCATIONS.items(), LOC_PROPERTIES, ['', 'sNP']):
+for comb in itertools.product(['get', 'set'], LOCATIONS.items(), LOC_PROPERTIES.items(), ['', 'sNP']):
     gs, loc, prop, suff = comb
-    name = gs + loc[0] + prop + suff
+    name = gs + loc[0] + prop[0] + suff
     allMethodNames[name] = (gs, loc[1], None, prop)
 
 
-def dctFill(dct, val):
-    if val not in dct:
-        dct[val] = {}
-    return dct[val]
-
-
-def processDoc(doc):
+def processDoc(doc, loc):
     res = ''
+    signature, *doc = doc.split('\n')
+    # Extract kwargs
+    kwargs = re.findall(r'(\w+)\s*=\s*(?:_py_)?([\w\.]+)', signature)
+
     lines = []
-    for line in doc.split('\n')[1:]:
+    for line in doc:
         if 'Syntax::' in line:
             break
         else:
             line = line.strip()
-            for src, dst in DOC_REPLACEMENT.items():
-                line = line.replace(src, dst)
             if len(line) == 0 and len(lines) > 0:
                 res += '<p>' + ' '.join(lines) + '</p>'
                 lines = []
@@ -244,12 +282,20 @@ def processDoc(doc):
                 lines.append(line.strip())
     if len(lines) > 0:
         res += '<p>' + ' '.join(lines) + '</p>'
-    return res
+
+    for src, dst in DOC_REPLACEMENT.items():
+        if callable(dst):
+            res = re.sub(src, dst(loc), res)
+        else:
+            res = re.sub(src, dst, res)
+
+    return res, kwargs
 
 def parseMethod(dct, solverName, meth):
     gs, loc, obj, prop = allMethodNames[meth.__name__]
 
     allLines = ['sim']
+    doc, kwargs = processDoc(meth.__doc__, loc[0])
 
     for item in [loc, obj]:
         if item is not None:
@@ -260,28 +306,33 @@ def parseMethod(dct, solverName, meth):
 
     endLines = []
     for line in allLines:
-        line += f'.{prop}'
+        line = f'{line}.{prop[0]}'
         if gs == 'get':
-            line = f'val = {line}'
+            line = f'{prop[1][0]} = {line}'
         else:
-            line = f'{line} = val'
+            line = f'{line} = {prop[1][1]}'
         if all(p.match(line) is None for p in INVALID_EXAMPLES):
             endLines.append(line)
+    if len(kwargs) > 0:
+        for line in allLines:
+            if gs == 'set':
+                line = f'{line}.{prop[0]} = steps.utils.Params({prop[1][1]}'
+                for name, val in kwargs:
+                    line += f', {name}={val}'
+                line += ')'
+                if all(p.match(line) is None for p in INVALID_EXAMPLES):
+                    endLines.append(line)
 
-    # examples = '</br>'.join(endLines)
-
-    dct = dctFill(dct, gs)
-    dct = dctFill(dct, solverName)
-    dct = dctFill(dct, loc[0])
+    dct = dct.setdefault(gs, {}).setdefault(solverName, {}).setdefault(loc[0], {})
     if obj is not None:
-        dct = dctFill(dct, obj[0])
-    # dct[prop] = examples + '@' + processDoc(meth.__doc__)
-    dct[prop] = {'@code': endLines, '@doc':processDoc(meth.__doc__)}
+        dct = dct.setdefault(obj[0], {})
+    if prop[0] not in dct:
+        dct[prop[0]] = {'@code': endLines, '@doc':doc}
 
 def getSolverClass(solverStr):
     if solverStr in sim.Simulation.SERIAL_SOLVERS:
         return getattr(stepslib, utils._CYTHON_PREFIX + solverStr)
-    elif solverStr in sim.Simulation.PARALLEL_SOLVERS:
+    elif solverStr in sim.Simulation.PARALLEL_SOLVERS and solverStr != 'TetVesicle':
         return sim.MPI._getSolver(solverStr)
     return None
 
@@ -291,9 +342,14 @@ def GenerateJSON(path):
     for solverName in solvers:
         solvCls = getSolverClass(solverName)
         if solvCls is not None:
-            for objName in dir(solvCls):
-                obj = getattr(solvCls, objName)
-                if callable(obj) and objName in allMethodNames:
+            for methodName in allMethodNames:
+                if (solverName, methodName) in INVALID_METHODS:
+                    continue
+                try:
+                    obj = getattr(solvCls, methodName)
+                except:
+                    continue
+                if callable(obj):
                     parseMethod(jsonData, solverName, obj)
 
     with open(path, 'w') as f:
@@ -497,8 +553,8 @@ def autodoc_skip_member(app, what, name, obj, skip, options):
                 return True
         elif obj.__doc__ is not None and ':meta private:' in obj.__doc__:
             return True
-        elif isinstance(obj, types.MethodType) and obj.__self__.__name__ in visualClasses:
-            if obj.__name__ == 'Create' :
+        elif isinstance(obj, types.MethodType):
+            if obj.__self__.__name__ in visualClasses and obj.__name__ == 'Create' :
                 return True
     return skip
 
@@ -525,7 +581,8 @@ def autodoc_process_docstring(app, what, name, obj, options, lines):
     if isinstance(obj, types.FunctionType) and obj.__name__.startswith('__'):
         if len(name.split('.')) > 2:
             *_, clsname, methname = name.split('.')
-            if methname == '__getattr__' and clsname not in ['NamedObject', 'SimPath', 'Simulation', 'ResultSelector', 'Parameter']:
+            if methname == '__getattr__' and clsname not in ['NamedObject', 'SimPath', 'Simulation',
+                    'ResultSelector', 'Parameter', 'SQLiteGroup', 'HDF5Group']:
                 lines[:] = [f"""
                     Access the children of the object as if they were an attribute, see :py:func:`steps.API_2.utils.NamedObject.__getattr__` for details.
                 """]

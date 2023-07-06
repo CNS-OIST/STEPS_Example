@@ -177,10 +177,19 @@ LOCATIONS = {
     'Tet': ('Tetrahedron', ('TET(tet)', 'TETS(tetLst)')), 
     'Tri': ('Triangle', ('TRI(tri)', 'TRIS(triLst)')), 
     'Vert': ('Vertex', ('VERT(vert)', 'VERTS(vertLst)')), 
+    'Ves': ('Vesicle', 'ves'), 
+    'SingleVesicle': ('Vesicle', ('VESICLE(vesref)', 'VESICLES(vesLst)')), 
+    'SingleVesicleSurface': ('Vesicle surface', ("VESICLE(vesref)('surf')", "VESICLES(vesLst)('surf')")), 
+    'SingleVesicleInner': ('Vesicle inside', ("VESICLE(vesref)('in')", "VESICLES(vesLst)('in')")), 
+    'Exocytosis': ('Exocytosis', 'exo'), 
+    'Raft': ('Raft', 'raft'), 
+    'SingleRaft': ('Raft', ('RAFT(raftref)', 'RAFTS(raftLst)')), 
+    'RaftEndocytosis': ('Raft Endocytosis', 'rendo'), 
 }
 
 OBJECTS = {
-    '': ('Species', 'spec'),
+    'Spec': ('Species', 'spec'),
+    'LinkSpec': ('Link Species', 'linkspec'),
     'Reac': ('Reaction', ("reac['fwd']", "reac['bkw']")),
     'SReac': ('Reaction', ("sreac['fwd']", "sreac['bkw']")),
     'VDepSReac': ('Reaction', ("reac['fwd']", "reac['bkw']")),
@@ -188,6 +197,15 @@ OBJECTS = {
     'SDiff': ('Diffusion', ("sdiff", 'sdiff(direc=tri2)')),
     'Ohmic': ('Current', 'curr'),
     'GHK': ('Current', 'curr'),
+    'Ves': ('Vesicle', 'ves'), 
+    'Vesicle': ('Vesicle', 'ves'), 
+    'VesicleSurface': ('Vesicle surface', ("VESICLE(ves)('surf')", "VESICLES(vesLst)('surf')")), 
+    'VesicleInner': ('Vesicle inside', ("VESICLE(ves)('in')", "VESICLES(vesLst)('in')")), 
+    'Raft': ('Raft', 'raft'), 
+    'SingleRaft': ('Raft', ('RAFT(raftref)', 'RAFTS(raftLst)')), 
+    'EndocyticZone': ('Endocytic zone', 'endoZone'), 
+    'RaftEndocytosis': ('Raft Endocytosis', 'rendo'), 
+    'Exocytosis': ('Exocytosis', 'exo'), 
 }
 
 OBJ_PROPERTIES = {
@@ -206,6 +224,8 @@ OBJ_PROPERTIES = {
     'I': ('val', 'val'),
     'DiffusionActive': ('val', 'val'),
     'Dcst': ('val', 'val'),
+    'Pos': ('pos', 'pos'),
+    'PosSpherical': ('spos', 'spos'),
 }
 
 LOC_PROPERTIES = {
@@ -220,6 +240,11 @@ LOC_PROPERTIES = {
     'VolRes': ('val', 'val'),
     'Res': ('ro, vrev', 'steps.utils.Params(ro, vrev)'),
     'I': ('val', 'val'),
+    'Pos': ('pos', 'pos'),
+    'PosSpherical': ('spos', 'spos'),
+    'Immobility': ('immob', 'immob'),
+    'Events': ('events', 'events'),
+    'K': ('val', 'kf'),
 }
 
 REV_LOC_MAP = {long: short for short, (long, _) in LOCATIONS.items()}
@@ -334,6 +359,8 @@ def getSolverClass(solverStr):
         return getattr(stepslib, utils._CYTHON_PREFIX + solverStr)
     elif solverStr in sim.Simulation.PARALLEL_SOLVERS and solverStr != 'TetVesicle':
         return sim.MPI._getSolver(solverStr)
+    if solverStr == 'TetVesicle':
+        return stepslib._py_TetVesicleVesRaft
     return None
 
 def GenerateJSON(path):

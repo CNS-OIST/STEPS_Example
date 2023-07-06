@@ -25,6 +25,7 @@ Detailed documentation
   * :py:class:`steps.API_2.geom.ROI`
   * :py:class:`steps.API_2.geom.DiffBoundary`
   * :py:class:`steps.API_2.geom.SDiffBoundary`
+  * :py:class:`steps.API_2.geom.EndocyticZone`
 
 * Mesh partitioning
 

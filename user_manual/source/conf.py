@@ -168,187 +168,170 @@ html_extra_path = [
 # Generate json
 
 LOCATIONS = {
-    # NameInMethods: (Full name, examples, doc link)
-    # examples -> ['name'] or [('name', 'name in descr')]
+    # NameInMethods: (Full name, examples)
+    # examples -> [('name in example', 'name in descr')]
     'Comp': (
         'Compartment',
-        ['comp'],
-        'API_geom.html#steps.API_2.geom.Compartment',
+        [('comp', '__CLS_geom.Compartment__ comp')],
     ),
     'Patch': (
         'Patch',
-        ['patch'],
-        'API_geom.html#steps.API_2.geom.Patch',
+        [('patch', '__CLS_geom.Patch__ patch')],
     ),
     'Memb': (
         'Membrane',
-        ['memb'],
-        'API_geom.html#steps.API_2.geom.Membrane',
+        [('memb', '__CLS_geom.Membrane__ memb')],
     ),
     'DiffBoundary': (
         'Diff. Boundary',
-        ['diffb', ('diffb(direc=comp2)', 'diffb in direction of comp2')],
-        'API_geom.html#steps.API_2.geom.DiffBoundary',
+        [('diffb', '__CLS_geom.DiffBoundary__ diffb'),
+         ('diffb(direc=comp2)', '__CLS_geom.DiffBoundary__ diffb in direction of __CLS_geom.Compartment__ comp2')],
     ),
     'SDiffBoundary': (
         'Surf. Diff. Boundary',
-        ['sdiffb', ('diffb(direc=patch2)', 'diffb in direction of patch2')],
-        'API_geom.html#steps.API_2.geom.SDiffBoundary',
+        [('sdiffb', '__CLS_geom.SDiffBoundary__ diffb'),
+         ('diffb(direc=patch2)', '__CLS_geom.SDiffBoundary__ diffb in direction of __CLS_geom.Patch__ patch2')],
     ),
     'ROI': (
         'Region of Interest',
-        ['roi'],
-        'API_geom.html#steps.API_2.geom.ROI',
+        [('roi', '__CLS_geom.ROI__ roi')],
     ),
     'Tet': (
         'Tetrahedron',
-        [('TET(tet)', 'tet'), ('TETS(tetLst)', 'list tetLst')],
-        'API_geom.html#steps.API_2.geom.TetReference',
+        [('TET(tet)', '__CLS_geom.TetReference__ tet'),
+         ('TETS(tetLst)', 'each tetrahedron in __CLS_geom.TetList__ tetLst')],
     ),
     'Tri': (
         'Triangle',
-        [('TRI(tri)', 'tri'), ('TRIS(triLst)', 'list triLst')],
-        'API_geom.html#steps.API_2.geom.TriReference',
+        [('TRI(tri)', '__CLS_geom.TriReference__ tri'),
+         ('TRIS(triLst)', 'each triangle in __CLS_geom.TriList__ triLst')],
     ),
     'Vert': (
         'Vertex',
-        [('VERT(vert)', 'vert'), ('VERTS(vertLst)', 'list vertLst')],
-        'API_geom.html#steps.API_2.geom.VertReference',
+        [('VERT(vert)', '__CLS_geom.VertReference__ vert'),
+         ('VERTS(vertLst)', 'each vertex in __CLS_geom.VertList__ vertLst')],
     ),
     'Ves': (
         'Vesicle',
-        ['ves'],
-        'API_model.html#steps.API_2.model.Vesicle',
+        [('ves', '__CLS_model.Vesicle__ ves')],
     ),
     'SingleVesicle': (
         'Vesicle',
-        [('VESICLE(vesref)', 'vesref'), ('VESICLES(vesLst)', 'list vesLst')],
-        'API_sim.html#steps.API_2.sim.VesicleReference',
+        [('VESICLE(vesref)', '__CLS_sim.VesicleReference__ vesref'),
+         ('VESICLES(vesLst)', 'each vesicle in __CLS_sim.VesicleList__ vesLst')],
     ),
     'SingleVesicleSurface': (
         'Vesicle surface',
-        [("VESICLE(vesref)('surf')", 'vesref'), ("VESICLES(vesLst)('surf')", "list vesLst")],
-        'API_sim.html#steps.API_2.sim.VesicleReference.__call__',
+        [("VESICLE(vesref)('surf')", 'the surface of __CLS_sim.VesicleReference__ vesref'),
+         ("VESICLES(vesLst)('surf')", 'the surface of each vesicle in __CLS_sim.VesicleList__ vesLst')],
     ),
     'SingleVesicleInner': (
         'Vesicle inside',
-        [("VESICLE(vesref)('in')", "vesref"), ("VESICLES(vesLst)('in')", "list vesLst")],
-        'API_sim.html#steps.API_2.sim.VesicleReference.__call__',
+        [("VESICLE(vesref)('in')", "the lumen of __CLS_sim.VesicleReference__ vesref"),
+         ("VESICLES(vesLst)('in')", "the lumen of each vesicle in __CLS_sim.VesicleList__ vesLst")],
     ),
     'Exocytosis': (
         'Exocytosis',
-        ['exo'],
-        'API_model.html#steps.API_2.model.Exocytosis',
+        [('exo', '__CLS_model.Exocytosis__ exo')],
     ),
     'Raft': (
         'Raft',
-        ['raft'],
-        'API_model.html#steps.API_2.model.Raft',
+        [('raft', '__CLS_model.Raft__ raft')],
     ),
     'SingleRaft': (
         'Raft',
-        [('RAFT(raftref)', "raftref"), ('RAFTS(raftLst)', "list raftLst")],
-        'API_sim.html#steps.API_2.sim.RaftReference',
+        [('RAFT(raftref)', "__CLS_sim.RaftReference__ raftref"),
+         ('RAFTS(raftLst)', "each raft in __CLS_sim.RaftList__ raftLst")],
     ),
     'RaftEndocytosis': (
         'Raft Endocytosis',
-        ['rendo'],
-        'API_model.html#steps.API_2.model.RaftEndocytosis',
+        [('rendo', '__CLS_model.RaftEndocytosis__ rendo')],
     ),
 }
 
 OBJECTS = {
-    # NameInMethods: (Full name, examples, doc link)
-    # examples -> ['name'] or [('name', 'name in descr')]
+    # NameInMethods: (Full name, examples)
+    # examples -> [('name in example', 'name in descr')]
     'Spec': (
         'Species',
-        ['spec'],
-        'API_model.html#steps.API_2.model.Species',
+        [('spec', '__CLS_model.Species__ spec')],
     ),
     'LinkSpec': (
         'Link Species',
-        ['linkspec'],
-        'API_model.html#steps.API_2.model.LinkSpecies',
+        [('linkspec', '__CLS_model.LinkSpecies__ linkspec')],
     ),
     'Reac': (
         'Reaction',
-        [("reac['fwd']", "reac (forward)"), ("reac['bkw']", "reac (backward)")],
-        'API_model.html#steps.API_2.model.Reaction',
+        [("reac['fwd']", 'the forward part of __CLS_model.Reaction__ reac'),
+         ("reac['bkw']", 'the backward part of __CLS_model.Reaction__ reac')],
     ),
     'SReac': (
         'Reaction',
-        [("sreac['fwd']", "sreac (forward)"), ("sreac['bkw']", "sreac (backward)")],
-        'API_model.html#steps.API_2.model.Reaction',
+        [("sreac['fwd']", 'the forward part of __CLS_model.Reaction__ sreac'),
+         ("sreac['bkw']", 'the backward part of __CLS_model.Reaction__ sreac')],
     ),
     'VDepSReac': (
         'Reaction',
-        [("reac['fwd']", "reac (forward)"), ("reac['bkw']", "reac (backward)")],
-        'API_model.html#steps.API_2.model.Reaction',
+        [("reac['fwd']", 'the forward part of __CLS_model.Reaction__ reac'),
+         ("reac['bkw']", 'the backward part of __CLS_model.Reaction__ reac')],
     ),
     'Diff': (
         'Diffusion',
-        ["diff", ('diff(direc=tet2)', 'diff towards tet2')],
-        'API_model.html#steps.API_2.model.Diffusion',
+        [('diff', '__CLS_model.Diffusion__ diff'),
+         ('diff(direc=tet2)', '__CLS_model.Diffusion__ diff towards __CLS_geom.TetReference__ tet2')],
     ),
     'SDiff': (
         'Diffusion',
-        ["sdiff", ('sdiff(direc=tri2)', 'sdiff towards tri2')],
-        'API_model.html#steps.API_2.model.Diffusion',
+        [('sdiff', '__CLS_model.Diffusion__ diff'),
+         ('sdiff(direc=tri2)', '__CLS_model.Diffusion__ diff towards __CLS_geom.TriReference__ tri2')],
     ),
     'Ohmic': (
         'Current',
-        ['curr'],
-        'API_model.html#steps.API_2.model.OhmicCurr',
+        [('curr', '__CLS_model.OhmicCurr__ curr')],
     ),
     'GHK': (
         'Current',
-        ['curr'],
-        'API_model.html#steps.API_2.model.GHKCurr',
+        [('curr', '__CLS_model.GHKCurr__ curr')],
     ),
     'Ves': (
         'Vesicle',
-        ['ves'],
-        'API_model.html#steps.API_2.model.Vesicle',
+        [('ves', '__CLS_model.Vesicle__ ves')],
     ),
     'Vesicle': (
         'Vesicle',
-        ['ves'],
-        'API_model.html#steps.API_2.model.Vesicle',
+        [('ves', '__CLS_model.Vesicle__ ves')],
     ),
+    # TODO: Check that the following make sense, shouldn't it be instead e.g. sim.comp.ves('surf').SA.Count?
     'VesicleSurface': (
         'Vesicle surface',
-        [("VESICLE(ves)('surf')", "ves"), ("VESICLES(vesLst)('surf')", "list vesLst")],
-        'API_model.html#steps.API_2.model.Vesicle.__call__',
+        [("VESICLE(vesref)('surf')", 'the surface of __CLS_sim.VesicleReference__ vesref'),
+         ("VESICLES(vesLst)('surf')", 'the surface of each vesicle in __CLS_sim.VesicleList__ vesLst')],
     ),
     'VesicleInner': (
         'Vesicle inside',
-        [("VESICLE(ves)('in')", "ves"), ("VESICLES(vesLst)('in')", "list vesLst")],
-        'API_model.html#steps.API_2.model.Vesicle.__call__',
+        [("VESICLE(vesref)('in')", "the lumen of __CLS_sim.VesicleReference__ vesref"),
+         ("VESICLES(vesLst)('in')", "the lumen of each vesicle in __CLS_sim.VesicleList__ vesLst")],
     ),
     'Raft': (
         'Raft',
-        ['raft'],
-        'API_model.html#steps.API_2.model.Raft',
+        [('raft', '__CLS_model.Raft__ raft')],
     ),
     'SingleRaft': (
         'Raft',
-        [('RAFT(raftref)', 'raftref'), ('RAFTS(raftLst)', 'list raftLst')],
-        'API_sim.html#steps.API_2.sim.RaftReference',
+        [('RAFT(raftref)', "__CLS_sim.RaftReference__ raftref"),
+         ('RAFTS(raftLst)', "each raft in __CLS_sim.RaftList__ raftLst")],
     ),
     'EndocyticZone': (
         'Endocytic zone',
-        ['endoZone'],
-        'API_geom.html#steps.API_2.geom.EndocyticZone',
+        [('endoZone', '__CLS_geom.EndocyticZone__ endoZone')],
     ),
     'RaftEndocytosis': (
         'Raft Endocytosis',
-        ['rendo'],
-        'API_model.html#steps.API_2.model.RaftEndocytosis',
+        [('rendo', '__CLS_model.RaftEndocytosis__ rendo')],
     ),
     'Exocytosis': (
         'Exocytosis',
-        ['exo'],
-        'API_model.html#steps.API_2.model.Exocytosis',
+        [('exo', '__CLS_model.Exocytosis__ exo')],
     ),
 }
 
@@ -367,7 +350,7 @@ OBJ_PROPERTIES = {
     'Amount': (
         'val',
         'a',
-        'the amount',
+        'amount',
     ),
     'Clamped': (
         'clamped',
@@ -625,19 +608,81 @@ def processDoc(doc, loc):
     return res, kwargs
 
 def parseMethod(dct, solverName, method):
-    gs, loc, obj, prop = allMethodNames[method.__name__]
+    # Extract kwargs
+    signature, *doc = method.__doc__.split('\n')
+    kwargs = re.findall(r'(\w+)\s*=\s*(?:_py_)?([\w\.]+)', signature)
 
-    parts = [['sim']]
-    names = []
-    docs = []
+    gs, loc, obj, prop = allMethodNames[method.__name__]
+    propName, (getValue, setValue, propDescr) = prop
+
+    examples = [['sim']]
+    descriptions = [[]]
+
     for item in [loc, obj]:
         if item is not None:
-            name, examples, doc = item
-            names.append(name)
-            parts.append(examples)
-            docs.append(doc)
-    
-    for comb in itertools.product(*parts):
+            tpe, options = item
+            options = [(sl, sl) if isinstance(sl, str) else sl for sl in options]
+            new_examples = []
+            new_descriptions = []
+            for ex, dscr in zip(examples, descriptions):
+                for name, descr in options:
+                    new_examples.append(ex + [name])
+                    descr = re.sub('__CLS_(\w+)\.(\w+)__', '<a href="API_\g<1>.html#steps.API_2.\g<1>.\g<2>">\g<2></a>', descr)
+                    new_descriptions.append(dscr + [descr])
+            examples = new_examples
+            descriptions = new_descriptions
+
+    propDescr = f'<a href="#steps.API_2.sim.SimPath.{propName}">{propDescr}</a>'
+    # Add unit if available
+    if propName in sim.SimPath._PATH_END_UNITS:
+        unit = sim.SimPath._PATH_END_UNITS[propName]
+        if isinstance(unit, utils.Units) and not unit._isDimensionless():
+            propDescr += f' (in {unit._toUnicode()})'
+
+    allDoc = []
+    for ex, descr in zip(examples, descriptions):
+        if gs == 'get':
+            exLine = f'{getValue} = {".".join(ex)}.{propName}'
+            descrLine = 'Get'
+        elif gs == 'set':
+            exLine = f'{".".join(ex)}.{propName} = {setValue}'
+            descrLine = 'Set'
+        *descr, objDescr = descr
+        descrLine += f' the {propDescr} of {objDescr}'
+        if len(descr) > 0:
+            locDescr = descr[0]
+            descrLine += f' in {locDescr}'
+        allDoc.append({'@code': exLine, '@doc': descrLine})
+
+    dct = dct.setdefault(gs, {}).setdefault(
+        solverName, {}).setdefault(loc[0], {})
+    if obj is not None:
+        dct = dct.setdefault(obj[0], {})
+    if propName not in dct:
+        dct[propName] = allDoc
+            
+
+    # TODO: Handle kwargs
+
+    # parts = [['sim']]
+    # names = []
+    # docs = []
+    # for item in [loc, obj]:
+    #     if item is not None:
+    #         name, examples, doc = item
+    #         names.append(name)
+    #         parts.append(examples)
+    #         docs.append(doc)
+    #
+    # examples = []
+    # example_descriptions = []
+    # for comb in itertools.product(*parts):
+    #     itemDescrs = []
+    #     for v in comb:
+    #         match v:
+    #             case str:
+    #
+    #             case :
 
     # locExamples, objExamples = [], []
     # if loc is not None:
@@ -645,7 +690,7 @@ def parseMethod(dct, solverName, method):
     # if obj is not None:
     #     objName, objExamples, objDoc = obj
 
-    print(loc, obj, prop)
+    # print(loc, obj, prop)
 
 def parseMethod_old(dct, solverName, meth):
     gs, loc, obj, prop = allMethodNames[meth.__name__]
@@ -860,7 +905,7 @@ texinfo_documents = [
 
 
 #  Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'http://docs.python.org/': None}
+intersphinx_mapping = {'python': ('http://docs.python.org/3', None)}
 
 [extensions]
 todo_include_todos = True

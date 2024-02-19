@@ -168,86 +168,354 @@ html_extra_path = [
 # Generate json
 
 LOCATIONS = {
-    'Comp': ('Compartment', 'comp'), 
-    'Patch': ('Patch', 'patch'), 
-    'Memb': ('Membrane', 'memb'), 
-    'DiffBoundary': ('Diff. Boundary', ('diffb', 'diffb(direc=comp2)')),
-    'SDiffBoundary': ('Surf. Diff. Boundary', ('sdiffb', 'diffb(direc=patch2)')),
-    'ROI': ('Region of Interest', 'roi'), 
-    'Tet': ('Tetrahedron', ('TET(tet)', 'TETS(tetLst)')), 
-    'Tri': ('Triangle', ('TRI(tri)', 'TRIS(triLst)')), 
-    'Vert': ('Vertex', ('VERT(vert)', 'VERTS(vertLst)')), 
-    'Ves': ('Vesicle', 'ves'), 
-    'SingleVesicle': ('Vesicle', ('VESICLE(vesref)', 'VESICLES(vesLst)')), 
-    'SingleVesicleSurface': ('Vesicle surface', ("VESICLE(vesref)('surf')", "VESICLES(vesLst)('surf')")), 
-    'SingleVesicleInner': ('Vesicle inside', ("VESICLE(vesref)('in')", "VESICLES(vesLst)('in')")), 
-    'Exocytosis': ('Exocytosis', 'exo'), 
-    'Raft': ('Raft', 'raft'), 
-    'SingleRaft': ('Raft', ('RAFT(raftref)', 'RAFTS(raftLst)')), 
-    'RaftEndocytosis': ('Raft Endocytosis', 'rendo'), 
+    # NameInMethods: (Full name, examples, doc link)
+    # examples -> ['name'] or [('name', 'name in descr')]
+    'Comp': (
+        'Compartment',
+        ['comp'],
+        'API_geom.html#steps.API_2.geom.Compartment',
+    ),
+    'Patch': (
+        'Patch',
+        ['patch'],
+        'API_geom.html#steps.API_2.geom.Patch',
+    ),
+    'Memb': (
+        'Membrane',
+        ['memb'],
+        'API_geom.html#steps.API_2.geom.Membrane',
+    ),
+    'DiffBoundary': (
+        'Diff. Boundary',
+        ['diffb', ('diffb(direc=comp2)', 'diffb in direction of comp2')],
+        'API_geom.html#steps.API_2.geom.DiffBoundary',
+    ),
+    'SDiffBoundary': (
+        'Surf. Diff. Boundary',
+        ['sdiffb', ('diffb(direc=patch2)', 'diffb in direction of patch2')],
+        'API_geom.html#steps.API_2.geom.SDiffBoundary',
+    ),
+    'ROI': (
+        'Region of Interest',
+        ['roi'],
+        'API_geom.html#steps.API_2.geom.ROI',
+    ),
+    'Tet': (
+        'Tetrahedron',
+        [('TET(tet)', 'tet'), ('TETS(tetLst)', 'list tetLst')],
+        'API_geom.html#steps.API_2.geom.TetReference',
+    ),
+    'Tri': (
+        'Triangle',
+        [('TRI(tri)', 'tri'), ('TRIS(triLst)', 'list triLst')],
+        'API_geom.html#steps.API_2.geom.TriReference',
+    ),
+    'Vert': (
+        'Vertex',
+        [('VERT(vert)', 'vert'), ('VERTS(vertLst)', 'list vertLst')],
+        'API_geom.html#steps.API_2.geom.VertReference',
+    ),
+    'Ves': (
+        'Vesicle',
+        ['ves'],
+        'API_model.html#steps.API_2.model.Vesicle',
+    ),
+    'SingleVesicle': (
+        'Vesicle',
+        [('VESICLE(vesref)', 'vesref'), ('VESICLES(vesLst)', 'list vesLst')],
+        'API_sim.html#steps.API_2.sim.VesicleReference',
+    ),
+    'SingleVesicleSurface': (
+        'Vesicle surface',
+        [("VESICLE(vesref)('surf')", 'vesref'), ("VESICLES(vesLst)('surf')", "list vesLst")],
+        'API_sim.html#steps.API_2.sim.VesicleReference.__call__',
+    ),
+    'SingleVesicleInner': (
+        'Vesicle inside',
+        [("VESICLE(vesref)('in')", "vesref"), ("VESICLES(vesLst)('in')", "list vesLst")],
+        'API_sim.html#steps.API_2.sim.VesicleReference.__call__',
+    ),
+    'Exocytosis': (
+        'Exocytosis',
+        ['exo'],
+        'API_model.html#steps.API_2.model.Exocytosis',
+    ),
+    'Raft': (
+        'Raft',
+        ['raft'],
+        'API_model.html#steps.API_2.model.Raft',
+    ),
+    'SingleRaft': (
+        'Raft',
+        [('RAFT(raftref)', "raftref"), ('RAFTS(raftLst)', "list raftLst")],
+        'API_sim.html#steps.API_2.sim.RaftReference',
+    ),
+    'RaftEndocytosis': (
+        'Raft Endocytosis',
+        ['rendo'],
+        'API_model.html#steps.API_2.model.RaftEndocytosis',
+    ),
 }
 
 OBJECTS = {
-    'Spec': ('Species', 'spec'),
-    'LinkSpec': ('Link Species', 'linkspec'),
-    'Reac': ('Reaction', ("reac['fwd']", "reac['bkw']")),
-    'SReac': ('Reaction', ("sreac['fwd']", "sreac['bkw']")),
-    'VDepSReac': ('Reaction', ("reac['fwd']", "reac['bkw']")),
-    'Diff': ('Diffusion', ("diff", 'diff(direc=tet2)')),
-    'SDiff': ('Diffusion', ("sdiff", 'sdiff(direc=tri2)')),
-    'Ohmic': ('Current', 'curr'),
-    'GHK': ('Current', 'curr'),
-    'Ves': ('Vesicle', 'ves'), 
-    'Vesicle': ('Vesicle', 'ves'), 
-    'VesicleSurface': ('Vesicle surface', ("VESICLE(ves)('surf')", "VESICLES(vesLst)('surf')")), 
-    'VesicleInner': ('Vesicle inside', ("VESICLE(ves)('in')", "VESICLES(vesLst)('in')")), 
-    'Raft': ('Raft', 'raft'), 
-    'SingleRaft': ('Raft', ('RAFT(raftref)', 'RAFTS(raftLst)')), 
-    'EndocyticZone': ('Endocytic zone', 'endoZone'), 
-    'RaftEndocytosis': ('Raft Endocytosis', 'rendo'), 
-    'Exocytosis': ('Exocytosis', 'exo'), 
+    # NameInMethods: (Full name, examples, doc link)
+    # examples -> ['name'] or [('name', 'name in descr')]
+    'Spec': (
+        'Species',
+        ['spec'],
+        'API_model.html#steps.API_2.model.Species',
+    ),
+    'LinkSpec': (
+        'Link Species',
+        ['linkspec'],
+        'API_model.html#steps.API_2.model.LinkSpecies',
+    ),
+    'Reac': (
+        'Reaction',
+        [("reac['fwd']", "reac (forward)"), ("reac['bkw']", "reac (backward)")],
+        'API_model.html#steps.API_2.model.Reaction',
+    ),
+    'SReac': (
+        'Reaction',
+        [("sreac['fwd']", "sreac (forward)"), ("sreac['bkw']", "sreac (backward)")],
+        'API_model.html#steps.API_2.model.Reaction',
+    ),
+    'VDepSReac': (
+        'Reaction',
+        [("reac['fwd']", "reac (forward)"), ("reac['bkw']", "reac (backward)")],
+        'API_model.html#steps.API_2.model.Reaction',
+    ),
+    'Diff': (
+        'Diffusion',
+        ["diff", ('diff(direc=tet2)', 'diff towards tet2')],
+        'API_model.html#steps.API_2.model.Diffusion',
+    ),
+    'SDiff': (
+        'Diffusion',
+        ["sdiff", ('sdiff(direc=tri2)', 'sdiff towards tri2')],
+        'API_model.html#steps.API_2.model.Diffusion',
+    ),
+    'Ohmic': (
+        'Current',
+        ['curr'],
+        'API_model.html#steps.API_2.model.OhmicCurr',
+    ),
+    'GHK': (
+        'Current',
+        ['curr'],
+        'API_model.html#steps.API_2.model.GHKCurr',
+    ),
+    'Ves': (
+        'Vesicle',
+        ['ves'],
+        'API_model.html#steps.API_2.model.Vesicle',
+    ),
+    'Vesicle': (
+        'Vesicle',
+        ['ves'],
+        'API_model.html#steps.API_2.model.Vesicle',
+    ),
+    'VesicleSurface': (
+        'Vesicle surface',
+        [("VESICLE(ves)('surf')", "ves"), ("VESICLES(vesLst)('surf')", "list vesLst")],
+        'API_model.html#steps.API_2.model.Vesicle.__call__',
+    ),
+    'VesicleInner': (
+        'Vesicle inside',
+        [("VESICLE(ves)('in')", "ves"), ("VESICLES(vesLst)('in')", "list vesLst")],
+        'API_model.html#steps.API_2.model.Vesicle.__call__',
+    ),
+    'Raft': (
+        'Raft',
+        ['raft'],
+        'API_model.html#steps.API_2.model.Raft',
+    ),
+    'SingleRaft': (
+        'Raft',
+        [('RAFT(raftref)', 'raftref'), ('RAFTS(raftLst)', 'list raftLst')],
+        'API_sim.html#steps.API_2.sim.RaftReference',
+    ),
+    'EndocyticZone': (
+        'Endocytic zone',
+        ['endoZone'],
+        'API_geom.html#steps.API_2.geom.EndocyticZone',
+    ),
+    'RaftEndocytosis': (
+        'Raft Endocytosis',
+        ['rendo'],
+        'API_model.html#steps.API_2.model.RaftEndocytosis',
+    ),
+    'Exocytosis': (
+        'Exocytosis',
+        ['exo'],
+        'API_model.html#steps.API_2.model.Exocytosis',
+    ),
 }
 
 OBJ_PROPERTIES = {
-    # Prop: (getValue, setValue)
-    'Count': ('cnt', 'n'),
-    'Conc': ('conc', 'conc'),
-    'Amount': ('val', 'a'),
-    'Clamped': ('clamped', 'clamped'),
-    'K': ('val', 'kf'),
-    'Active': ('active', 'active'),
-    'D': ('dcst', 'dcst'),
-    'C': ('val', 'val'),
-    'H': ('val', 'val'),
-    'A': ('val', 'val'),
-    'Extent': ('val', 'val'),
-    'I': ('val', 'val'),
-    'DiffusionActive': ('val', 'val'),
-    'Dcst': ('val', 'val'),
-    'Pos': ('pos', 'pos'),
-    'PosSpherical': ('spos', 'spos'),
+    # Prop: (getValue, setValue, short description)
+    'Count': (
+        'cnt',
+        'n',
+        'number',
+    ),
+    'Conc': (
+        'conc',
+        'conc',
+        'concentration',
+    ),
+    'Amount': (
+        'val',
+        'a',
+        'the amount',
+    ),
+    'Clamped': (
+        'clamped',
+        'clamped',
+        'clamped status',
+    ),
+    'K': (
+        'val',
+        'kf',
+        'reaction constant',
+    ),
+    'Active': (
+        'active',
+        'active',
+        'active status',
+    ),
+    'D': (
+        'dcst',
+        'dcst',
+        'diffusion constant',
+    ),
+    'C': (
+        'val',
+        'val',
+        'stochastic reaction constant',
+    ),
+    'H': (
+        'val',
+        'val',
+        'number of reactant combinations h_mu',
+    ),
+    'A': (
+        'val',
+        'val',
+        'propensity',
+    ),
+    'Extent': (
+        'val',
+        'val',
+        'extent',
+    ),
+    'I': (
+        'val',
+        'val',
+        'current',
+    ),
+    'DiffusionActive': (
+        'val',
+        'val',
+        'active status',
+    ),
+    'Dcst': (
+        'val',
+        'val',
+        'diffusion constant',
+    ),
+    'Pos': (
+        'pos',
+        'pos',
+        'position in cartesian coordinates',
+    ),
+    'PosSpherical': (
+        'spos',
+        'spos',
+        'position in spherical coordinated',
+    ),
 }
 
 LOC_PROPERTIES = {
-    # Prop: (getValue, setValue)
-    'Area': ('val', 'val'),
-    'Vol': ('val', 'val'),
-    'V': ('val', 'val'),
-    'VClamped': ('clamped', 'clamped'),
-    'IClamp': ('val', 'i'),
-    'Potential': ('val', 'val'),
-    'Capac': ('cap', 'cap'),
-    'VolRes': ('val', 'val'),
-    'Res': ('ro, vrev', 'steps.utils.Params(ro, vrev)'),
-    'I': ('val', 'val'),
-    'Pos': ('pos', 'pos'),
-    'PosSpherical': ('spos', 'spos'),
-    'Immobility': ('immob', 'immob'),
-    'Events': ('events', 'events'),
-    'K': ('val', 'kf'),
+    # Prop: (getValue, setValue, short description)
+    'Area': (
+        'val',
+        'val',
+        'area',
+    ),
+    'Vol': (
+        'val',
+        'val',
+        'volume',
+    ),
+    'V': (
+        'val',
+        'val',
+        'potential',
+    ),
+    'VClamped': (
+        'clamped',
+        'clamped',
+        'clamped status of potential',
+    ),
+    'IClamp': (
+        'val',
+        'i',
+        'current clamp',
+    ),
+    'Potential': (
+        'val',
+        'val',
+        'potential',
+    ),
+    'Capac': (
+        'cap',
+        'cap',
+        'capacitance',
+    ),
+    'VolRes': (
+        'val',
+        'val',
+        'bulk electrical resistivity',
+    ),
+    'Res': (
+        'ro, vrev',
+        'steps.utils.Params(ro, vrev)',
+        'electrical resistivity',
+    ),
+    'I': (
+        'val',
+        'val',
+        'the current',
+    ),
+    'Pos': (
+        'pos',
+        'pos',
+        'position in cartesian coordinates'
+    ),
+    'PosSpherical': (
+        'spos',
+        'spos',
+        'position in spherical coordinated',
+    ),
+    'Immobility': (
+        'immob',
+        'immob',
+        'immobility status',
+    ),
+    'Events': (
+        'events',
+        'events',
+        'list of events',
+    ),
+    'K': (
+        'val',
+        'kf',
+        'rate',
+    ),
 }
 
-REV_LOC_MAP = {long: short for short, (long, _) in LOCATIONS.items()}
+REV_LOC_MAP = {long: short for short, (long, *_) in LOCATIONS.items()}
 
 DOC_REPLACEMENT = {
     'direction_comp': 'direc',
@@ -257,6 +525,12 @@ DOC_REPLACEMENT = {
     'with\sindex\sidx': lambda loc: REV_LOC_MAP[loc].lower(),
     'ohmic\scurrent': 'ohmic or GHK current with string identifier curr',
 }
+
+DOC_STOP_LINES = [
+    r'Syntax::',
+    r':param',
+    r':rtype',
+]
 
 INVALID_EXAMPLES = [
     re.compile('^.+diffb\(direc=[^\)]+\)\.[^\.]+\.DiffusionActive.*$'),
@@ -288,6 +562,40 @@ for comb in itertools.product(['get', 'set'], LOCATIONS.items(), LOC_PROPERTIES.
     allMethodNames[name] = (gs, loc[1], None, prop)
 
 
+def generateDescription(meth):
+    gs, loc, obj, prop = allMethodNames[meth.__name__]
+    allProps = {}
+    if loc is not None:
+        allProps = LOC_PROPERTIES
+    if obj is not None:
+        allProps = {**allProps, **OBJ_PROPERTIES}
+    propDescr = allProps.get(prop[0], (None, None, prop[0]))[-1]
+    descr = f'{gs[0].upper() + gs[1:]} the <a href="#steps.API_2.sim.SimPath.{prop[0]}">{propDescr}</a>'
+    if prop[0] in sim.SimPath._PATH_END_UNITS:
+        unit = sim.SimPath._PATH_END_UNITS[prop[0]]
+        if isinstance(unit, utils.Units) and not unit._isDimensionless():
+            descr += f' (in {unit._toUnicode()})'
+    if obj is None:
+        if loc is None:
+            descr += f' of the simulation'
+        else:
+            loctpe, locid, locdoc = loc
+            if not isinstance(locid, str):
+                locid = locid[0]
+            descr += f' of <a href="{locdoc}">{loctpe}</a> {locid}'
+    else:
+        objtpe, objid, objdoc = obj
+        if not isinstance(objid, str):
+            objid = objid[0]
+        descr += f' of <a href="{objdoc}">{objtpe}</a> {objid}'
+        if loc is not None:
+            loctpe, locid, locdoc = loc
+            if not isinstance(locid, str):
+                locid = locid[0]
+            descr += f' in <a href="{locdoc}">{loctpe}</a> {locid}'
+    return descr + '.'
+
+
 def processDoc(doc, loc):
     res = ''
     signature, *doc = doc.split('\n')
@@ -296,7 +604,7 @@ def processDoc(doc, loc):
 
     lines = []
     for line in doc:
-        if 'Syntax::' in line:
+        if any(re.search(rexp, line) is not None for rexp in DOC_STOP_LINES):
             break
         else:
             line = line.strip()
@@ -316,11 +624,36 @@ def processDoc(doc, loc):
 
     return res, kwargs
 
-def parseMethod(dct, solverName, meth):
+def parseMethod(dct, solverName, method):
+    gs, loc, obj, prop = allMethodNames[method.__name__]
+
+    parts = [['sim']]
+    names = []
+    docs = []
+    for item in [loc, obj]:
+        if item is not None:
+            name, examples, doc = item
+            names.append(name)
+            parts.append(examples)
+            docs.append(doc)
+    
+    for comb in itertools.product(*parts):
+
+    # locExamples, objExamples = [], []
+    # if loc is not None:
+    #     locName, locExamples, locDoc = loc
+    # if obj is not None:
+    #     objName, objExamples, objDoc = obj
+
+    print(loc, obj, prop)
+
+def parseMethod_old(dct, solverName, meth):
     gs, loc, obj, prop = allMethodNames[meth.__name__]
 
     allLines = ['sim']
     doc, kwargs = processDoc(meth.__doc__, loc[0])
+    # TMP
+    doc = generateDescription(meth) + '\n' + doc
 
     for item in [loc, obj]:
         if item is not None:
@@ -348,11 +681,13 @@ def parseMethod(dct, solverName, meth):
                 if all(p.match(line) is None for p in INVALID_EXAMPLES):
                     endLines.append(line)
 
-    dct = dct.setdefault(gs, {}).setdefault(solverName, {}).setdefault(loc[0], {})
+    dct = dct.setdefault(gs, {}).setdefault(
+        solverName, {}).setdefault(loc[0], {})
     if obj is not None:
         dct = dct.setdefault(obj[0], {})
     if prop[0] not in dct:
-        dct[prop[0]] = {'@code': endLines, '@doc':doc}
+        dct[prop[0]] = {'@code': endLines, '@doc': doc}
+
 
 def getSolverClass(solverStr):
     if solverStr in sim.Simulation.SERIAL_SOLVERS:
@@ -362,6 +697,7 @@ def getSolverClass(solverStr):
     if solverStr == 'TetVesicle':
         return stepslib._py_TetVesicleVesRaft
     return None
+
 
 def GenerateJSON(path):
     jsonData = {}
@@ -381,6 +717,7 @@ def GenerateJSON(path):
 
     with open(path, 'w') as f:
         json.dump(jsonData, f)
+
 
 GenerateJSON(html_extra_path[0])
 
@@ -535,14 +872,13 @@ todo_include_todos = True
 
 
 # Not sure if there is a better way to do this but if we do not return the descriptor itself
-# during documentation, the __doc__ from the original function is not taken into account. 
+# during documentation, the __doc__ from the original function is not taken into account.
 # This might be due to how sphinx gets class attributes which trigger the call of the descriptor's
 # __get__ method instead of returning the descriptor itself. To avoid this, we monkey patch the
 # descriptor's __get__ method to return the descriptor instead of the normal value.
 steps.API_2.utils.classproperty.__get__ = lambda self, *args: self
 
 # -- Project information -----------------------------------------------------
-
 
 
 # -- General configuration ---------------------------------------------------
@@ -563,13 +899,17 @@ autodoc_default_options = {
     # 'exclude-members': '__weakref__'
 }
 
+
 def AllSubclasses(cls):
     for cls2 in cls.__subclasses__():
         yield cls2
         for cls3 in AllSubclasses(cls2):
             yield cls3
 
-visualClasses = ['SimControl', 'PlotDisplay', 'TimePlot', 'SpatialPlot', 'NewRow', 'SimDisplay', 'ElementDisplay']
+
+visualClasses = ['SimControl', 'PlotDisplay', 'TimePlot',
+                 'SpatialPlot', 'NewRow', 'SimDisplay', 'ElementDisplay']
+
 
 def autodoc_skip_member(app, what, name, obj, skip, options):
     if obj is not None and hasattr(obj, '__doc__'):
@@ -581,15 +921,17 @@ def autodoc_skip_member(app, what, name, obj, skip, options):
         elif obj.__doc__ is not None and ':meta private:' in obj.__doc__:
             return True
         elif isinstance(obj, types.MethodType):
-            if obj.__self__.__name__ in visualClasses and obj.__name__ == 'Create' :
+            if obj.__self__.__name__ in visualClasses and obj.__name__ == 'Create':
                 return True
     return skip
+
 
 replace_map = {
     '{{model.Reaction._FwdSpecifier}}': steps.API_2.model.Reaction._FwdSpecifier,
     '{{model.Reaction._BkwSpecifier}}': steps.API_2.model.Reaction._BkwSpecifier,
 }
 py_prefix = '_py_'
+
 
 def autodoc_process_docstring(app, what, name, obj, options, lines):
     if isinstance(obj, types.MethodType) and obj.__name__ == 'Create' and obj.__self__.__name__ != 'NamedObject':
@@ -609,12 +951,13 @@ def autodoc_process_docstring(app, what, name, obj, options, lines):
         if len(name.split('.')) > 2:
             *_, clsname, methname = name.split('.')
             if methname == '__getattr__' and clsname not in ['NamedObject', 'SimPath', 'Simulation',
-                    'ResultSelector', 'Parameter', 'SQLiteGroup', 'HDF5Group']:
+                                                             'ResultSelector', 'Parameter', 'SQLiteGroup', 'HDF5Group']:
                 lines[:] = [f"""
                     Access the children of the object as if they were an attribute, see :py:func:`steps.API_2.utils.NamedObject.__getattr__` for details.
                 """]
             elif clsname in [cls.__name__ for cls in steps.API_2.geom.RefList.__subclasses__()]:
-                clsval = [cls for cls in steps.API_2.geom.RefList.__subclasses__() if cls.__name__ == clsname][0]
+                clsval = [cls for cls in steps.API_2.geom.RefList.__subclasses__(
+                ) if cls.__name__ == clsname][0]
                 refcls = clsval._refCls
                 funcCls = obj.__qualname__.split('.')[0]
                 if funcCls == steps.API_2.geom.RefList.__name__:
@@ -696,6 +1039,7 @@ def autodoc_process_bases(app, name, obj, options, bases):
                         bases.append(b2)
                         added = True
                 del bases[i]
+
 
 def setup(app):
     app.connect('autodoc-skip-member', autodoc_skip_member)

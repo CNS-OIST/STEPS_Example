@@ -41,6 +41,12 @@ Detailed documentation
 * Simulation utilities
 
  * :py:class:`steps.API_2.sim.SimPath`
+ * :py:class:`steps.API_2.sim.VesiclePathReference`
+ * :py:class:`steps.API_2.sim.VesicleReference`
+ * :py:class:`steps.API_2.sim.RaftReference`
+ * :py:class:`steps.API_2.sim.VesicleList`
+ * :py:class:`steps.API_2.sim.RaftList`
+ * :py:class:`steps.API_2.sim.LinksSpecList`
 
 * Parallel simulations
 

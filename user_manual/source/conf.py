@@ -523,6 +523,20 @@ INVALID_EXAMPLES = [
     re.compile('^.+local=False.+$'),
 ]
 
+IGNORE_KWARGS = ['direction_tet', 'direction_tri', 'direction_comp', 'direction_patch', 'local']
+
+KWARGS_DOC = {
+    'force': [('True', 'When force is set to True, the vesicle is swapped with any vesicle that would prevent it from changing its position')],
+    'distributionMethod': [
+        ('DistributionMethod.MULTINOMIAL', 
+         """"The distributing is weighted with the volume or area fraction of elements: bigger elements get a higher amount of molecules.
+         With __CLS_sim.DistributionMethod.UNIFORM__ (default), the distribution is deterministic (apart from roundings) and the number of
+         molecules per element is e.g. n*V_tet/V_tot.
+         With __CLS_sim.DistributionMethod.MULTINOMIAL__ the distribution is multinomial and the probability of putting a species in an
+         element is e.g. V_tet/V_tot.
+         """")],
+}
+
 TET_SOLVERS = [
     solv for solv in sim.Simulation.SERIAL_SOLVERS + sim.Simulation.PARALLEL_SOLVERS if 'tet' in solv.lower()
 ]
@@ -607,10 +621,14 @@ def processDoc(doc, loc):
 
     return res, kwargs
 
+def finalize_descr(descr):
+    return re.sub('__CLS_(\w+)\.([\_]+)__', '<a href="API_\g<1>.html#steps.API_2.\g<1>.\g<2>">\g<2></a>', descr)
+
 def parseMethod(dct, solverName, method):
     # Extract kwargs
     signature, *doc = method.__doc__.split('\n')
     kwargs = re.findall(r'(\w+)\s*=\s*(?:_py_)?([\w\.]+)', signature)
+    print(kwargs)
 
     gs, loc, obj, prop = allMethodNames[method.__name__]
     propName, (getValue, setValue, propDescr) = prop
@@ -627,10 +645,28 @@ def parseMethod(dct, solverName, method):
             for ex, dscr in zip(examples, descriptions):
                 for name, descr in options:
                     new_examples.append(ex + [name])
-                    descr = re.sub('__CLS_(\w+)\.(\w+)__', '<a href="API_\g<1>.html#steps.API_2.\g<1>.\g<2>">\g<2></a>', descr)
-                    new_descriptions.append(dscr + [descr])
+                    new_descriptions.append(dscr + [finalize_descr(descr)])
             examples = new_examples
             descriptions = new_descriptions
+
+    # TODO Use setvalues list instead of duplicating examples and descriptions
+    setValues = [(setValue, '')]
+    # Process keywords
+    for kwname, kwvalue in kwargs:
+        if kwname not in IGNORE_KWARGS:
+            if kwname in KWARGS_DOC:
+                val, doc = KWARGS_DOC[kwname]
+                new_examples = []
+                new_descriptions = []
+                for ex, dscr in zip(examples, descriptions):
+                    for name, descr in options:
+                        new_examples.append(ex + [name])
+                        descr = re.sub('__CLS_(\w+)\.([\_]+)__', '<a href="API_\g<1>.html#steps.API_2.\g<1>.\g<2>">\g<2></a>', descr)
+                        new_descriptions.append(dscr + [descr])
+                examples = new_examples
+                descriptions = new_descriptions
+            else:
+                warnings.warn('Undocumented keyword arg {kwname} in method {method}. Add documentation to the KWARGS_DOC dict in conf.py.')
 
     propDescr = f'<a href="#steps.API_2.sim.SimPath.{propName}">{propDescr}</a>'
     # Add unit if available

@@ -41,7 +41,7 @@ $(document).ready(function(){
 
             currId = ids[sid];
             while (currId in ids) {
-                if ('@code' in tmp_dict[key]) {
+                if ('@doc' in tmp_dict[key]) {
                     currId = "None";
                     break;
                 }
@@ -58,10 +58,10 @@ $(document).ready(function(){
                 }
             }
             if (currId === "None") {
-                var lines = tmp_dict[key];
+                var lines = tmp_dict[key]['@doc'];
                 for (var i = 0 ; i < lines.length ; i++) {
                     $('<div class="DisplayBox line-block" style="font-size:25px;line-height:30px;width:610px;"><code class="py py-class">' + lines[i]['@code'] + '</code></div>').appendTo($('.ExamplesDisplay#SimPathExamples'));
-                    $('<div class="DocDisplay line-block" style="width:610px;color:#666666;">' + lines[i]['@doc'] + '</div>').appendTo($('.ExamplesDisplay#SimPathExamples'));
+                    $('<div class="DocDisplay line-block" style="width:610px;color:#666666;">' + lines[i]['@descr'] + '</div>').appendTo($('.ExamplesDisplay#SimPathExamples'));
                 }
             }
         });

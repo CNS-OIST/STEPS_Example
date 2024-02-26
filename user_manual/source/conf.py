@@ -169,83 +169,83 @@ html_extra_path = [
 
 LOCATIONS = {
     # NameInMethods: (Full name, examples)
-    # examples -> [('name in example', 'name in descr')]
+    # examples -> [('name in example', 'name in descr', optional: 'required kwarg 1', 'required kwarg 2', ...)]
     'Comp': (
         'Compartment',
-        [('comp', '__CLS_geom.Compartment__ comp')],
+        [('comp', '__CLS_geom.Compartment__ __CODE_comp__')],
     ),
     'Patch': (
         'Patch',
-        [('patch', '__CLS_geom.Patch__ patch')],
+        [('patch', '__CLS_geom.Patch__ __CODE_patch__')],
     ),
     'Memb': (
         'Membrane',
-        [('memb', '__CLS_geom.Membrane__ memb')],
+        [('memb', '__CLS_geom.Membrane__ __CODE_memb__')],
     ),
     'DiffBoundary': (
         'Diff. Boundary',
-        [('diffb', '__CLS_geom.DiffBoundary__ diffb'),
-         ('diffb(direc=comp2)', '__CLS_geom.DiffBoundary__ diffb in direction of __CLS_geom.Compartment__ comp2')],
+        [('diffb', '__CLS_geom.DiffBoundary__ __CODE_diffb__'),
+         ('diffb(direc=comp2)', '__CLS_geom.DiffBoundary__ diffb in direction of __CLS_geom.Compartment__ __CODE_comp2__', 'direction_comp')],
     ),
     'SDiffBoundary': (
         'Surf. Diff. Boundary',
-        [('sdiffb', '__CLS_geom.SDiffBoundary__ diffb'),
-         ('diffb(direc=patch2)', '__CLS_geom.SDiffBoundary__ diffb in direction of __CLS_geom.Patch__ patch2')],
+        [('sdiffb', '__CLS_geom.SDiffBoundary__ __CODE_diffb__'),
+         ('diffb(direc=patch2)', '__CLS_geom.SDiffBoundary__ diffb in direction of __CLS_geom.Patch__ __CODE_patch2_', 'direction_patch')],
     ),
     'ROI': (
         'Region of Interest',
-        [('roi', '__CLS_geom.ROI__ roi')],
+        [('roi', '__CLS_geom.ROI__ __CODE_roi__')],
     ),
     'Tet': (
         'Tetrahedron',
-        [('TET(tet)', '__CLS_geom.TetReference__ tet'),
-         ('TETS(tetLst)', 'each tetrahedron in __CLS_geom.TetList__ tetLst')],
+        [('TET(tet)', '__CLS_geom.TetReference__ __CODE_tet__'),
+         ('TETS(tetLst)', 'each tetrahedron in __CLS_geom.TetList__ __CODE_tetLst__')],
     ),
     'Tri': (
         'Triangle',
-        [('TRI(tri)', '__CLS_geom.TriReference__ tri'),
-         ('TRIS(triLst)', 'each triangle in __CLS_geom.TriList__ triLst')],
+        [('TRI(tri)', '__CLS_geom.TriReference__ __CODE_tri__'),
+         ('TRIS(triLst)', 'each triangle in __CLS_geom.TriList__ __CODE_triLst__')],
     ),
     'Vert': (
         'Vertex',
-        [('VERT(vert)', '__CLS_geom.VertReference__ vert'),
-         ('VERTS(vertLst)', 'each vertex in __CLS_geom.VertList__ vertLst')],
+        [('VERT(vert)', '__CLS_geom.VertReference__ __CODE_vert__'),
+         ('VERTS(vertLst)', 'each vertex in __CLS_geom.VertList__ __CODE_vertLst__')],
     ),
     'Ves': (
         'Vesicle',
-        [('ves', '__CLS_model.Vesicle__ ves')],
+        [('ves', '__CLS_model.Vesicle__ __CODE_ves__')],
     ),
     'SingleVesicle': (
         'Vesicle',
-        [('VESICLE(vesref)', '__CLS_sim.VesicleReference__ vesref'),
-         ('VESICLES(vesLst)', 'each vesicle in __CLS_sim.VesicleList__ vesLst')],
+        [('VESICLE(vesref)', '__CLS_sim.VesicleReference__ __CODE_vesref__'),
+         ('VESICLES(vesLst)', 'each vesicle in __CLS_sim.VesicleList__ __CODE_vesLst__')],
     ),
     'SingleVesicleSurface': (
         'Vesicle surface',
-        [("VESICLE(vesref)('surf')", 'the surface of __CLS_sim.VesicleReference__ vesref'),
-         ("VESICLES(vesLst)('surf')", 'the surface of each vesicle in __CLS_sim.VesicleList__ vesLst')],
+        [("VESICLE(vesref)('surf')", 'the surface of __CLS_sim.VesicleReference__ __CODE_vesref__'),
+         ("VESICLES(vesLst)('surf')", 'the surface of each vesicle in __CLS_sim.VesicleList__ __CODE_vesLst__')],
     ),
     'SingleVesicleInner': (
         'Vesicle inside',
-        [("VESICLE(vesref)('in')", "the lumen of __CLS_sim.VesicleReference__ vesref"),
-         ("VESICLES(vesLst)('in')", "the lumen of each vesicle in __CLS_sim.VesicleList__ vesLst")],
+        [("VESICLE(vesref)('in')", "the lumen of __CLS_sim.VesicleReference__ __CODE_vesref__"),
+         ("VESICLES(vesLst)('in')", "the lumen of each vesicle in __CLS_sim.VesicleList__ __CODE_vesLst__")],
     ),
     'Exocytosis': (
         'Exocytosis',
-        [('exo', '__CLS_model.Exocytosis__ exo')],
+        [('exo', '__CLS_model.Exocytosis__ __CODE_exo__')],
     ),
     'Raft': (
         'Raft',
-        [('raft', '__CLS_model.Raft__ raft')],
+        [('raft', '__CLS_model.Raft__ __CODE_raft__')],
     ),
     'SingleRaft': (
         'Raft',
-        [('RAFT(raftref)', "__CLS_sim.RaftReference__ raftref"),
-         ('RAFTS(raftLst)', "each raft in __CLS_sim.RaftList__ raftLst")],
+        [('RAFT(raftref)', "__CLS_sim.RaftReference__ __CODE_raftref__"),
+         ('RAFTS(raftLst)', "each raft in __CLS_sim.RaftList__ __CODE_raftLst__")],
     ),
     'RaftEndocytosis': (
         'Raft Endocytosis',
-        [('rendo', '__CLS_model.RaftEndocytosis__ rendo')],
+        [('rendo', '__CLS_model.RaftEndocytosis__ __CODE_rendo__')],
     ),
 }
 
@@ -254,84 +254,84 @@ OBJECTS = {
     # examples -> [('name in example', 'name in descr')]
     'Spec': (
         'Species',
-        [('spec', '__CLS_model.Species__ spec')],
+        [('spec', '__CLS_model.Species__ __CODE_spec__')],
     ),
     'LinkSpec': (
         'Link Species',
-        [('linkspec', '__CLS_model.LinkSpecies__ linkspec')],
+        [('linkspec', '__CLS_model.LinkSpecies__ __CODE_linkspec__')],
     ),
     'Reac': (
         'Reaction',
-        [("reac['fwd']", 'the forward part of __CLS_model.Reaction__ reac'),
-         ("reac['bkw']", 'the backward part of __CLS_model.Reaction__ reac')],
+        [("reac['fwd']", 'the forward part of __CLS_model.Reaction__ __CODE_reac__'),
+         ("reac['bkw']", 'the backward part of __CLS_model.Reaction__ __CODE_reac__')],
     ),
     'SReac': (
         'Reaction',
-        [("sreac['fwd']", 'the forward part of __CLS_model.Reaction__ sreac'),
-         ("sreac['bkw']", 'the backward part of __CLS_model.Reaction__ sreac')],
+        [("sreac['fwd']", 'the forward part of __CLS_model.Reaction__ __CODE_sreac__'),
+         ("sreac['bkw']", 'the backward part of __CLS_model.Reaction__ __CODE_sreac__')],
     ),
     'VDepSReac': (
         'Reaction',
-        [("reac['fwd']", 'the forward part of __CLS_model.Reaction__ reac'),
-         ("reac['bkw']", 'the backward part of __CLS_model.Reaction__ reac')],
+        [("reac['fwd']", 'the forward part of __CLS_model.Reaction__ __CODE_reac__'),
+         ("reac['bkw']", 'the backward part of __CLS_model.Reaction__ __CODE_reac__')],
     ),
     'Diff': (
         'Diffusion',
-        [('diff', '__CLS_model.Diffusion__ diff'),
-         ('diff(direc=tet2)', '__CLS_model.Diffusion__ diff towards __CLS_geom.TetReference__ tet2')],
+        [('diff', '__CLS_model.Diffusion__ __CODE_diff__'),
+         ('diff(direc=tet2)', '__CLS_model.Diffusion__ diff towards __CLS_geom.TetReference__ __CODE_tet2__', 'direction_tet')],
     ),
     'SDiff': (
         'Diffusion',
-        [('sdiff', '__CLS_model.Diffusion__ diff'),
-         ('sdiff(direc=tri2)', '__CLS_model.Diffusion__ diff towards __CLS_geom.TriReference__ tri2')],
+        [('sdiff', '__CLS_model.Diffusion__ __CODE_diff__'),
+         ('sdiff(direc=tri2)', '__CLS_model.Diffusion__ diff towards __CLS_geom.TriReference__ __CODE_tri2__', 'direction_tri')],
     ),
     'Ohmic': (
         'Current',
-        [('curr', '__CLS_model.OhmicCurr__ curr')],
+        [('curr', '__CLS_model.OhmicCurr__ __CODE_curr__')],
     ),
     'GHK': (
         'Current',
-        [('curr', '__CLS_model.GHKCurr__ curr')],
+        [('curr', '__CLS_model.GHKCurr__ __CODE_curr__')],
     ),
     'Ves': (
         'Vesicle',
-        [('ves', '__CLS_model.Vesicle__ ves')],
+        [('ves', '__CLS_model.Vesicle__ __CODE_ves__')],
     ),
     'Vesicle': (
         'Vesicle',
-        [('ves', '__CLS_model.Vesicle__ ves')],
+        [('ves', '__CLS_model.Vesicle__ __CODE_ves__')],
     ),
     # TODO: Check that the following make sense, shouldn't it be instead e.g. sim.comp.ves('surf').SA.Count?
     'VesicleSurface': (
         'Vesicle surface',
-        [("VESICLE(vesref)('surf')", 'the surface of __CLS_sim.VesicleReference__ vesref'),
-         ("VESICLES(vesLst)('surf')", 'the surface of each vesicle in __CLS_sim.VesicleList__ vesLst')],
+        [("VESICLE(vesref)('surf')", 'the surface of __CLS_sim.VesicleReference__ __CODE_vesref__'),
+         ("VESICLES(vesLst)('surf')", 'the surface of each vesicle in __CLS_sim.VesicleList__ __CODE_vesLst__')],
     ),
     'VesicleInner': (
         'Vesicle inside',
-        [("VESICLE(vesref)('in')", "the lumen of __CLS_sim.VesicleReference__ vesref"),
-         ("VESICLES(vesLst)('in')", "the lumen of each vesicle in __CLS_sim.VesicleList__ vesLst")],
+        [("VESICLE(vesref)('in')", "the lumen of __CLS_sim.VesicleReference__ __CODE_vesref__"),
+         ("VESICLES(vesLst)('in')", "the lumen of each vesicle in __CLS_sim.VesicleList__ __CODE_vesLst__")],
     ),
     'Raft': (
         'Raft',
-        [('raft', '__CLS_model.Raft__ raft')],
+        [('raft', '__CLS_model.Raft__ __CODE_raft__')],
     ),
     'SingleRaft': (
         'Raft',
-        [('RAFT(raftref)', "__CLS_sim.RaftReference__ raftref"),
-         ('RAFTS(raftLst)', "each raft in __CLS_sim.RaftList__ raftLst")],
+        [('RAFT(raftref)', "__CLS_sim.RaftReference__ __CODE_raftref__"),
+         ('RAFTS(raftLst)', "each raft in __CLS_sim.RaftList__ __CODE_raftLst__")],
     ),
     'EndocyticZone': (
         'Endocytic zone',
-        [('endoZone', '__CLS_geom.EndocyticZone__ endoZone')],
+        [('endoZone', '__CLS_geom.EndocyticZone__ __CODE_endoZone__')],
     ),
     'RaftEndocytosis': (
         'Raft Endocytosis',
-        [('rendo', '__CLS_model.RaftEndocytosis__ rendo')],
+        [('rendo', '__CLS_model.RaftEndocytosis__ __CODE_rendo__')],
     ),
     'Exocytosis': (
         'Exocytosis',
-        [('exo', '__CLS_model.Exocytosis__ exo')],
+        [('exo', '__CLS_model.Exocytosis__ __CODE_exo__')],
     ),
 }
 
@@ -400,7 +400,7 @@ OBJ_PROPERTIES = {
     'DiffusionActive': (
         'val',
         'val',
-        'active status',
+        'diffusion active status',
     ),
     'Dcst': (
         'val',
@@ -498,23 +498,6 @@ LOC_PROPERTIES = {
     ),
 }
 
-REV_LOC_MAP = {long: short for short, (long, *_) in LOCATIONS.items()}
-
-DOC_REPLACEMENT = {
-    'direction_comp': 'direc',
-    'direction_patch': 'direc',
-    'direction_tet': 'direc',
-    'direction_tri': 'direc',
-    'with\sindex\sidx': lambda loc: REV_LOC_MAP[loc].lower(),
-    'ohmic\scurrent': 'ohmic or GHK current with string identifier curr',
-}
-
-DOC_STOP_LINES = [
-    r'Syntax::',
-    r':param',
-    r':rtype',
-]
-
 INVALID_EXAMPLES = [
     re.compile('^.+diffb\(direc=[^\)]+\)\.[^\.]+\.DiffusionActive.*$'),
     re.compile('^.+(TETS|TRIS|comp|patch).+diff\(direc=[^\)]+\)\..*$'),
@@ -523,18 +506,20 @@ INVALID_EXAMPLES = [
     re.compile('^.+local=False.+$'),
 ]
 
+# Ignore these kwargs because they are integrated in other API_2 objects in the SimPath
 IGNORE_KWARGS = ['direction_tet', 'direction_tri', 'direction_comp', 'direction_patch', 'local']
 
 KWARGS_DOC = {
+    # Kwname: [(kwval, description)]
     'force': [('True', 'When force is set to True, the vesicle is swapped with any vesicle that would prevent it from changing its position')],
     'distributionMethod': [
         ('DistributionMethod.MULTINOMIAL', 
-         """"The distributing is weighted with the volume or area fraction of elements: bigger elements get a higher amount of molecules.
+         """The distributing is weighted with the volume or area fraction of elements: bigger elements get a higher amount of molecules.
          With __CLS_sim.DistributionMethod.UNIFORM__ (default), the distribution is deterministic (apart from roundings) and the number of
          molecules per element is e.g. n*V_tet/V_tot.
          With __CLS_sim.DistributionMethod.MULTINOMIAL__ the distribution is multinomial and the probability of putting a species in an
          element is e.g. V_tet/V_tot.
-         """")],
+         """)],
 }
 
 TET_SOLVERS = [
@@ -559,76 +544,20 @@ for comb in itertools.product(['get', 'set'], LOCATIONS.items(), LOC_PROPERTIES.
     allMethodNames[name] = (gs, loc[1], None, prop)
 
 
-def generateDescription(meth):
-    gs, loc, obj, prop = allMethodNames[meth.__name__]
-    allProps = {}
-    if loc is not None:
-        allProps = LOC_PROPERTIES
-    if obj is not None:
-        allProps = {**allProps, **OBJ_PROPERTIES}
-    propDescr = allProps.get(prop[0], (None, None, prop[0]))[-1]
-    descr = f'{gs[0].upper() + gs[1:]} the <a href="#steps.API_2.sim.SimPath.{prop[0]}">{propDescr}</a>'
-    if prop[0] in sim.SimPath._PATH_END_UNITS:
-        unit = sim.SimPath._PATH_END_UNITS[prop[0]]
-        if isinstance(unit, utils.Units) and not unit._isDimensionless():
-            descr += f' (in {unit._toUnicode()})'
-    if obj is None:
-        if loc is None:
-            descr += f' of the simulation'
-        else:
-            loctpe, locid, locdoc = loc
-            if not isinstance(locid, str):
-                locid = locid[0]
-            descr += f' of <a href="{locdoc}">{loctpe}</a> {locid}'
-    else:
-        objtpe, objid, objdoc = obj
-        if not isinstance(objid, str):
-            objid = objid[0]
-        descr += f' of <a href="{objdoc}">{objtpe}</a> {objid}'
-        if loc is not None:
-            loctpe, locid, locdoc = loc
-            if not isinstance(locid, str):
-                locid = locid[0]
-            descr += f' in <a href="{locdoc}">{loctpe}</a> {locid}'
-    return descr + '.'
-
-
-def processDoc(doc, loc):
-    res = ''
-    signature, *doc = doc.split('\n')
-    # Extract kwargs
-    kwargs = re.findall(r'(\w+)\s*=\s*(?:_py_)?([\w\.]+)', signature)
-
-    lines = []
-    for line in doc:
-        if any(re.search(rexp, line) is not None for rexp in DOC_STOP_LINES):
-            break
-        else:
-            line = line.strip()
-            if len(line) == 0 and len(lines) > 0:
-                res += '<p>' + ' '.join(lines) + '</p>'
-                lines = []
-            else:
-                lines.append(line.strip())
-    if len(lines) > 0:
-        res += '<p>' + ' '.join(lines) + '</p>'
-
-    for src, dst in DOC_REPLACEMENT.items():
-        if callable(dst):
-            res = re.sub(src, dst(loc), res)
-        else:
-            res = re.sub(src, dst, res)
-
-    return res, kwargs
-
 def finalize_descr(descr):
-    return re.sub('__CLS_(\w+)\.([\_]+)__', '<a href="API_\g<1>.html#steps.API_2.\g<1>.\g<2>">\g<2></a>', descr)
+    replacements = [
+        ('__CLS_(\w+)\.([\w\.]+)__', '<a href="API_\g<1>.html#steps.API_2.\g<1>.\g<2>">\g<2></a>'),
+        ('__CODE_([\w\.]+)__', '<code class="py py-class">\g<1></code>'),
+    ]
+    for pattern, repl in replacements:
+        descr = re.sub(pattern, repl, descr)
+    return descr
 
 def parseMethod(dct, solverName, method):
     # Extract kwargs
     signature, *doc = method.__doc__.split('\n')
-    kwargs = re.findall(r'(\w+)\s*=\s*(?:_py_)?([\w\.]+)', signature)
-    print(kwargs)
+    kwargs_pairs = re.findall(r'(\w+)\s*=\s*(?:_py_)?([\w\.]+)', signature)
+    kwargs = {kwname: kwval for kwname, kwval in kwargs_pairs}
 
     gs, loc, obj, prop = allMethodNames[method.__name__]
     propName, (getValue, setValue, propDescr) = prop
@@ -643,28 +572,20 @@ def parseMethod(dct, solverName, method):
             new_examples = []
             new_descriptions = []
             for ex, dscr in zip(examples, descriptions):
-                for name, descr in options:
-                    new_examples.append(ex + [name])
-                    new_descriptions.append(dscr + [finalize_descr(descr)])
+                for name, descr, *kwarg_deps in options:
+                    if all(kwdep in kwargs for kwdep in kwarg_deps):
+                        new_examples.append(ex + [name])
+                        new_descriptions.append(dscr + [finalize_descr(descr)])
             examples = new_examples
             descriptions = new_descriptions
 
-    # TODO Use setvalues list instead of duplicating examples and descriptions
     setValues = [(setValue, '')]
     # Process keywords
-    for kwname, kwvalue in kwargs:
+    for kwname, kwvalue in kwargs.items():
         if kwname not in IGNORE_KWARGS:
             if kwname in KWARGS_DOC:
-                val, doc = KWARGS_DOC[kwname]
-                new_examples = []
-                new_descriptions = []
-                for ex, dscr in zip(examples, descriptions):
-                    for name, descr in options:
-                        new_examples.append(ex + [name])
-                        descr = re.sub('__CLS_(\w+)\.([\_]+)__', '<a href="API_\g<1>.html#steps.API_2.\g<1>.\g<2>">\g<2></a>', descr)
-                        new_descriptions.append(dscr + [descr])
-                examples = new_examples
-                descriptions = new_descriptions
+                for val, descr in KWARGS_DOC[kwname]:
+                    setValues.append((f'steps.utils.Params({setValue}, {kwname}={val})', finalize_descr(descr)))
             else:
                 warnings.warn('Undocumented keyword arg {kwname} in method {method}. Add documentation to the KWARGS_DOC dict in conf.py.')
 
@@ -676,99 +597,31 @@ def parseMethod(dct, solverName, method):
             propDescr += f' (in {unit._toUnicode()})'
 
     allDoc = []
-    for ex, descr in zip(examples, descriptions):
-        if gs == 'get':
-            exLine = f'{getValue} = {".".join(ex)}.{propName}'
-            descrLine = 'Get'
-        elif gs == 'set':
-            exLine = f'{".".join(ex)}.{propName} = {setValue}'
-            descrLine = 'Set'
-        *descr, objDescr = descr
-        descrLine += f' the {propDescr} of {objDescr}'
-        if len(descr) > 0:
-            locDescr = descr[0]
-            descrLine += f' in {locDescr}'
-        allDoc.append({'@code': exLine, '@doc': descrLine})
+    for setval, additionalDescr in setValues:
+        for ex, descr in zip(examples, descriptions):
+            if gs == 'get':
+                exLine = f'{getValue} = {".".join(ex)}.{propName}'
+                descrLine = 'Get'
+            elif gs == 'set':
+                exLine = f'{".".join(ex)}.{propName} = {setval}'
+                descrLine = 'Set'
+
+            if all(p.match(exLine) is None for p in INVALID_EXAMPLES):
+                *descr, objDescr = descr
+                descrLine += f' the {propDescr} of {objDescr}'
+                if len(descr) > 0:
+                    locDescr = descr[0]
+                    descrLine += f' in {locDescr}'
+                descrLine += '. ' + additionalDescr
+                allDoc.append({'@code': exLine, '@descr': descrLine})
 
     dct = dct.setdefault(gs, {}).setdefault(
         solverName, {}).setdefault(loc[0], {})
     if obj is not None:
         dct = dct.setdefault(obj[0], {})
     if propName not in dct:
-        dct[propName] = allDoc
+        dct[propName] = {'@doc': allDoc}
             
-
-    # TODO: Handle kwargs
-
-    # parts = [['sim']]
-    # names = []
-    # docs = []
-    # for item in [loc, obj]:
-    #     if item is not None:
-    #         name, examples, doc = item
-    #         names.append(name)
-    #         parts.append(examples)
-    #         docs.append(doc)
-    #
-    # examples = []
-    # example_descriptions = []
-    # for comb in itertools.product(*parts):
-    #     itemDescrs = []
-    #     for v in comb:
-    #         match v:
-    #             case str:
-    #
-    #             case :
-
-    # locExamples, objExamples = [], []
-    # if loc is not None:
-    #     locName, locExamples, locDoc = loc
-    # if obj is not None:
-    #     objName, objExamples, objDoc = obj
-
-    # print(loc, obj, prop)
-
-def parseMethod_old(dct, solverName, meth):
-    gs, loc, obj, prop = allMethodNames[meth.__name__]
-
-    allLines = ['sim']
-    doc, kwargs = processDoc(meth.__doc__, loc[0])
-    # TMP
-    doc = generateDescription(meth) + '\n' + doc
-
-    for item in [loc, obj]:
-        if item is not None:
-            item = item[1]
-            if isinstance(item, str):
-                item = (item,)
-            allLines = [line + f'.{val}' for line in allLines for val in item]
-
-    endLines = []
-    for line in allLines:
-        line = f'{line}.{prop[0]}'
-        if gs == 'get':
-            line = f'{prop[1][0]} = {line}'
-        else:
-            line = f'{line} = {prop[1][1]}'
-        if all(p.match(line) is None for p in INVALID_EXAMPLES):
-            endLines.append(line)
-    if len(kwargs) > 0:
-        for line in allLines:
-            if gs == 'set':
-                line = f'{line}.{prop[0]} = steps.utils.Params({prop[1][1]}'
-                for name, val in kwargs:
-                    line += f', {name}={val}'
-                line += ')'
-                if all(p.match(line) is None for p in INVALID_EXAMPLES):
-                    endLines.append(line)
-
-    dct = dct.setdefault(gs, {}).setdefault(
-        solverName, {}).setdefault(loc[0], {})
-    if obj is not None:
-        dct = dct.setdefault(obj[0], {})
-    if prop[0] not in dct:
-        dct[prop[0]] = {'@code': endLines, '@doc': doc}
-
 
 def getSolverClass(solverStr):
     if solverStr in sim.Simulation.SERIAL_SOLVERS:

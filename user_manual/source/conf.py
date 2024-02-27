@@ -499,11 +499,7 @@ LOC_PROPERTIES = {
 }
 
 INVALID_EXAMPLES = [
-    re.compile('^.+diffb\(direc=[^\)]+\)\.[^\.]+\.DiffusionActive.*$'),
-    re.compile('^.+(TETS|TRIS|comp|patch).+diff\(direc=[^\)]+\)\..*$'),
-    re.compile('^.+diff\(direc=[^\)]+\)\.(Active|A|Extent).*$'),
-    re.compile('^.+direction_(tet|tri)=.+$'),
-    re.compile('^.+local=False.+$'),
+    re.compile('^.+(TETS|TRIS).+diff\(direc=[^\)]+\)\..*$'),
 ]
 
 # Ignore these kwargs because they are integrated in other API_2 objects in the SimPath

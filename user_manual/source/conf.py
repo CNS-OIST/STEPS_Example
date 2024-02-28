@@ -20,6 +20,7 @@ import re
 import steps
 import sys
 import types
+import warnings
 
 from steps import stepslib
 from steps.API_2 import model, geom, utils, sim
@@ -230,10 +231,6 @@ LOCATIONS = {
         [("VESICLE(vesref)('in')", "the lumen of __CLS_sim.VesicleReference__ __CODE_vesref__"),
          ("VESICLES(vesLst)('in')", "the lumen of each vesicle in __CLS_sim.VesicleList__ __CODE_vesLst__")],
     ),
-    'Exocytosis': (
-        'Exocytosis',
-        [('exo', '__CLS_model.Exocytosis__ __CODE_exo__')],
-    ),
     'Raft': (
         'Raft',
         [('raft', '__CLS_model.Raft__ __CODE_raft__')],
@@ -243,9 +240,24 @@ LOCATIONS = {
         [('RAFT(raftref)', "__CLS_sim.RaftReference__ __CODE_raftref__"),
          ('RAFTS(raftLst)', "each raft in __CLS_sim.RaftList__ __CODE_raftLst__")],
     ),
+    # Objects that can be used without location:
+    # TODO: Add endocytosis
+    'Exocytosis': (
+        'Exocytosis',
+        [('exo', '__CLS_model.Exocytosis__ __CODE_exo__')],
+    ),
     'RaftEndocytosis': (
         'Raft Endocytosis',
         [('rendo', '__CLS_model.RaftEndocytosis__ __CODE_rendo__')],
+    ),
+    'Reac': (
+        'Reaction',
+        [("reac['fwd']", 'the forward part of __CLS_model.Reaction__ __CODE_reac__'),
+         ("reac['bkw']", 'the backward part of __CLS_model.Reaction__ __CODE_reac__')],
+    ),
+    'Diff': (
+        'Diffusion',
+        [('diff', '__CLS_model.Diffusion__ __CODE_diff__')],
     ),
 }
 
@@ -479,13 +491,14 @@ LOC_PROPERTIES = {
     'PosSpherical': (
         'spos',
         'spos',
-        'position in spherical coordinated',
+        'position in spherical coordinates',
     ),
     'Immobility': (
         'immob',
         'immob',
         'immobility status',
     ),
+    # Properties of objects that do not require location:
     'Events': (
         'events',
         'events',
@@ -495,6 +508,11 @@ LOC_PROPERTIES = {
         'val',
         'kf',
         'rate',
+    ),
+    'Extent': (
+        'val',
+        'val',
+        'extent',
     ),
 }
 
@@ -507,7 +525,7 @@ IGNORE_KWARGS = ['direction_tet', 'direction_tri', 'direction_comp', 'direction_
 
 KWARGS_DOC = {
     # Kwname: [(kwval, description)]
-    'force': [('True', 'When force is set to True, the vesicle is swapped with any vesicle that would prevent it from changing its position')],
+    'force': [('True', 'When __CODE_force__ is set to __CODE_True__, the vesicle is swapped with any vesicle that would prevent it from changing its position')],
     'distributionMethod': [
         ('DistributionMethod.MULTINOMIAL', 
          """The distributing is weighted with the volume or area fraction of elements: bigger elements get a higher amount of molecules.
@@ -524,6 +542,16 @@ TET_SOLVERS = [
 
 INVALID_METHODS = [(solv, 'setCompVol') for solv in TET_SOLVERS]
 INVALID_METHODS += [(solv, 'setPatchArea') for solv in TET_SOLVERS]
+
+IGNORE_METHODS = [
+    'checkpoint',
+    'restore',
+    'getSolverEmail',
+    'step',
+    'setTemp',
+    'setTime',
+]
+IGNORE_METHODS = [re.compile(m) for m in IGNORE_METHODS]
 
 for dct in [LOCATIONS, OBJECTS]:
     for loc, val in list(dct.items()):
@@ -635,6 +663,7 @@ def GenerateJSON(path):
     for solverName in solvers:
         solvCls = getSolverClass(solverName)
         if solvCls is not None:
+            coveredMethods = set()
             for methodName in allMethodNames:
                 if (solverName, methodName) in INVALID_METHODS:
                     continue
@@ -644,6 +673,13 @@ def GenerateJSON(path):
                     continue
                 if callable(obj):
                     parseMethod(jsonData, solverName, obj)
+                    coveredMethods.add(methodName)
+            # Check if we are missing some methods
+            allMethods = [meth.__name__ for meth in solvCls.__dict__.values() if hasattr(meth, '__call__')]
+            allMethods = filter(lambda m: all(p.match(m) is None for p in IGNORE_METHODS), allMethods)
+            missingMethods = set(allMethods) - set(coveredMethods)
+            if len(missingMethods) > 0:
+                warnings.warn('The following methods from solver {solverName} are not documented:\n{"\n".join(missingMethods)}')
 
     with open(path, 'w') as f:
         json.dump(jsonData, f)

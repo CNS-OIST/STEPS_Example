@@ -20,7 +20,7 @@ The following tool allows users to know which paths can be set or accessed:
         <div style="display:inline-block">Solver</br><select style="width:200px" class="SimPathSelect" id="Solver"></select></div>
     </div>
     <div>
-        <div style="display:inline-block">Location</br><select style="width:200px;height:200px;" class="SimPathSelect" id="Location" multiple></select></div>
+        <div style="display:inline-block">Location / Object</br><select style="width:200px;height:200px;" class="SimPathSelect" id="Location" multiple></select></div>
         <div style="display:inline-block">Object / Property</br><select style="width:200px;height:200px;" class="SimPathSelect" id="Item" multiple></select></div>
         <div style="display:inline-block">Property</br><select style="width:200px;height:200px;" class="SimPathSelect" id="Property" multiple></select></div>
         <h4>Examples:</h4>

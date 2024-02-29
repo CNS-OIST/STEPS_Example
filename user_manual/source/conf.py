@@ -213,30 +213,34 @@ LOCATIONS = {
          ('VERTS(vertLst)', 'each vertex in __CLS_geom.VertList__ __CODE_vertLst__')],
     ),
     'Ves': (
-        'Vesicle',
+        'Vesicle type',
+        [('ves', '__CLS_model.Vesicle__ __CODE_ves__')],
+    ),
+    'VesicleSurface': (
+        'Vesicle type',
         [('ves', '__CLS_model.Vesicle__ __CODE_ves__')],
     ),
     'SingleVesicle': (
-        'Vesicle',
+        'Specific Vesicle',
         [('VESICLE(vesref)', '__CLS_sim.VesicleReference__ __CODE_vesref__'),
          ('VESICLES(vesLst)', 'each vesicle in __CLS_sim.VesicleList__ __CODE_vesLst__')],
     ),
     'SingleVesicleSurface': (
-        'Vesicle surface',
+        'Specific Vesicle',
         [("VESICLE(vesref)('surf')", 'the surface of __CLS_sim.VesicleReference__ __CODE_vesref__'),
          ("VESICLES(vesLst)('surf')", 'the surface of each vesicle in __CLS_sim.VesicleList__ __CODE_vesLst__')],
     ),
     'SingleVesicleInner': (
-        'Vesicle inside',
+        'Specific Vesicle',
         [("VESICLE(vesref)('in')", "the lumen of __CLS_sim.VesicleReference__ __CODE_vesref__"),
          ("VESICLES(vesLst)('in')", "the lumen of each vesicle in __CLS_sim.VesicleList__ __CODE_vesLst__")],
     ),
-    'Raft': (
+    'Raft type': (
         'Raft',
         [('raft', '__CLS_model.Raft__ __CODE_raft__')],
     ),
     'SingleRaft': (
-        'Raft',
+        'Specific Raft',
         [('RAFT(raftref)', "__CLS_sim.RaftReference__ __CODE_raftref__"),
          ('RAFTS(raftLst)', "each raft in __CLS_sim.RaftList__ __CODE_raftLst__")],
     ),
@@ -429,6 +433,16 @@ OBJ_PROPERTIES = {
         'spos',
         'position in spherical coordinated',
     ),
+    'Indices': (
+        'idxs',
+        'idxs',
+        'indices',
+    ),
+    'SDiffD': (
+        'dcst',
+        'dcst',
+        'surface diffusion constant',
+    ),
 }
 
 LOC_PROPERTIES = {
@@ -514,6 +528,11 @@ LOC_PROPERTIES = {
         'val',
         'extent',
     ),
+    'OverlapTets': (
+        'tetIdxs',
+        'tetIdxs',
+        'indices of the overlaped tetrahedron',
+    ),
 }
 
 INVALID_EXAMPLES = [
@@ -544,13 +563,50 @@ INVALID_METHODS = [(solv, 'setCompVol') for solv in TET_SOLVERS]
 INVALID_METHODS += [(solv, 'setPatchArea') for solv in TET_SOLVERS]
 
 IGNORE_METHODS = [
+	'_.+',
+    '[gs]etBatch.+s',
+    'sumBatch.+s',
+    '[gs]etROI.*s',
+    '[gs]etROIT(et|ri).*'
+    '.*SpecCountDict',
+    '(delete|add).*',
     'checkpoint',
     'restore',
     'getSolverEmail',
     'step',
     'setTemp',
     'setTime',
+    'getA0',
+	'advance',
+	'getSolverName',
+	'getSolverAuthors',
+	'reset',
+	'setNSteps',
+	'run',
+	'getSolverDesc',
+	'getNSteps',
+	'getTime',
+	'setRk4DT',
+	'setDT',
+	'getTemp',
+	'getEfieldDT',
+	'saveMembOpt',
+	'setEfieldDT',
+	'setTolerances',
+	'setMaxNumSteps',
+	'getIdleTime',
+	'getRDTime',
+	'setDiffApplyThreshold',
+	'getUpdPeriod',
+	'getSyncTime',
+	'repartitionAndReset',
+	'getDataExchangeTime',
+	'getEFieldTime',
+	'getNIteration',
+	'getCompTime',
+
 ]
+
 IGNORE_METHODS = [re.compile(m) for m in IGNORE_METHODS]
 
 for dct in [LOCATIONS, OBJECTS]:
@@ -558,6 +614,10 @@ for dct in [LOCATIONS, OBJECTS]:
         dct['Batch' + loc] = val
 
 allMethodNames = {}
+# for comb in itertools.product(['get', 'set'], LOCATIONS.items(), LOCATIONS.items(), OBJECTS.items(), OBJ_PROPERTIES.items(), ['', 'sNP']):
+#     gs, loc1, loc2, obj, prop, suff = comb
+#     name = gs + loc1[0] + loc2[0] + obj[0] + prop[0] + suff
+#     allMethodNames[name] = (gs, loc1[1], loc2[1], obj[1], prop)
 for comb in itertools.product(['get', 'set'], LOCATIONS.items(), OBJECTS.items(), OBJ_PROPERTIES.items(), ['', 'sNP']):
     gs, loc, obj, prop, suff = comb
     name = gs + loc[0] + obj[0] + prop[0] + suff
@@ -645,6 +705,8 @@ def parseMethod(dct, solverName, method):
         dct = dct.setdefault(obj[0], {})
     if propName not in dct:
         dct[propName] = {'@doc': allDoc}
+    else:
+        dct[propName]['@doc'] += allDoc
             
 
 def getSolverClass(solverStr):
@@ -679,7 +741,8 @@ def GenerateJSON(path):
             allMethods = filter(lambda m: all(p.match(m) is None for p in IGNORE_METHODS), allMethods)
             missingMethods = set(allMethods) - set(coveredMethods)
             if len(missingMethods) > 0:
-                warnings.warn('The following methods from solver {solverName} are not documented:\n{"\n".join(missingMethods)}')
+                missingMethodsStr = '\n'.join('\t' + meth for meth in missingMethods)
+                warnings.warn(f'The following methods from solver {solverName} are not documented:\n{missingMethodsStr}')
 
     with open(path, 'w') as f:
         json.dump(jsonData, f)

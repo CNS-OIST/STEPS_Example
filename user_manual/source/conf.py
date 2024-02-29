@@ -168,7 +168,7 @@ html_extra_path = [
 
 # Generate json
 
-LOCATIONS = {
+ALL_PATH_ITEMS = {
     # NameInMethods: (Full name, examples)
     # examples -> [('name in example', 'name in descr', optional: 'required kwarg 1', 'required kwarg 2', ...)]
     'Comp': (
@@ -214,11 +214,19 @@ LOCATIONS = {
     ),
     'Ves': (
         'Vesicle type',
-        [('ves', '__CLS_model.Vesicle__ __CODE_ves__')],
+        [('ves', '__CLS_model.Vesicle__s of type __CODE_ves__')],
     ),
+    # 'Vesicle': (
+    #     'Vesicle',
+    #     [('ves', '__CLS_model.Vesicle__ __CODE_ves__')],
+    # ),
     'VesicleSurface': (
         'Vesicle type',
-        [('ves', '__CLS_model.Vesicle__ __CODE_ves__')],
+        [("ves('surf')", 'the surfaces of __CLS_model.Vesicle__s of type __CODE_ves__')],
+    ),
+    'VesicleInner': (
+        'Vesicle type',
+        [("ves('in')", 'the lumens of __CLS_model.Vesicle__s of type __CODE_ves__')],
     ),
     'SingleVesicle': (
         'Specific Vesicle',
@@ -235,25 +243,21 @@ LOCATIONS = {
         [("VESICLE(vesref)('in')", "the lumen of __CLS_sim.VesicleReference__ __CODE_vesref__"),
          ("VESICLES(vesLst)('in')", "the lumen of each vesicle in __CLS_sim.VesicleList__ __CODE_vesLst__")],
     ),
-    'Raft type': (
-        'Raft',
-        [('raft', '__CLS_model.Raft__ __CODE_raft__')],
+    'Raft': (
+        'Raft type',
+        [('raft', '__CLS_model.Raft__s of type __CODE_raft__')],
     ),
     'SingleRaft': (
         'Specific Raft',
         [('RAFT(raftref)', "__CLS_sim.RaftReference__ __CODE_raftref__"),
          ('RAFTS(raftLst)', "each raft in __CLS_sim.RaftList__ __CODE_raftLst__")],
     ),
+    'EndocyticZone': (
+        'Endocytic zone',
+        [('endoZone', '__CLS_geom.EndocyticZone__ __CODE_endoZone__')],
+    ),
     # Objects that can be used without location:
     # TODO: Add endocytosis
-    'Exocytosis': (
-        'Exocytosis',
-        [('exo', '__CLS_model.Exocytosis__ __CODE_exo__')],
-    ),
-    'RaftEndocytosis': (
-        'Raft Endocytosis',
-        [('rendo', '__CLS_model.RaftEndocytosis__ __CODE_rendo__')],
-    ),
     'Reac': (
         'Reaction',
         [("reac['fwd']", 'the forward part of __CLS_model.Reaction__ __CODE_reac__'),
@@ -263,11 +267,6 @@ LOCATIONS = {
         'Diffusion',
         [('diff', '__CLS_model.Diffusion__ __CODE_diff__')],
     ),
-}
-
-OBJECTS = {
-    # NameInMethods: (Full name, examples)
-    # examples -> [('name in example', 'name in descr')]
     'Spec': (
         'Species',
         [('spec', '__CLS_model.Species__ __CODE_spec__')],
@@ -309,38 +308,6 @@ OBJECTS = {
         'Current',
         [('curr', '__CLS_model.GHKCurr__ __CODE_curr__')],
     ),
-    'Ves': (
-        'Vesicle',
-        [('ves', '__CLS_model.Vesicle__ __CODE_ves__')],
-    ),
-    'Vesicle': (
-        'Vesicle',
-        [('ves', '__CLS_model.Vesicle__ __CODE_ves__')],
-    ),
-    # TODO: Check that the following make sense, shouldn't it be instead e.g. sim.comp.ves('surf').SA.Count?
-    'VesicleSurface': (
-        'Vesicle surface',
-        [("VESICLE(vesref)('surf')", 'the surface of __CLS_sim.VesicleReference__ __CODE_vesref__'),
-         ("VESICLES(vesLst)('surf')", 'the surface of each vesicle in __CLS_sim.VesicleList__ __CODE_vesLst__')],
-    ),
-    'VesicleInner': (
-        'Vesicle inside',
-        [("VESICLE(vesref)('in')", "the lumen of __CLS_sim.VesicleReference__ __CODE_vesref__"),
-         ("VESICLES(vesLst)('in')", "the lumen of each vesicle in __CLS_sim.VesicleList__ __CODE_vesLst__")],
-    ),
-    'Raft': (
-        'Raft',
-        [('raft', '__CLS_model.Raft__ __CODE_raft__')],
-    ),
-    'SingleRaft': (
-        'Raft',
-        [('RAFT(raftref)', "__CLS_sim.RaftReference__ __CODE_raftref__"),
-         ('RAFTS(raftLst)', "each raft in __CLS_sim.RaftList__ __CODE_raftLst__")],
-    ),
-    'EndocyticZone': (
-        'Endocytic zone',
-        [('endoZone', '__CLS_geom.EndocyticZone__ __CODE_endoZone__')],
-    ),
     'RaftEndocytosis': (
         'Raft Endocytosis',
         [('rendo', '__CLS_model.RaftEndocytosis__ __CODE_rendo__')],
@@ -351,188 +318,224 @@ OBJECTS = {
     ),
 }
 
-OBJ_PROPERTIES = {
-    # Prop: (getValue, setValue, short description)
-    'Count': (
-        'cnt',
-        'n',
-        'number',
-    ),
-    'Conc': (
-        'conc',
-        'conc',
-        'concentration',
-    ),
-    'Amount': (
-        'val',
-        'a',
-        'amount',
-    ),
-    'Clamped': (
-        'clamped',
-        'clamped',
-        'clamped status',
-    ),
-    'K': (
-        'val',
-        'kf',
-        'reaction constant',
-    ),
-    'Active': (
-        'active',
-        'active',
-        'active status',
-    ),
-    'D': (
-        'dcst',
-        'dcst',
-        'diffusion constant',
-    ),
-    'C': (
-        'val',
-        'val',
-        'stochastic reaction constant',
-    ),
-    'H': (
-        'val',
-        'val',
-        'number of reactant combinations h_mu',
-    ),
-    'A': (
-        'val',
-        'val',
-        'propensity',
-    ),
-    'Extent': (
-        'val',
-        'val',
-        'extent',
-    ),
-    'I': (
-        'val',
-        'val',
-        'current',
-    ),
-    'DiffusionActive': (
-        'val',
-        'val',
-        'diffusion active status',
-    ),
-    'Dcst': (
-        'val',
-        'val',
-        'diffusion constant',
-    ),
-    'Pos': (
-        'pos',
-        'pos',
-        'position in cartesian coordinates',
-    ),
-    'PosSpherical': (
-        'spos',
-        'spos',
-        'position in spherical coordinated',
-    ),
-    'Indices': (
-        'idxs',
-        'idxs',
-        'indices',
-    ),
-    'SDiffD': (
-        'dcst',
-        'dcst',
-        'surface diffusion constant',
-    ),
-}
 
-LOC_PROPERTIES = {
-    # Prop: (getValue, setValue, short description)
-    'Area': (
-        'val',
-        'val',
-        'area',
-    ),
-    'Vol': (
-        'val',
-        'val',
-        'volume',
-    ),
-    'V': (
-        'val',
-        'val',
-        'potential',
-    ),
-    'VClamped': (
-        'clamped',
-        'clamped',
-        'clamped status of potential',
-    ),
-    'IClamp': (
-        'val',
-        'i',
-        'current clamp',
-    ),
-    'Potential': (
-        'val',
-        'val',
-        'potential',
-    ),
-    'Capac': (
-        'cap',
-        'cap',
-        'capacitance',
-    ),
-    'VolRes': (
-        'val',
-        'val',
-        'bulk electrical resistivity',
-    ),
-    'Res': (
-        'ro, vrev',
-        'steps.utils.Params(ro, vrev)',
-        'electrical resistivity',
-    ),
-    'I': (
-        'val',
-        'val',
-        'the current',
-    ),
-    'Pos': (
-        'pos',
-        'pos',
-        'position in cartesian coordinates'
-    ),
-    'PosSpherical': (
-        'spos',
-        'spos',
-        'position in spherical coordinates',
-    ),
-    'Immobility': (
-        'immob',
-        'immob',
-        'immobility status',
-    ),
-    # Properties of objects that do not require location:
-    'Events': (
-        'events',
-        'events',
-        'list of events',
-    ),
-    'K': (
-        'val',
-        'kf',
-        'rate',
-    ),
-    'Extent': (
-        'val',
-        'val',
-        'extent',
-    ),
-    'OverlapTets': (
-        'tetIdxs',
-        'tetIdxs',
-        'indices of the overlaped tetrahedron',
-    ),
+ALL_PROPERTIES = {
+    # Prop: {prefixPattern: (getValue, setValue, short description)}
+    'Count': {
+        '.*': (
+            'cnt',
+            'n',
+            'number',
+        ),
+    },
+    'Conc': {
+        '.*': (
+            'conc',
+            'conc',
+            'concentration',
+        ),
+    },
+    'Amount': {
+        '.*': (
+            'val',
+            'a',
+            'amount',
+        ),
+    },
+    'Clamped': {
+        '.*': (
+            'clamped',
+            'clamped',
+            'clamped status',
+        ),
+    },
+    'K': {
+        '.*Reac.*': (
+            'val',
+            'kf',
+            'reaction constant',
+        ),
+        '.*': (
+            'val',
+            'kf',
+            'rate',
+        ),
+    },
+    'Active': {
+        '.*': (
+            'active',
+            'active',
+            'active status',
+        ),
+    },
+    'D': {
+        '.*': (
+            'dcst',
+            'dcst',
+            'diffusion constant',
+        ),
+    },
+    'C': {
+        '.*': (
+            'val',
+            'val',
+            'stochastic reaction constant',
+        ),
+    },
+    'H': {
+        '.*': (
+            'val',
+            'val',
+            'number of reactant combinations h_mu',
+        ),
+    },
+    'A': {
+        '.*': (
+            'val',
+            'val',
+            'propensity',
+        ),
+    },
+    'Extent': {
+        '.*': (
+            'val',
+            'val',
+            'extent',
+        ),
+    },
+    'I': {
+        '.*': (
+            'val',
+            'val',
+            'current',
+        ),
+    },
+    'DiffusionActive': {
+        '.*': (
+            'val',
+            'val',
+            'diffusion active status',
+        ),
+    },
+    'Dcst': {
+        '.*': (
+            'val',
+            'val',
+            'diffusion constant',
+        ),
+    },
+    'Pos': {
+        '.*': (
+            'pos',
+            'pos',
+            'position in cartesian coordinates',
+        ),
+    },
+    'PosSpherical': {
+        '.*': (
+            'spos',
+            'spos',
+            'position in spherical coordinated',
+        ),
+    },
+    'Indices': {
+        '.*': (
+            'idxs',
+            'idxs',
+            'indices',
+        ),
+    },
+    'SDiffD': {
+        '.*': (
+            'dcst',
+            'dcst',
+            'surface diffusion constant',
+        ),
+    },
+    'Area': {
+        '.*': (
+            'val',
+            'val',
+            'area',
+        ),
+    },
+    'Vol': {
+        '.*': (
+            'val',
+            'val',
+            'volume',
+        ),
+    },
+    'V': {
+        '.*': (
+            'val',
+            'val',
+            'potential',
+        ),
+    },
+    'VClamped': {
+        '.*': (
+            'clamped',
+            'clamped',
+            'clamped status of potential',
+        ),
+    },
+    'IClamp': {
+        '.*': (
+            'val',
+            'i',
+            'current clamp',
+        ),
+    },
+    'Potential': {
+        '.*': (
+            'val',
+            'val',
+            'potential',
+        ),
+    },
+    'Capac': {
+        '.*': (
+            'cap',
+            'cap',
+            'capacitance',
+        ),
+    },
+    'VolRes': {
+        '.*': (
+            'val',
+            'val',
+            'bulk electrical resistivity',
+        ),
+    },
+    'Res': {
+        '.*': (
+            'ro, vrev',
+            'steps.utils.Params(ro, vrev)',
+            'electrical resistivity',
+        ),
+    },
+    'Immobility': {
+        '.*': (
+            'immob',
+            'immob',
+            'immobility status',
+        ),
+    },
+    'Events': {
+        '.*': (
+            'events',
+            'events',
+            'list of events',
+        ),
+    },
+    'OverlapTets': {
+        '.*': (
+            'tetIdxs',
+            'tetIdxs',
+            'indices of the overlaped tetrahedron',
+        ),
+    },
 }
 
 INVALID_EXAMPLES = [
@@ -609,25 +612,6 @@ IGNORE_METHODS = [
 
 IGNORE_METHODS = [re.compile(m) for m in IGNORE_METHODS]
 
-for dct in [LOCATIONS, OBJECTS]:
-    for loc, val in list(dct.items()):
-        dct['Batch' + loc] = val
-
-allMethodNames = {}
-# for comb in itertools.product(['get', 'set'], LOCATIONS.items(), LOCATIONS.items(), OBJECTS.items(), OBJ_PROPERTIES.items(), ['', 'sNP']):
-#     gs, loc1, loc2, obj, prop, suff = comb
-#     name = gs + loc1[0] + loc2[0] + obj[0] + prop[0] + suff
-#     allMethodNames[name] = (gs, loc1[1], loc2[1], obj[1], prop)
-for comb in itertools.product(['get', 'set'], LOCATIONS.items(), OBJECTS.items(), OBJ_PROPERTIES.items(), ['', 'sNP']):
-    gs, loc, obj, prop, suff = comb
-    name = gs + loc[0] + obj[0] + prop[0] + suff
-    allMethodNames[name] = (gs, loc[1], obj[1], prop)
-for comb in itertools.product(['get', 'set'], LOCATIONS.items(), LOC_PROPERTIES.items(), ['', 'sNP']):
-    gs, loc, prop, suff = comb
-    name = gs + loc[0] + prop[0] + suff
-    allMethodNames[name] = (gs, loc[1], None, prop)
-
-
 def finalize_descr(descr):
     replacements = [
         ('__CLS_(\w+)\.([\w\.]+)__', '<a href="API_\g<1>.html#steps.API_2.\g<1>.\g<2>">\g<2></a>'),
@@ -637,19 +621,45 @@ def finalize_descr(descr):
         descr = re.sub(pattern, repl, descr)
     return descr
 
+def getMethodInfos(methodName, prefix=''):
+    if len(prefix) == 0:
+        if m := re.match('([gs]et)(.*)', methodName):
+            for methInfos in getMethodInfos(m.group(2), prefix=m.group(1)):
+                yield (m.group(1),) + methInfos
+    else:
+        for prop, matchDct in ALL_PROPERTIES.items():
+            for regexp, infos in matchDct.items():
+                if re.match(regexp, prefix) and (m := re.match(f'{prop}$', methodName)):
+                    yield ((prop, infos),)
+                    break
+        for part, infos in ALL_PATH_ITEMS.items():
+            if m := re.match(f'{part}(.*)', methodName):
+                for methInfos in getMethodInfos(m.group(1), prefix=prefix + part):
+                    yield (infos,) + methInfos
+
+
 def parseMethod(dct, solverName, method):
+    if (solverName, method.__name__) in INVALID_METHODS:
+        return False
+
+    foundOne = False
+    for infos in getMethodInfos(method.__name__):
+        foundOne |= generateDocumentation(dct, solverName, method, infos)
+    return foundOne
+
+def generateDocumentation(dct, solverName, method, infos):
     # Extract kwargs
     signature, *doc = method.__doc__.split('\n')
     kwargs_pairs = re.findall(r'(\w+)\s*=\s*(?:_py_)?([\w\.]+)', signature)
     kwargs = {kwname: kwval for kwname, kwval in kwargs_pairs}
 
-    gs, loc, obj, prop = allMethodNames[method.__name__]
+    gs, *locobjs, prop = infos
     propName, (getValue, setValue, propDescr) = prop
 
     examples = [['sim']]
     descriptions = [[]]
 
-    for item in [loc, obj]:
+    for item in locobjs:
         if item is not None:
             tpe, options = item
             options = [(sl, sl) if isinstance(sl, str) else sl for sl in options]
@@ -693,20 +703,18 @@ def parseMethod(dct, solverName, method):
             if all(p.match(exLine) is None for p in INVALID_EXAMPLES):
                 *descr, objDescr = descr
                 descrLine += f' the {propDescr} of {objDescr}'
-                if len(descr) > 0:
-                    locDescr = descr[0]
+                while len(descr) > 0:
+                    *descr, locDescr = descr
                     descrLine += f' in {locDescr}'
                 descrLine += '. ' + additionalDescr
                 allDoc.append({'@code': exLine, '@descr': descrLine})
 
-    dct = dct.setdefault(gs, {}).setdefault(
-        solverName, {}).setdefault(loc[0], {})
-    if obj is not None:
-        dct = dct.setdefault(obj[0], {})
-    if propName not in dct:
-        dct[propName] = {'@doc': allDoc}
-    else:
-        dct[propName]['@doc'] += allDoc
+    dct = dct.setdefault(gs, {}).setdefault(solverName, {})
+    for item in locobjs:
+        dct = dct.setdefault(item[0], {})
+    docLst = dct.setdefault(propName, {}).setdefault('@doc', [])
+    docLst += allDoc
+    return True
             
 
 def getSolverClass(solverStr):
@@ -725,20 +733,16 @@ def GenerateJSON(path):
     for solverName in solvers:
         solvCls = getSolverClass(solverName)
         if solvCls is not None:
+            allMethods = set()
             coveredMethods = set()
-            for methodName in allMethodNames:
-                if (solverName, methodName) in INVALID_METHODS:
-                    continue
-                try:
-                    obj = getattr(solvCls, methodName)
-                except:
-                    continue
-                if callable(obj):
-                    parseMethod(jsonData, solverName, obj)
-                    coveredMethods.add(methodName)
-            # Check if we are missing some methods
-            allMethods = [meth.__name__ for meth in solvCls.__dict__.values() if hasattr(meth, '__call__')]
-            allMethods = filter(lambda m: all(p.match(m) is None for p in IGNORE_METHODS), allMethods)
+            for methodName in dir(solvCls):
+            # for methodName, meth in solvCls.__dict__.items():
+                meth = getattr(solvCls, methodName)
+                if callable(meth):
+                    if all(p.match(methodName) is None for p in IGNORE_METHODS):
+                        allMethods.add(methodName)
+                    if parseMethod(jsonData, solverName, meth):
+                        coveredMethods.add(methodName)
             missingMethods = set(allMethods) - set(coveredMethods)
             if len(missingMethods) > 0:
                 missingMethodsStr = '\n'.join('\t' + meth for meth in missingMethods)

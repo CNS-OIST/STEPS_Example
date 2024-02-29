@@ -16,7 +16,7 @@ $(document).ready(function(){
         }
     });
 
-    var ids = {"GetSet": "Solver", "Solver": "Location", "Location":"Item", "Item":"Property", "Property":"None"};
+    var ids = {"GetSet": "Solver", "Solver": "Location", "Location":"Item", "Item":"Property", "Property":"Property2", "Property2":"None"};
     for (selectid in ids) {
         $('.SimPathSelect#' + selectid).change(function() {
             var key = $(this).val();

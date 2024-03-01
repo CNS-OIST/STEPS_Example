@@ -212,14 +212,10 @@ ALL_PATH_ITEMS = {
         [('VERT(vert)', '__CLS_geom.VertReference__ __CODE_vert__'),
          ('VERTS(vertLst)', 'each vertex in __CLS_geom.VertList__ __CODE_vertLst__')],
     ),
-    'Ves': (
+    'Vesicle': (
         'Vesicle type',
-        [('ves', '__CLS_model.Vesicle__s of type __CODE_ves__')],
+        [('ves', '__CLS_model.Vesicle__ __CODE_ves__')],
     ),
-    # 'Vesicle': (
-    #     'Vesicle',
-    #     [('ves', '__CLS_model.Vesicle__ __CODE_ves__')],
-    # ),
     'VesicleSurface': (
         'Vesicle type',
         [("ves('surf')", 'the surfaces of __CLS_model.Vesicle__s of type __CODE_ves__')],
@@ -258,22 +254,31 @@ ALL_PATH_ITEMS = {
     ),
     # Objects that can be used without location:
     # TODO: Add endocytosis
-    'Reac': (
-        'Reaction',
-        [("reac['fwd']", 'the forward part of __CLS_model.Reaction__ __CODE_reac__'),
-         ("reac['bkw']", 'the backward part of __CLS_model.Reaction__ __CODE_reac__')],
-    ),
-    'Diff': (
-        'Diffusion',
-        [('diff', '__CLS_model.Diffusion__ __CODE_diff__')],
-    ),
     'Spec': (
         'Species',
         [('spec', '__CLS_model.Species__ __CODE_spec__')],
     ),
+    'SingleSpec': (
+        'Specific Point Species',
+        [("POINTSPEC(psref)", "__CLS_sim.PointSpecReference __CODE_psref__"),
+         ("POINTSPECS(psLst)", "__CLS_sim.PointSpecList__ __CODE_psLst__")],
+    ),
     'LinkSpec': (
         'Link Species',
         [('linkspec', '__CLS_model.LinkSpecies__ __CODE_linkspec__')],
+    ),
+    'SingleLinkSpec': (
+        'Specific Link Species',
+        [("LINKSPEC(lsref)", "__CLS_sim.LinkSpecReference __CODE_lsref__"),
+         ("LINKSPECS(lsLst)", "__CLS_sim.LinkSpecList__ __CODE_lsLst__")],
+    ),
+    'Complex': (
+        'Complex',
+        [('cplx', '__CLS_model.Complex__ __CODE_cplx__')],
+    ),
+    'SUS': (
+        'Subunit state',
+        [('sus', '__CLS_model.SubUnitState__ __CODE_sus__')],
     ),
     'Reac': (
         'Reaction',
@@ -286,6 +291,16 @@ ALL_PATH_ITEMS = {
          ("sreac['bkw']", 'the backward part of __CLS_model.Reaction__ __CODE_sreac__')],
     ),
     'VDepSReac': (
+        'Reaction',
+        [("reac['fwd']", 'the forward part of __CLS_model.Reaction__ __CODE_reac__'),
+         ("reac['bkw']", 'the backward part of __CLS_model.Reaction__ __CODE_reac__')],
+    ),
+    'VesSReac': (
+        'Reaction',
+        [("reac['fwd']", 'the forward part of __CLS_model.Reaction__ __CODE_reac__'),
+         ("reac['bkw']", 'the backward part of __CLS_model.Reaction__ __CODE_reac__')],
+    ),
+    'ComplexReac': (
         'Reaction',
         [("reac['fwd']", 'the forward part of __CLS_model.Reaction__ __CODE_reac__'),
          ("reac['bkw']", 'the backward part of __CLS_model.Reaction__ __CODE_reac__')],
@@ -316,7 +331,14 @@ ALL_PATH_ITEMS = {
         'Exocytosis',
         [('exo', '__CLS_model.Exocytosis__ __CODE_exo__')],
     ),
+    'Endocytosis': (
+        'Endocytosis',
+        [('endo', '__CLS_model.Endocytosis__ __CODE_endo__')],
+    ),
 }
+
+# Order so that longer strings are attempted to match first
+ALL_PATH_ITEMS = {name: vals for name, vals in sorted(ALL_PATH_ITEMS.items(), key=lambda x: len(x[0]), reverse=True)}
 
 
 ALL_PROPERTIES = {
@@ -512,7 +534,14 @@ ALL_PROPERTIES = {
         '.*': (
             'ro, vrev',
             'steps.utils.Params(ro, vrev)',
-            'electrical resistivity',
+            'electrical resistivity and reversal potential',
+        ),
+    },
+    'Erev': {
+        '.*': (
+            'val',
+            'val',
+            'reversal potential',
         ),
     },
     'Immobility': {
@@ -534,6 +563,41 @@ ALL_PROPERTIES = {
             'tetIdxs',
             'tetIdxs',
             'indices of the overlaped tetrahedron',
+        ),
+    },
+    'ReducedVol': {
+        '.*': (
+            'vol',
+            'vol',
+            'reduced volume',
+        ),
+    },
+    'LinkedTo': {
+        '.*': (
+            'lsidx',
+            'lsidx',
+            'index of the bound link species',
+        ),
+    },
+    'Ves': {
+        '.*': (
+            'vidx',
+            'vidx',
+            'index of the vesicle',
+        ),
+    },
+    'Compartment': {
+        '.*': (
+            'compname',
+            'compname',
+            'name of the current compartment',
+        ),
+    },
+    'Patch': {
+        '.*': (
+            'patchname',
+            'patchname',
+            'name of the current patch',
         ),
     },
 }
@@ -570,9 +634,10 @@ IGNORE_METHODS = [
     '[gs]etBatch.+s',
     'sumBatch.+s',
     '[gs]etROI.*s',
-    '[gs]etROIT(et|ri).*'
-    '.*SpecCountDict',
+    '[gs]etROIT(et|ri).*',
+    '.*SpecCountDict$',
     '(delete|add).*',
+    '.*(Name|Defined)$',
     'checkpoint',
     'restore',
     'getSolverEmail',
@@ -607,7 +672,20 @@ IGNORE_METHODS = [
 	'getEFieldTime',
 	'getNIteration',
 	'getCompTime',
-
+	'getNPatches',
+	'getNCompSpecs',
+	'getNComps',
+	'getNPatchSpecs',
+    'setOutputSync',
+    'getOutputSyncRank',
+    'getAllVesicleIndices',
+	'setVesicleDT',
+	'getVesicleDT',
+	'getOutputSyncStatus',
+	'createPath',
+    'getPatchMaxV',
+	'dumpDepGraphToFile',
+	'setPetscOptions',
 ]
 
 IGNORE_METHODS = [re.compile(m) for m in IGNORE_METHODS]
@@ -636,22 +714,26 @@ def getMethodInfos(methodName, prefix=''):
             if m := re.match(f'{part}(.*)', methodName):
                 for methInfos in getMethodInfos(m.group(1), prefix=prefix + part):
                     yield (infos,) + methInfos
+                    return
 
 
 def parseMethod(dct, solverName, method):
     if (solverName, method.__name__) in INVALID_METHODS:
-        return False
+        return 1
 
-    foundOne = False
+    status = 0
     for infos in getMethodInfos(method.__name__):
-        foundOne |= generateDocumentation(dct, solverName, method, infos)
-    return foundOne
+        status |= generateDocumentation(dct, solverName, method, infos)
+    return status
 
 def generateDocumentation(dct, solverName, method, infos):
     # Extract kwargs
     signature, *doc = method.__doc__.split('\n')
     kwargs_pairs = re.findall(r'(\w+)\s*=\s*(?:_py_)?([\w\.]+)', signature)
     kwargs = {kwname: kwval for kwname, kwval in kwargs_pairs}
+
+    if 'DEPRECATED' in method.__doc__:
+        return 1 # Considered but not documented
 
     gs, *locobjs, prop = infos
     propName, (getValue, setValue, propDescr) = prop
@@ -713,8 +795,10 @@ def generateDocumentation(dct, solverName, method, infos):
     for item in locobjs:
         dct = dct.setdefault(item[0], {})
     docLst = dct.setdefault(propName, {}).setdefault('@doc', [])
-    docLst += allDoc
-    return True
+    # Do not add duplicates
+    docSet = set(tuple(doc.items()) for doc in docLst)
+    docLst += [doc for doc in allDoc if tuple(doc.items()) not in docSet]
+    return 2 # Considered and documented
             
 
 def getSolverClass(solverStr):
@@ -741,7 +825,7 @@ def GenerateJSON(path):
                 if callable(meth):
                     if all(p.match(methodName) is None for p in IGNORE_METHODS):
                         allMethods.add(methodName)
-                    if parseMethod(jsonData, solverName, meth):
+                    if parseMethod(jsonData, solverName, meth) > 0:
                         coveredMethods.add(methodName)
             missingMethods = set(allMethods) - set(coveredMethods)
             if len(missingMethods) > 0:

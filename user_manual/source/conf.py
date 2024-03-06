@@ -622,73 +622,82 @@ KWARGS_DOC = {
          """)],
 }
 
-TET_SOLVERS = [
-    solv for solv in sim.Simulation.SERIAL_SOLVERS + sim.Simulation.PARALLEL_SOLVERS if 'tet' in solv.lower()
+INVALID_METHODS = [
+    # (solver regexp, [method regexp])
+    ('.*[tT]et.*', [
+        'setCompVol',
+        'setPatchArea',
+    ]),
+    ('(?!Wmdirect).*', [
+        '.*Complex.*',
+    ]),
 ]
 
-INVALID_METHODS = [(solv, 'setCompVol') for solv in TET_SOLVERS]
-INVALID_METHODS += [(solv, 'setPatchArea') for solv in TET_SOLVERS]
+INVALID_METHODS = [(re.compile(m), [re.compile(n) for n in methods]) for m, methods in INVALID_METHODS]
 
 IGNORE_METHODS = [
-	'_.+',
-    '[gs]etBatch.+s',
-    'sumBatch.+s',
-    '[gs]etROI.*s',
-    '[gs]etROIT(et|ri).*',
-    '.*SpecCountDict$',
-    '(delete|add).*',
-    '.*(Name|Defined)$',
-    'checkpoint',
-    'restore',
-    'getSolverEmail',
-    'step',
-    'setTemp',
-    'setTime',
-    'getA0',
-	'advance',
-	'getSolverName',
-	'getSolverAuthors',
-	'reset',
-	'setNSteps',
-	'run',
-	'getSolverDesc',
-	'getNSteps',
-	'getTime',
-	'setRk4DT',
-	'setDT',
-	'getTemp',
-	'getEfieldDT',
-	'saveMembOpt',
-	'setEfieldDT',
-	'setTolerances',
-	'setMaxNumSteps',
-	'getIdleTime',
-	'getRDTime',
-	'setDiffApplyThreshold',
-	'getUpdPeriod',
-	'getSyncTime',
-	'repartitionAndReset',
-	'getDataExchangeTime',
-	'getEFieldTime',
-	'getNIteration',
-	'getCompTime',
-	'getNPatches',
-	'getNCompSpecs',
-	'getNComps',
-	'getNPatchSpecs',
-    'setOutputSync',
-    'getOutputSyncRank',
-    'getAllVesicleIndices',
-	'setVesicleDT',
-	'getVesicleDT',
-	'getOutputSyncStatus',
-	'createPath',
-    'getPatchMaxV',
-	'dumpDepGraphToFile',
-	'setPetscOptions',
+    # (solver regexp, [method regexp])
+    ('.*', [
+        '_.+',
+        '[gs]etBatch.+s',
+        'sumBatch.+s',
+        '[gs]etROI.*s',
+        '[gs]etROIT(et|ri).*',
+        '.*SpecCountDict$',
+        '(delete|add).*',
+        '.*(Name|Defined)$',
+        'checkpoint',
+        'restore',
+        'getSolverEmail',
+        'step',
+        'setTemp',
+        'setTime',
+        'getA0',
+        'advance',
+        'getSolverName',
+        'getSolverAuthors',
+        'reset',
+        'setNSteps',
+        'run',
+        'getSolverDesc',
+        'getNSteps',
+        'getTime',
+        'setRk4DT',
+        'setDT',
+        'getTemp',
+        'getEfieldDT',
+        'saveMembOpt',
+        'setEfieldDT',
+        'setTolerances',
+        'setMaxNumSteps',
+        'getIdleTime',
+        'getRDTime',
+        'setDiffApplyThreshold',
+        'getUpdPeriod',
+        'getSyncTime',
+        'repartitionAndReset',
+        'getDataExchangeTime',
+        'getEFieldTime',
+        'getNIteration',
+        'getCompTime',
+        'getNPatches',
+        'getNCompSpecs',
+        'getNComps',
+        'getNPatchSpecs',
+        'setOutputSync',
+        'getOutputSyncRank',
+        'getAllVesicleIndices',
+        'setVesicleDT',
+        'getVesicleDT',
+        'getOutputSyncStatus',
+        'createPath',
+        'getPatchMaxV',
+        'dumpDepGraphToFile',
+        'setPetscOptions',
+    ]),
 ]
 
-IGNORE_METHODS = [re.compile(m) for m in IGNORE_METHODS]
+IGNORE_METHODS = [(re.compile(m), [re.compile(n) for n in methods]) for m, methods in IGNORE_METHODS]
 
 def finalize_descr(descr):
     replacements = [
@@ -718,7 +727,7 @@ def getMethodInfos(methodName, prefix=''):
 
 
 def parseMethod(dct, solverName, method):
-    if (solverName, method.__name__) in INVALID_METHODS:
+    if any(any(p.match(method.__name__) for p in methods) for sp, methods in INVALID_METHODS if sp.match(solverName)):
         return 1
 
     status = 0
@@ -823,7 +832,7 @@ def GenerateJSON(path):
             # for methodName, meth in solvCls.__dict__.items():
                 meth = getattr(solvCls, methodName)
                 if callable(meth):
-                    if all(p.match(methodName) is None for p in IGNORE_METHODS):
+                    if all(all(p.match(methodName) is None for p in methods) for sp, methods in IGNORE_METHODS if sp.match(solverName)):
                         allMethods.add(methodName)
                     if parseMethod(jsonData, solverName, meth) > 0:
                         coveredMethods.add(methodName)

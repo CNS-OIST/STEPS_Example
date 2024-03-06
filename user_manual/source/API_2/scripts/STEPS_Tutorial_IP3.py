@@ -74,9 +74,6 @@ Reacs = rs.memb.MATCH('r[1-6]')['fwd'].Extent + rs.memb.MATCH('r[1-6]')['bkw'].E
 
 Rstates.labels = [l.split('.')[1] for l in Rstates.labels]
 
-Rstates.toFile('Rstates.dat')
-Reacs.toFile('Reacs.dat')
-
 sim.toSave(Rstates, Reacs, dt=0.001)
 
 #########################
@@ -97,3 +94,62 @@ for i in range (0, NITER):
 
     sim.run(ENDT)
 
+#########################
+# Plotting results
+#########################
+
+from matplotlib import pyplot as plt
+import numpy as np
+
+plt.figure(figsize=(10, 7))
+
+RopenInd = Rstates.labels.index('Ropen')
+RopenData = Rstates.data[:, :, RopenInd]
+
+time = Rstates.time[0]
+mean = np.mean(RopenData, axis=0)
+std = np.std(RopenData, axis=0)
+
+plt.plot(time, mean, linewidth=2, label='Average')
+plt.fill_between(time, mean - std, mean + std, alpha=0.2, label='Std. Dev.')
+
+for t, d in zip(Rstates.time, RopenData):
+    plt.plot(t, d, color='grey', linewidth=0.1, zorder=-1)
+
+plt.ylim(0)
+plt.margins(0, 0.05)
+plt.xlabel('Time [s]')
+plt.ylabel('Number of open IP3R')
+plt.legend()
+plt.show()
+
+plt.figure(figsize=(10, 7))
+
+time = Rstates.time[0]
+mean = np.mean(Rstates.data, axis=0)
+std = np.std(Rstates.data, axis=0)
+
+plt.plot(time, mean, linewidth=2)
+for m, s in zip(mean.T, std.T):
+    plt.fill_between(time, m - s, m + s, alpha=0.2)
+
+plt.legend(Rstates.labels)
+plt.xlabel('Time [s]')
+plt.ylabel('Number of receptors')
+plt.ylim(0)
+plt.margins(0, 0.05)
+plt.show()
+
+plt.figure(figsize=(10, 7))
+
+time = Reacs.time[0]
+dt = time[1] - time[0]
+meanDeriv = np.mean(np.gradient(Reacs.data, dt, axis=1), axis=0)
+
+plt.stackplot(time, meanDeriv.T)
+
+plt.legend([f'd{l} / dt' for l in Reacs.labels])
+plt.margins(0, 0.05)
+plt.xlabel('Time [s]')
+plt.ylabel('Total reaction rate [1/s]')
+plt.show()

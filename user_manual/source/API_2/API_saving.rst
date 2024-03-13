@@ -13,6 +13,7 @@ Detailed documentation
 * Result selectors
 
     * :py:class:`steps.API_2.saving.ResultSelector`
+    * :py:class:`steps.API_2.saving.CustomResults`
 
 * Saving to database
 

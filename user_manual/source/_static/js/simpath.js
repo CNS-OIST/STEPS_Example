@@ -16,7 +16,7 @@ $(document).ready(function(){
         }
     });
 
-    var ids = {"GetSet": "Solver", "Solver": "Location", "Location":"Item", "Item":"Property", "Property":"None"};
+    var ids = {"GetSet": "Solver", "Solver": "Location", "Location":"Item", "Item":"Property", "Property":"Property2", "Property2":"None"};
     for (selectid in ids) {
         $('.SimPathSelect#' + selectid).change(function() {
             var key = $(this).val();
@@ -37,12 +37,11 @@ $(document).ready(function(){
                 old_select[currId] = $('.SimPathSelect#' + currId).val();
                 $('.SimPathSelect#' + currId).empty();
             }
-            $('.DisplayBox#SimPath').text("");
-            $('.DocDisplay#SimPathDoc').text("");
+            $('.ExamplesDisplay#SimPathExamples').text("");
 
             currId = ids[sid];
             while (currId in ids) {
-                if ('@code' in tmp_dict[key]) {
+                if ('@doc' in tmp_dict[key]) {
                     currId = "None";
                     break;
                 }
@@ -59,11 +58,11 @@ $(document).ready(function(){
                 }
             }
             if (currId === "None") {
-                var lines = tmp_dict[key]['@code'];
+                var lines = tmp_dict[key]['@doc'];
                 for (var i = 0 ; i < lines.length ; i++) {
-                    $('<code class="py py-class">' + lines[i] + '</code><br>').appendTo($('.DisplayBox#SimPath'));
+                    $('<div class="DisplayBox line-block" style="font-size:25px;line-height:30px;width:610px;"><code class="py py-class">' + lines[i]['@code'] + '</code></div>').appendTo($('.ExamplesDisplay#SimPathExamples'));
+                    $('<div class="DocDisplay line-block" style="width:610px;color:#666666;">' + lines[i]['@descr'] + '</div>').appendTo($('.ExamplesDisplay#SimPathExamples'));
                 }
-                $('.DocDisplay#SimPathDoc').html(tmp_dict[key]['@doc']);
             }
         });
     }

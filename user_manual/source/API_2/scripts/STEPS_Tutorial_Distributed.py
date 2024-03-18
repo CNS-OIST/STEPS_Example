@@ -380,7 +380,7 @@ with mdl:
     CBsSU, CBfSU, CBmobSU = SubUnit.Create(
         [CBs, CBsCa], [CBf, CBfCa], [CBmob, CBimmob]
     )
-    CB = Complex.Create([CBsSU, CBfSU, CBmobSU])
+    CB = Complex.Create([CBsSU, CBfSU, CBmobSU], statesAsSpecies=True)
 
     # Channels
     CaPc, CaPo = SubUnitState.Create()

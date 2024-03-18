@@ -196,46 +196,45 @@ KCurrs.metaData['triarea'] = [tri.Area for tri in memb_tris]
 
 CellPot.metaData['tetzpos'] = pot_pos
 
-NaCurrs.toFile('NaCurrs_MPI.dat')
-KCurrs.toFile('KCurrs_MPI.dat')
-CellPot.toFile('CellPot_MPI.dat')
-
 sim.toSave(NaCurrs, KCurrs, CellPot, dt=DT_sim)
 
 #########################
 # Run simulation
 #########################
 
-sim.newRun()
+with HDF5Handler('Efield_MPI') as hdf:
+    sim.toDB(hdf, 'TetOpSplitSim')
 
-# Inject channels
-surfarea = sim.patch.Area
-
-for state in VGNaC:
-    prop = Na_facs[state.Count(Na_ha)][state.Count(Na_mo)]
-    sim.patch.VGNaC[state].Count = Na_ro * surfarea * prop
-
-for state in VGKC:
-    prop = K_facs[state.Count(Ko)]
-    sim.patch.VGKC[state].Count = K_ro * surfarea * prop
-
-sim.patch.Leak[lsus].Count = L_ro * surfarea
-
-# Set dt for membrane potential calculation to 0.01ms
-sim.EfieldDT = 1.0e-5
-
-# Initialize potential to -65mV
-sim.membrane.Potential = -65e-3
-
-# Set capacitance of the membrane to 1 uF/cm^2 = 0.01 F/m^2
-sim.membrane.Capac = 1.0e-2
-
-# Set resistivity of the conduction volume to 100 ohm.cm = 1 ohm.meter
-sim.membrane.VolRes = 1.0
-
-# Set the current clamp
-sim.VERTS(injverts).IClamp = Iclamp/len(injverts)
-
-# Run the simulation
-sim.run(ENDT)
-
+    sim.newRun()
+    
+    # Inject channels
+    surfarea = sim.patch.Area
+    
+    for state in VGNaC:
+        prop = Na_facs[state.Count(Na_ha)][state.Count(Na_mo)]
+        sim.patch.VGNaC[state].Count = Na_ro * surfarea * prop
+    
+    for state in VGKC:
+        prop = K_facs[state.Count(Ko)]
+        sim.patch.VGKC[state].Count = K_ro * surfarea * prop
+    
+    sim.patch.Leak[lsus].Count = L_ro * surfarea
+    
+    # Set dt for membrane potential calculation to 0.01ms
+    sim.EfieldDT = 1.0e-5
+    
+    # Initialize potential to -65mV
+    sim.membrane.Potential = -65e-3
+    
+    # Set capacitance of the membrane to 1 uF/cm^2 = 0.01 F/m^2
+    sim.membrane.Capac = 1.0e-2
+    
+    # Set resistivity of the conduction volume to 100 ohm.cm = 1 ohm.meter
+    sim.membrane.VolRes = 1.0
+    
+    # Set the current clamp
+    sim.VERTS(injverts).IClamp = Iclamp/len(injverts)
+    
+    # Run the simulation
+    sim.run(ENDT)
+    

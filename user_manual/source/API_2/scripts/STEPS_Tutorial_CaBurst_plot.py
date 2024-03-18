@@ -30,7 +30,7 @@ with HDF5Handler('Caburst') as hdf:
             ax.plot(Currents.time[r], 1e12 * Currents.data[r,:,i], label=f'Run {r}')
             ax.set_title(Currents.labels[i].split('.')[-2])
         ax.set_xlabel('Time [s]')
-        ax.set_ylabel('Current [nA]')
+        ax.set_ylabel('Current [pA]')
     plt.legend()
     
     # Calcium

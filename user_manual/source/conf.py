@@ -20,6 +20,7 @@ import re
 import steps
 import sys
 import types
+import warnings
 
 from steps import stepslib
 from steps.API_2 import model, geom, utils, sim
@@ -167,174 +168,657 @@ html_extra_path = [
 
 # Generate json
 
-LOCATIONS = {
-    'Comp': ('Compartment', 'comp'), 
-    'Patch': ('Patch', 'patch'), 
-    'Memb': ('Membrane', 'memb'), 
-    'DiffBoundary': ('Diff. Boundary', ('diffb', 'diffb(direc=comp2)')),
-    'SDiffBoundary': ('Surf. Diff. Boundary', ('sdiffb', 'diffb(direc=patch2)')),
-    'ROI': ('Region of Interest', 'roi'), 
-    'Tet': ('Tetrahedron', ('TET(tet)', 'TETS(tetLst)')), 
-    'Tri': ('Triangle', ('TRI(tri)', 'TRIS(triLst)')), 
-    'Vert': ('Vertex', ('VERT(vert)', 'VERTS(vertLst)')), 
+ALL_PATH_ITEMS = {
+    # NameInMethods: (Full name, examples)
+    # examples -> [('name in example', 'name in descr', optional: 'required kwarg 1', 'required kwarg 2', ...)]
+    'Comp': (
+        'Compartment',
+        [('comp', '__CLS_geom.Compartment__ __CODE_comp__')],
+    ),
+    'Patch': (
+        'Patch',
+        [('patch', '__CLS_geom.Patch__ __CODE_patch__')],
+    ),
+    'Memb': (
+        'Membrane',
+        [('memb', '__CLS_geom.Membrane__ __CODE_memb__')],
+    ),
+    'DiffBoundary': (
+        'Diff. Boundary',
+        [('diffb', '__CLS_geom.DiffBoundary__ __CODE_diffb__'),
+         ('diffb(direc=comp2)', '__CLS_geom.DiffBoundary__ diffb in direction of __CLS_geom.Compartment__ __CODE_comp2__', 'direction_comp')],
+    ),
+    'SDiffBoundary': (
+        'Surf. Diff. Boundary',
+        [('sdiffb', '__CLS_geom.SDiffBoundary__ __CODE_diffb__'),
+         ('diffb(direc=patch2)', '__CLS_geom.SDiffBoundary__ diffb in direction of __CLS_geom.Patch__ __CODE_patch2_', 'direction_patch')],
+    ),
+    'ROI': (
+        'Region of Interest',
+        [('roi', '__CLS_geom.ROI__ __CODE_roi__')],
+    ),
+    'Tet': (
+        'Tetrahedron',
+        [('TET(tet)', '__CLS_geom.TetReference__ __CODE_tet__'),
+         ('TETS(tetLst)', 'each tetrahedron in __CLS_geom.TetList__ __CODE_tetLst__')],
+    ),
+    'Tri': (
+        'Triangle',
+        [('TRI(tri)', '__CLS_geom.TriReference__ __CODE_tri__'),
+         ('TRIS(triLst)', 'each triangle in __CLS_geom.TriList__ __CODE_triLst__')],
+    ),
+    'Vert': (
+        'Vertex',
+        [('VERT(vert)', '__CLS_geom.VertReference__ __CODE_vert__'),
+         ('VERTS(vertLst)', 'each vertex in __CLS_geom.VertList__ __CODE_vertLst__')],
+    ),
+    'Vesicle': (
+        'Vesicle type',
+        [('ves', '__CLS_model.Vesicle__ __CODE_ves__')],
+    ),
+    'VesicleSurface': (
+        'Vesicle type',
+        [("ves('surf')", 'the surfaces of __CLS_model.Vesicle__s of type __CODE_ves__')],
+    ),
+    'VesicleInner': (
+        'Vesicle type',
+        [("ves('in')", 'the lumens of __CLS_model.Vesicle__s of type __CODE_ves__')],
+    ),
+    'SingleVesicle': (
+        'Specific Vesicle',
+        [('VESICLE(vesref)', '__CLS_sim.VesicleReference__ __CODE_vesref__'),
+         ('VESICLES(vesLst)', 'each vesicle in __CLS_sim.VesicleList__ __CODE_vesLst__')],
+    ),
+    'SingleVesicleSurface': (
+        'Specific Vesicle',
+        [("VESICLE(vesref)('surf')", 'the surface of __CLS_sim.VesicleReference__ __CODE_vesref__'),
+         ("VESICLES(vesLst)('surf')", 'the surface of each vesicle in __CLS_sim.VesicleList__ __CODE_vesLst__')],
+    ),
+    'SingleVesicleInner': (
+        'Specific Vesicle',
+        [("VESICLE(vesref)('in')", "the lumen of __CLS_sim.VesicleReference__ __CODE_vesref__"),
+         ("VESICLES(vesLst)('in')", "the lumen of each vesicle in __CLS_sim.VesicleList__ __CODE_vesLst__")],
+    ),
+    'Raft': (
+        'Raft type',
+        [('raft', '__CLS_model.Raft__s of type __CODE_raft__')],
+    ),
+    'SingleRaft': (
+        'Specific Raft',
+        [('RAFT(raftref)', "__CLS_sim.RaftReference__ __CODE_raftref__"),
+         ('RAFTS(raftLst)', "each raft in __CLS_sim.RaftList__ __CODE_raftLst__")],
+    ),
+    'EndocyticZone': (
+        'Endocytic zone',
+        [('endoZone', '__CLS_geom.EndocyticZone__ __CODE_endoZone__')],
+    ),
+    # Objects that can be used without location:
+    # TODO: Add endocytosis
+    'Spec': (
+        'Species',
+        [('spec', '__CLS_model.Species__ __CODE_spec__')],
+    ),
+    'SingleSpec': (
+        'Specific Point Species',
+        [("POINTSPEC(psref)", "__CLS_sim.PointSpecReference __CODE_psref__"),
+         ("POINTSPECS(psLst)", "__CLS_sim.PointSpecList__ __CODE_psLst__")],
+    ),
+    'LinkSpec': (
+        'Link Species',
+        [('linkspec', '__CLS_model.LinkSpecies__ __CODE_linkspec__')],
+    ),
+    'SingleLinkSpec': (
+        'Specific Link Species',
+        [("LINKSPEC(lsref)", "__CLS_sim.LinkSpecReference __CODE_lsref__"),
+         ("LINKSPECS(lsLst)", "__CLS_sim.LinkSpecList__ __CODE_lsLst__")],
+    ),
+    'Complex': (
+        'Complex',
+        [('cplx', '__CLS_model.Complex__ __CODE_cplx__')],
+    ),
+    'SUS': (
+        'Subunit state',
+        [('sus', '__CLS_model.SubUnitState__ __CODE_sus__')],
+    ),
+    'Reac': (
+        'Reaction',
+        [("reac['fwd']", 'the forward part of __CLS_model.Reaction__ __CODE_reac__'),
+         ("reac['bkw']", 'the backward part of __CLS_model.Reaction__ __CODE_reac__')],
+    ),
+    'SReac': (
+        'Reaction',
+        [("sreac['fwd']", 'the forward part of __CLS_model.Reaction__ __CODE_sreac__'),
+         ("sreac['bkw']", 'the backward part of __CLS_model.Reaction__ __CODE_sreac__')],
+    ),
+    'VDepSReac': (
+        'Reaction',
+        [("reac['fwd']", 'the forward part of __CLS_model.Reaction__ __CODE_reac__'),
+         ("reac['bkw']", 'the backward part of __CLS_model.Reaction__ __CODE_reac__')],
+    ),
+    'VesSReac': (
+        'Reaction',
+        [("reac['fwd']", 'the forward part of __CLS_model.Reaction__ __CODE_reac__'),
+         ("reac['bkw']", 'the backward part of __CLS_model.Reaction__ __CODE_reac__')],
+    ),
+    'ComplexReac': (
+        'Reaction',
+        [("reac['fwd']", 'the forward part of __CLS_model.Reaction__ __CODE_reac__'),
+         ("reac['bkw']", 'the backward part of __CLS_model.Reaction__ __CODE_reac__')],
+    ),
+    'Diff': (
+        'Diffusion',
+        [('diff', '__CLS_model.Diffusion__ __CODE_diff__'),
+         ('diff(direc=tet2)', '__CLS_model.Diffusion__ diff towards __CLS_geom.TetReference__ __CODE_tet2__', 'direction_tet')],
+    ),
+    'SDiff': (
+        'Diffusion',
+        [('sdiff', '__CLS_model.Diffusion__ __CODE_diff__'),
+         ('sdiff(direc=tri2)', '__CLS_model.Diffusion__ diff towards __CLS_geom.TriReference__ __CODE_tri2__', 'direction_tri')],
+    ),
+    'Ohmic': (
+        'Current',
+        [('curr', '__CLS_model.OhmicCurr__ __CODE_curr__')],
+    ),
+    'GHK': (
+        'Current',
+        [('curr', '__CLS_model.GHKCurr__ __CODE_curr__')],
+    ),
+    'RaftEndocytosis': (
+        'Raft Endocytosis',
+        [('rendo', '__CLS_model.RaftEndocytosis__ __CODE_rendo__')],
+    ),
+    'Exocytosis': (
+        'Exocytosis',
+        [('exo', '__CLS_model.Exocytosis__ __CODE_exo__')],
+    ),
+    'Endocytosis': (
+        'Endocytosis',
+        [('endo', '__CLS_model.Endocytosis__ __CODE_endo__')],
+    ),
 }
 
-OBJECTS = {
-    '': ('Species', 'spec'),
-    'Reac': ('Reaction', ("reac['fwd']", "reac['bkw']")),
-    'SReac': ('Reaction', ("sreac['fwd']", "sreac['bkw']")),
-    'VDepSReac': ('Reaction', ("reac['fwd']", "reac['bkw']")),
-    'Diff': ('Diffusion', ("diff", 'diff(direc=tet2)')),
-    'SDiff': ('Diffusion', ("sdiff", 'sdiff(direc=tri2)')),
-    'Ohmic': ('Current', 'curr'),
-    'GHK': ('Current', 'curr'),
-}
+# Order so that longer strings are attempted to match first
+ALL_PATH_ITEMS = {name: vals for name, vals in sorted(ALL_PATH_ITEMS.items(), key=lambda x: len(x[0]), reverse=True)}
 
-OBJ_PROPERTIES = {
-    # Prop: (getValue, setValue)
-    'Count': ('cnt', 'n'),
-    'Conc': ('conc', 'conc'),
-    'Amount': ('val', 'a'),
-    'Clamped': ('clamped', 'clamped'),
-    'K': ('val', 'kf'),
-    'Active': ('active', 'active'),
-    'D': ('dcst', 'dcst'),
-    'C': ('val', 'val'),
-    'H': ('val', 'val'),
-    'A': ('val', 'val'),
-    'Extent': ('val', 'val'),
-    'I': ('val', 'val'),
-    'DiffusionActive': ('val', 'val'),
-    'Dcst': ('val', 'val'),
-}
 
-LOC_PROPERTIES = {
-    # Prop: (getValue, setValue)
-    'Area': ('val', 'val'),
-    'Vol': ('val', 'val'),
-    'V': ('val', 'val'),
-    'VClamped': ('clamped', 'clamped'),
-    'IClamp': ('val', 'i'),
-    'Potential': ('val', 'val'),
-    'Capac': ('cap', 'cap'),
-    'VolRes': ('val', 'val'),
-    'Res': ('ro, vrev', 'steps.utils.Params(ro, vrev)'),
-    'I': ('val', 'val'),
-}
-
-REV_LOC_MAP = {long: short for short, (long, _) in LOCATIONS.items()}
-
-DOC_REPLACEMENT = {
-    'direction_comp': 'direc',
-    'direction_patch': 'direc',
-    'direction_tet': 'direc',
-    'direction_tri': 'direc',
-    'with\sindex\sidx': lambda loc: REV_LOC_MAP[loc].lower(),
-    'ohmic\scurrent': 'ohmic or GHK current with string identifier curr',
+ALL_PROPERTIES = {
+    # Prop: {prefixPattern: (getValue, setValue, short description)}
+    'Count': {
+        '.*': (
+            'cnt',
+            'n',
+            'number',
+        ),
+    },
+    'Conc': {
+        '.*': (
+            'conc',
+            'conc',
+            'concentration',
+        ),
+    },
+    'Amount': {
+        '.*': (
+            'val',
+            'a',
+            'amount',
+        ),
+    },
+    'Clamped': {
+        '.*': (
+            'clamped',
+            'clamped',
+            'clamped status',
+        ),
+    },
+    'K': {
+        '.*Reac.*': (
+            'val',
+            'kf',
+            'reaction constant',
+        ),
+        '.*': (
+            'val',
+            'kf',
+            'rate',
+        ),
+    },
+    'Active': {
+        '.*': (
+            'active',
+            'active',
+            'active status',
+        ),
+    },
+    'D': {
+        '.*': (
+            'dcst',
+            'dcst',
+            'diffusion constant',
+        ),
+    },
+    'C': {
+        '.*': (
+            'val',
+            'val',
+            'stochastic reaction constant',
+        ),
+    },
+    'H': {
+        '.*': (
+            'val',
+            'val',
+            'number of reactant combinations h_mu',
+        ),
+    },
+    'A': {
+        '.*': (
+            'val',
+            'val',
+            'propensity',
+        ),
+    },
+    'Extent': {
+        '.*': (
+            'val',
+            'val',
+            'extent',
+        ),
+    },
+    'I': {
+        '.*': (
+            'val',
+            'val',
+            'current',
+        ),
+    },
+    'DiffusionActive': {
+        '.*': (
+            'val',
+            'val',
+            'diffusion active status',
+        ),
+    },
+    'Dcst': {
+        '.*': (
+            'val',
+            'val',
+            'diffusion constant',
+        ),
+    },
+    'Pos': {
+        '.*': (
+            'pos',
+            'pos',
+            'position in cartesian coordinates',
+        ),
+    },
+    'PosSpherical': {
+        '.*': (
+            'spos',
+            'spos',
+            'position in spherical coordinated',
+        ),
+    },
+    'Indices': {
+        '.*': (
+            'idxs',
+            'idxs',
+            'indices',
+        ),
+    },
+    'SDiffD': {
+        '.*': (
+            'dcst',
+            'dcst',
+            'surface diffusion constant',
+        ),
+    },
+    'Area': {
+        '.*': (
+            'val',
+            'val',
+            'area',
+        ),
+    },
+    'Vol': {
+        '.*': (
+            'val',
+            'val',
+            'volume',
+        ),
+    },
+    'V': {
+        '.*': (
+            'val',
+            'val',
+            'potential',
+        ),
+    },
+    'VClamped': {
+        '.*': (
+            'clamped',
+            'clamped',
+            'clamped status of potential',
+        ),
+    },
+    'IClamp': {
+        '.*': (
+            'val',
+            'i',
+            'current clamp',
+        ),
+    },
+    'Potential': {
+        '.*': (
+            'val',
+            'val',
+            'potential',
+        ),
+    },
+    'Capac': {
+        '.*': (
+            'cap',
+            'cap',
+            'capacitance',
+        ),
+    },
+    'VolRes': {
+        '.*': (
+            'val',
+            'val',
+            'bulk electrical resistivity',
+        ),
+    },
+    'Res': {
+        '.*': (
+            'ro, vrev',
+            'steps.utils.Params(ro, vrev)',
+            'electrical resistivity and reversal potential',
+        ),
+    },
+    'Erev': {
+        '.*': (
+            'val',
+            'val',
+            'reversal potential',
+        ),
+    },
+    'Immobility': {
+        '.*': (
+            'immob',
+            'immob',
+            'immobility status',
+        ),
+    },
+    'Events': {
+        '.*': (
+            'events',
+            'events',
+            'list of events',
+        ),
+    },
+    'OverlapTets': {
+        '.*': (
+            'tetIdxs',
+            'tetIdxs',
+            'indices of the overlaped tetrahedron',
+        ),
+    },
+    'ReducedVol': {
+        '.*': (
+            'vol',
+            'vol',
+            'reduced volume',
+        ),
+    },
+    'LinkedTo': {
+        '.*': (
+            'lsidx',
+            'lsidx',
+            'index of the bound link species',
+        ),
+    },
+    'Ves': {
+        '.*': (
+            'vidx',
+            'vidx',
+            'index of the vesicle',
+        ),
+    },
+    'Compartment': {
+        '.*': (
+            'compname',
+            'compname',
+            'name of the current compartment',
+        ),
+    },
+    'Patch': {
+        '.*': (
+            'patchname',
+            'patchname',
+            'name of the current patch',
+        ),
+    },
 }
 
 INVALID_EXAMPLES = [
-    re.compile('^.+diffb\(direc=[^\)]+\)\.[^\.]+\.DiffusionActive.*$'),
-    re.compile('^.+(TETS|TRIS|comp|patch).+diff\(direc=[^\)]+\)\..*$'),
-    re.compile('^.+diff\(direc=[^\)]+\)\.(Active|A|Extent).*$'),
-    re.compile('^.+direction_(tet|tri)=.+$'),
-    re.compile('^.+local=False.+$'),
+    re.compile('^.+(TETS|TRIS).+diff\(direc=[^\)]+\)\..*$'),
 ]
 
-TET_SOLVERS = [
-    solv for solv in sim.Simulation.SERIAL_SOLVERS + sim.Simulation.PARALLEL_SOLVERS if 'tet' in solv.lower()
+# Ignore these kwargs because they are integrated in other API_2 objects in the SimPath
+IGNORE_KWARGS = ['direction_tet', 'direction_tri', 'direction_comp', 'direction_patch', 'local']
+
+KWARGS_DOC = {
+    # Kwname: [(kwval, description)]
+    'force': [('True', 'When __CODE_force__ is set to __CODE_True__, the vesicle is swapped with any vesicle that would prevent it from changing its position')],
+    'distributionMethod': [
+        ('DistributionMethod.MULTINOMIAL', 
+         """The distributing is weighted with the volume or area fraction of elements: bigger elements get a higher amount of molecules.
+         With __CLS_sim.DistributionMethod.UNIFORM__ (default), the distribution is deterministic (apart from roundings) and the number of
+         molecules per element is e.g. n*V_tet/V_tot.
+         With __CLS_sim.DistributionMethod.MULTINOMIAL__ the distribution is multinomial and the probability of putting a species in an
+         element is e.g. V_tet/V_tot.
+         """)],
+}
+
+INVALID_METHODS = [
+    # (solver regexp, [method regexp])
+    ('.*[tT]et.*', [
+        'setCompVol',
+        'setPatchArea',
+    ]),
+    ('(?!Wmdirect).*', [
+        '.*Complex.*',
+    ]),
 ]
 
-INVALID_METHODS = [(solv, 'setCompVol') for solv in TET_SOLVERS]
-INVALID_METHODS += [(solv, 'setPatchArea') for solv in TET_SOLVERS]
+INVALID_METHODS = [(re.compile(m), [re.compile(n) for n in methods]) for m, methods in INVALID_METHODS]
 
-for dct in [LOCATIONS, OBJECTS]:
-    for loc, val in list(dct.items()):
-        dct['Batch' + loc] = val
+IGNORE_METHODS = [
+    # (solver regexp, [method regexp])
+    ('.*', [
+        '_.+',
+        '[gs]etBatch.+s',
+        'sumBatch.+s',
+        '[gs]etROI.*s',
+        '[gs]etROIT(et|ri).*',
+        '.*SpecCountDict$',
+        '(delete|add).*',
+        '.*(Name|Defined)$',
+        'checkpoint',
+        'restore',
+        'getSolverEmail',
+        'step',
+        'setTemp',
+        'setTime',
+        'getA0',
+        'advance',
+        'getSolverName',
+        'getSolverAuthors',
+        'reset',
+        'setNSteps',
+        'run',
+        'getSolverDesc',
+        'getNSteps',
+        'getTime',
+        'setRk4DT',
+        'setDT',
+        'getTemp',
+        'getEfieldDT',
+        'saveMembOpt',
+        'setEfieldDT',
+        'setTolerances',
+        'setMaxNumSteps',
+        'getIdleTime',
+        'getRDTime',
+        'setDiffApplyThreshold',
+        'getUpdPeriod',
+        'getSyncTime',
+        'repartitionAndReset',
+        'getDataExchangeTime',
+        'getEFieldTime',
+        'getNIteration',
+        'getCompTime',
+        'getNPatches',
+        'getNCompSpecs',
+        'getNComps',
+        'getNPatchSpecs',
+        'setOutputSync',
+        'getOutputSyncRank',
+        'getAllVesicleIndices',
+        'setVesicleDT',
+        'getVesicleDT',
+        'getOutputSyncStatus',
+        'createPath',
+        'getPatchMaxV',
+        'dumpDepGraphToFile',
+        'setPetscOptions',
+    ]),
+]
 
-allMethodNames = {}
-for comb in itertools.product(['get', 'set'], LOCATIONS.items(), OBJECTS.items(), OBJ_PROPERTIES.items(), ['', 'sNP']):
-    gs, loc, obj, prop, suff = comb
-    name = gs + loc[0] + obj[0] + prop[0] + suff
-    allMethodNames[name] = (gs, loc[1], obj[1], prop)
-for comb in itertools.product(['get', 'set'], LOCATIONS.items(), LOC_PROPERTIES.items(), ['', 'sNP']):
-    gs, loc, prop, suff = comb
-    name = gs + loc[0] + prop[0] + suff
-    allMethodNames[name] = (gs, loc[1], None, prop)
+IGNORE_METHODS = [(re.compile(m), [re.compile(n) for n in methods]) for m, methods in IGNORE_METHODS]
+
+def finalize_descr(descr):
+    replacements = [
+        ('__CLS_(\w+)\.([\w\.]+)__', '<a href="API_\g<1>.html#steps.API_2.\g<1>.\g<2>">\g<2></a>'),
+        ('__CODE_([\w\.]+)__', '<code class="py py-class">\g<1></code>'),
+    ]
+    for pattern, repl in replacements:
+        descr = re.sub(pattern, repl, descr)
+    return descr
+
+def getMethodInfos(methodName, prefix=''):
+    if len(prefix) == 0:
+        if m := re.match('([gs]et)(.*)', methodName):
+            for methInfos in getMethodInfos(m.group(2), prefix=m.group(1)):
+                yield (m.group(1),) + methInfos
+    else:
+        for prop, matchDct in ALL_PROPERTIES.items():
+            for regexp, infos in matchDct.items():
+                if re.match(regexp, prefix) and (m := re.match(f'{prop}$', methodName)):
+                    yield ((prop, infos),)
+                    break
+        for part, infos in ALL_PATH_ITEMS.items():
+            if m := re.match(f'{part}(.*)', methodName):
+                for methInfos in getMethodInfos(m.group(1), prefix=prefix + part):
+                    yield (infos,) + methInfos
+                    return
 
 
-def processDoc(doc, loc):
-    res = ''
-    signature, *doc = doc.split('\n')
+def parseMethod(dct, solverName, method):
+    if any(any(p.match(method.__name__) for p in methods) for sp, methods in INVALID_METHODS if sp.match(solverName)):
+        return 1
+
+    status = 0
+    for infos in getMethodInfos(method.__name__):
+        status |= generateDocumentation(dct, solverName, method, infos)
+    return status
+
+def generateDocumentation(dct, solverName, method, infos):
     # Extract kwargs
-    kwargs = re.findall(r'(\w+)\s*=\s*(?:_py_)?([\w\.]+)', signature)
+    signature, *doc = method.__doc__.split('\n')
+    kwargs_pairs = re.findall(r'(\w+)\s*=\s*(?:_py_)?([\w\.]+)', signature)
+    kwargs = {kwname: kwval for kwname, kwval in kwargs_pairs}
 
-    lines = []
-    for line in doc:
-        if 'Syntax::' in line:
-            break
-        else:
-            line = line.strip()
-            if len(line) == 0 and len(lines) > 0:
-                res += '<p>' + ' '.join(lines) + '</p>'
-                lines = []
-            else:
-                lines.append(line.strip())
-    if len(lines) > 0:
-        res += '<p>' + ' '.join(lines) + '</p>'
+    if 'DEPRECATED' in method.__doc__:
+        return 1 # Considered but not documented
 
-    for src, dst in DOC_REPLACEMENT.items():
-        if callable(dst):
-            res = re.sub(src, dst(loc), res)
-        else:
-            res = re.sub(src, dst, res)
+    gs, *locobjs, prop = infos
+    propName, (getValue, setValue, propDescr) = prop
 
-    return res, kwargs
+    examples = [['sim']]
+    descriptions = [[]]
 
-def parseMethod(dct, solverName, meth):
-    gs, loc, obj, prop = allMethodNames[meth.__name__]
-
-    allLines = ['sim']
-    doc, kwargs = processDoc(meth.__doc__, loc[0])
-
-    for item in [loc, obj]:
+    for item in locobjs:
         if item is not None:
-            item = item[1]
-            if isinstance(item, str):
-                item = (item,)
-            allLines = [line + f'.{val}' for line in allLines for val in item]
+            tpe, options = item
+            options = [(sl, sl) if isinstance(sl, str) else sl for sl in options]
+            new_examples = []
+            new_descriptions = []
+            for ex, dscr in zip(examples, descriptions):
+                for name, descr, *kwarg_deps in options:
+                    if all(kwdep in kwargs for kwdep in kwarg_deps):
+                        new_examples.append(ex + [name])
+                        new_descriptions.append(dscr + [finalize_descr(descr)])
+            examples = new_examples
+            descriptions = new_descriptions
 
-    endLines = []
-    for line in allLines:
-        line = f'{line}.{prop[0]}'
-        if gs == 'get':
-            line = f'{prop[1][0]} = {line}'
-        else:
-            line = f'{line} = {prop[1][1]}'
-        if all(p.match(line) is None for p in INVALID_EXAMPLES):
-            endLines.append(line)
-    if len(kwargs) > 0:
-        for line in allLines:
-            if gs == 'set':
-                line = f'{line}.{prop[0]} = steps.utils.Params({prop[1][1]}'
-                for name, val in kwargs:
-                    line += f', {name}={val}'
-                line += ')'
-                if all(p.match(line) is None for p in INVALID_EXAMPLES):
-                    endLines.append(line)
+    setValues = [(setValue, '')]
+    # Process keywords
+    for kwname, kwvalue in kwargs.items():
+        if kwname not in IGNORE_KWARGS:
+            if kwname in KWARGS_DOC:
+                for val, descr in KWARGS_DOC[kwname]:
+                    setValues.append((f'steps.utils.Params({setValue}, {kwname}={val})', finalize_descr(descr)))
+            else:
+                warnings.warn('Undocumented keyword arg {kwname} in method {method}. Add documentation to the KWARGS_DOC dict in conf.py.')
 
-    dct = dct.setdefault(gs, {}).setdefault(solverName, {}).setdefault(loc[0], {})
-    if obj is not None:
-        dct = dct.setdefault(obj[0], {})
-    if prop[0] not in dct:
-        dct[prop[0]] = {'@code': endLines, '@doc':doc}
+    propDescr = f'<a href="#steps.API_2.sim.SimPath.{propName}">{propDescr}</a>'
+    # Add unit if available
+    if propName in sim.SimPath._PATH_END_UNITS:
+        unit = sim.SimPath._PATH_END_UNITS[propName]
+        if isinstance(unit, utils.Units) and not unit._isDimensionless():
+            propDescr += f' (in {unit._toUnicode()})'
+
+    allDoc = []
+    for setval, additionalDescr in setValues:
+        for ex, descr in zip(examples, descriptions):
+            if gs == 'get':
+                exLine = f'{getValue} = {".".join(ex)}.{propName}'
+                descrLine = 'Get'
+            elif gs == 'set':
+                exLine = f'{".".join(ex)}.{propName} = {setval}'
+                descrLine = 'Set'
+
+            if all(p.match(exLine) is None for p in INVALID_EXAMPLES):
+                *descr, objDescr = descr
+                descrLine += f' the {propDescr} of {objDescr}'
+                while len(descr) > 0:
+                    *descr, locDescr = descr
+                    descrLine += f' in {locDescr}'
+                descrLine += '. ' + additionalDescr
+                allDoc.append({'@code': exLine, '@descr': descrLine})
+
+    dct = dct.setdefault(gs, {}).setdefault(solverName, {})
+    for item in locobjs:
+        dct = dct.setdefault(item[0], {})
+    docLst = dct.setdefault(propName, {}).setdefault('@doc', [])
+    # Do not add duplicates
+    docSet = set(tuple(doc.items()) for doc in docLst)
+    docLst += [doc for doc in allDoc if tuple(doc.items()) not in docSet]
+    return 2 # Considered and documented
+            
 
 def getSolverClass(solverStr):
     if solverStr in sim.Simulation.SERIAL_SOLVERS:
         return getattr(stepslib, utils._CYTHON_PREFIX + solverStr)
     elif solverStr in sim.Simulation.PARALLEL_SOLVERS and solverStr != 'TetVesicle':
         return sim.MPI._getSolver(solverStr)
+    if solverStr == 'TetVesicle':
+        return stepslib._py_TetVesicleVesRaft
     return None
+
 
 def GenerateJSON(path):
     jsonData = {}
@@ -342,18 +826,24 @@ def GenerateJSON(path):
     for solverName in solvers:
         solvCls = getSolverClass(solverName)
         if solvCls is not None:
-            for methodName in allMethodNames:
-                if (solverName, methodName) in INVALID_METHODS:
-                    continue
-                try:
-                    obj = getattr(solvCls, methodName)
-                except:
-                    continue
-                if callable(obj):
-                    parseMethod(jsonData, solverName, obj)
+            allMethods = set()
+            coveredMethods = set()
+            for methodName in dir(solvCls):
+            # for methodName, meth in solvCls.__dict__.items():
+                meth = getattr(solvCls, methodName)
+                if callable(meth):
+                    if all(all(p.match(methodName) is None for p in methods) for sp, methods in IGNORE_METHODS if sp.match(solverName)):
+                        allMethods.add(methodName)
+                    if parseMethod(jsonData, solverName, meth) > 0:
+                        coveredMethods.add(methodName)
+            missingMethods = set(allMethods) - set(coveredMethods)
+            if len(missingMethods) > 0:
+                missingMethodsStr = '\n'.join('\t' + meth for meth in missingMethods)
+                warnings.warn(f'The following methods from solver {solverName} are not documented:\n{missingMethodsStr}')
 
     with open(path, 'w') as f:
         json.dump(jsonData, f)
+
 
 GenerateJSON(html_extra_path[0])
 
@@ -496,7 +986,7 @@ texinfo_documents = [
 
 
 #  Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'http://docs.python.org/': None}
+intersphinx_mapping = {'python': ('http://docs.python.org/3', None)}
 
 [extensions]
 todo_include_todos = True
@@ -508,14 +998,13 @@ todo_include_todos = True
 
 
 # Not sure if there is a better way to do this but if we do not return the descriptor itself
-# during documentation, the __doc__ from the original function is not taken into account. 
+# during documentation, the __doc__ from the original function is not taken into account.
 # This might be due to how sphinx gets class attributes which trigger the call of the descriptor's
 # __get__ method instead of returning the descriptor itself. To avoid this, we monkey patch the
 # descriptor's __get__ method to return the descriptor instead of the normal value.
 steps.API_2.utils.classproperty.__get__ = lambda self, *args: self
 
 # -- Project information -----------------------------------------------------
-
 
 
 # -- General configuration ---------------------------------------------------
@@ -536,13 +1025,17 @@ autodoc_default_options = {
     # 'exclude-members': '__weakref__'
 }
 
+
 def AllSubclasses(cls):
     for cls2 in cls.__subclasses__():
         yield cls2
         for cls3 in AllSubclasses(cls2):
             yield cls3
 
-visualClasses = ['SimControl', 'PlotDisplay', 'TimePlot', 'SpatialPlot', 'NewRow', 'SimDisplay', 'ElementDisplay']
+
+visualClasses = ['SimControl', 'PlotDisplay', 'TimePlot',
+                 'SpatialPlot', 'NewRow', 'SimDisplay', 'ElementDisplay']
+
 
 def autodoc_skip_member(app, what, name, obj, skip, options):
     if obj is not None and hasattr(obj, '__doc__'):
@@ -554,15 +1047,17 @@ def autodoc_skip_member(app, what, name, obj, skip, options):
         elif obj.__doc__ is not None and ':meta private:' in obj.__doc__:
             return True
         elif isinstance(obj, types.MethodType):
-            if obj.__self__.__name__ in visualClasses and obj.__name__ == 'Create' :
+            if obj.__self__.__name__ in visualClasses and obj.__name__ == 'Create':
                 return True
     return skip
+
 
 replace_map = {
     '{{model.Reaction._FwdSpecifier}}': steps.API_2.model.Reaction._FwdSpecifier,
     '{{model.Reaction._BkwSpecifier}}': steps.API_2.model.Reaction._BkwSpecifier,
 }
 py_prefix = '_py_'
+
 
 def autodoc_process_docstring(app, what, name, obj, options, lines):
     if isinstance(obj, types.MethodType) and obj.__name__ == 'Create' and obj.__self__.__name__ != 'NamedObject':
@@ -582,12 +1077,13 @@ def autodoc_process_docstring(app, what, name, obj, options, lines):
         if len(name.split('.')) > 2:
             *_, clsname, methname = name.split('.')
             if methname == '__getattr__' and clsname not in ['NamedObject', 'SimPath', 'Simulation',
-                    'ResultSelector', 'Parameter', 'SQLiteGroup', 'HDF5Group']:
+                                                             'ResultSelector', 'Parameter', 'SQLiteGroup', 'HDF5Group']:
                 lines[:] = [f"""
                     Access the children of the object as if they were an attribute, see :py:func:`steps.API_2.utils.NamedObject.__getattr__` for details.
                 """]
             elif clsname in [cls.__name__ for cls in steps.API_2.geom.RefList.__subclasses__()]:
-                clsval = [cls for cls in steps.API_2.geom.RefList.__subclasses__() if cls.__name__ == clsname][0]
+                clsval = [cls for cls in steps.API_2.geom.RefList.__subclasses__(
+                ) if cls.__name__ == clsname][0]
                 refcls = clsval._refCls
                 funcCls = obj.__qualname__.split('.')[0]
                 if funcCls == steps.API_2.geom.RefList.__name__:
@@ -669,6 +1165,7 @@ def autodoc_process_bases(app, name, obj, options, bases):
                         bases.append(b2)
                         added = True
                 del bases[i]
+
 
 def setup(app):
     app.connect('autodoc-skip-member', autodoc_skip_member)

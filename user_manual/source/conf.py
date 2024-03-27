@@ -1036,19 +1036,47 @@ def AllSubclasses(cls):
 visualClasses = ['SimControl', 'PlotDisplay', 'TimePlot',
                  'SpatialPlot', 'NewRow', 'SimDisplay', 'ElementDisplay']
 
+def getAutodocParent():
+    for frame in inspect.stack():
+        if frame.function == 'filter_members':
+            return frame.frame.f_locals['self'].object
+    return None
+
+def getInheritedFrom(parentCls, name):
+    if not inspect.isclass(parentCls):
+        return False
+    ancestorCls = None
+    for cls in parentCls.__mro__:
+        if name in cls.__dict__:
+            ancestorCls = cls
+            break
+    return ancestorCls
+
+def isInherited(name):
+    parentCls = getAutodocParent()
+    return getInheritedFrom(parentCls, name) is not parentCls
 
 def autodoc_skip_member(app, what, name, obj, skip, options):
     if obj is not None and hasattr(obj, '__doc__'):
         if name.startswith('__'):
-            if obj.__doc__ is not None and ':meta public:' in obj.__doc__:
+            if obj.__doc__ is not None and ':meta public:' in obj.__doc__ and not isInherited(name):
                 return False
             else:
                 return True
         elif obj.__doc__ is not None and ':meta private:' in obj.__doc__:
             return True
-        elif isinstance(obj, types.MethodType):
-            if obj.__self__.__name__ in visualClasses and obj.__name__ == 'Create':
+        elif isinstance(obj, (types.MethodType, property)):
+            if isinstance(obj, types.MethodType) and obj.__self__.__name__ in visualClasses and obj.__name__ == 'Create':
                 return True
+            if not skip:
+                # Skip members that are inherited from documented classes
+                parentCls = getAutodocParent()
+                ancestorCls = getInheritedFrom(parentCls, name)
+                if ancestorCls is not None and ancestorCls is not parentCls:
+                    mod = inspect.getmodule(ancestorCls)
+                    mod_all = mod.__all__ if hasattr(mod, '__all__') else []
+                    if ancestorCls.__name__ in mod_all or ancestorCls.__name__ in options.inherited_members:
+                        return True
     return skip
 
 

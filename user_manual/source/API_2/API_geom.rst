@@ -62,5 +62,6 @@ Detailed documentation
     :members:
     :undoc-members:
     :special-members:
+    :inherited-members: NamedObject, ndarray
     :show-inheritance:
 

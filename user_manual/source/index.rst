@@ -46,6 +46,7 @@ Contents:
    API_2/STEPS_Tutorial_Distributed.ipynb
    API_1_guide.rst
    API_2/API_ref.rst
+   customizing_install.rst
    
 Indices and tables
 ==================

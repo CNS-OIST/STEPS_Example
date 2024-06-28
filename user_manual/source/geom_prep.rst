@@ -6,7 +6,7 @@ STEPS-CUBIT Geometry Preparation Toolkit
 
 **This toolkit package is deprecated and not included in the current release. This page is kept for reference purpose.**
 
-The simulation scripts described in this chapter are available at `ModelDB <http://senselab.med.yale.edu/modeldb/ShowModel.asp?model=153351>`_
+The simulation scripts described in this chapter are available at `ModelDB <https://modeldb.science/153351>`_.
 
 
 
@@ -122,9 +122,7 @@ information indicates that python2.5 is used. Open a terminal, and install STEPS
 Examples
 ========
 Here we use two examples to explain how to use the toolkit for geometry preparation based on
-different project requirements. Script and mesh data of these examples can be found at
-
-`ModelDB <http://senselab.med.yale.edu/modeldb/ShowModel.asp?model=153351>`_
+different project requirements. Script and mesh data of these examples can be found at `ModelDB <https://modeldb.science/153351>`_.
 
 .. _spatial_ip3:
 

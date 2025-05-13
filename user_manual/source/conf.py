@@ -305,6 +305,16 @@ ALL_PATH_ITEMS = {
         [("reac['fwd']", 'the forward part of __CLS_model.Reaction__ __CODE_reac__'),
          ("reac['bkw']", 'the backward part of __CLS_model.Reaction__ __CODE_reac__')],
     ),
+    'ComplexSReac': (
+        'Reaction',
+        [("sreac['fwd']", 'the forward part of __CLS_model.Reaction__ __CODE_reac__'),
+         ("sreac['bkw']", 'the backward part of __CLS_model.Reaction__ __CODE_reac__')],
+    ),
+    'VDepComplexSReac': (
+        'Reaction',
+        [("sreac['fwd']", 'the forward part of __CLS_model.Reaction__ __CODE_reac__'),
+         ("sreac['bkw']", 'the backward part of __CLS_model.Reaction__ __CODE_reac__')],
+    ),
     'Diff': (
         'Diffusion',
         [('diff', '__CLS_model.Diffusion__ __CODE_diff__'),

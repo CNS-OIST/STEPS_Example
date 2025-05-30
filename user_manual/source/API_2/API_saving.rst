@@ -28,6 +28,11 @@ Detailed documentation
         * :py:class:`steps.API_2.saving.HDF5Group`
         * :py:class:`steps.API_2.saving.SQLiteGroup`
 
+* Reading from database
+
+    * :py:class:`steps.API_2.saving.HDF5Handler`
+    * :py:class:`steps.API_2.saving.HDF5MultiFileReader`
+
 ----------
 
 .. automodule:: steps.API_2.saving

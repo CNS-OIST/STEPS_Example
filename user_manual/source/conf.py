@@ -260,7 +260,7 @@ ALL_PATH_ITEMS = {
     ),
     'SingleSpec': (
         'Specific Point Species',
-        [("POINTSPEC(psref)", "__CLS_sim.PointSpecReference __CODE_psref__"),
+        [("POINTSPEC(psref)", "__CLS_sim.PointSpecReference__ __CODE_psref__"),
          ("POINTSPECS(psLst)", "__CLS_sim.PointSpecList__ __CODE_psLst__")],
     ),
     'LinkSpec': (
@@ -269,7 +269,7 @@ ALL_PATH_ITEMS = {
     ),
     'SingleLinkSpec': (
         'Specific Link Species',
-        [("LINKSPEC(lsref)", "__CLS_sim.LinkSpecReference __CODE_lsref__"),
+        [("LINKSPEC(lsref)", "__CLS_sim.LinkSpecReference__ __CODE_lsref__"),
          ("LINKSPECS(lsLst)", "__CLS_sim.LinkSpecList__ __CODE_lsLst__")],
     ),
     'Complex': (
@@ -456,6 +456,13 @@ ALL_PROPERTIES = {
             'diffusion constant',
         ),
     },
+    'DcstRel': {
+        '.*': (
+            'val',
+            'val',
+            'relative status of diffusion constant',
+        ),
+    },
     'Pos': {
         '.*': (
             'pos',
@@ -622,6 +629,7 @@ IGNORE_KWARGS = ['direction_tet', 'direction_tri', 'direction_comp', 'direction_
 KWARGS_DOC = {
     # Kwname: [(kwval, description)]
     'force': [('True', 'When __CODE_force__ is set to __CODE_True__, the vesicle is swapped with any vesicle that would prevent it from changing its position')],
+    'relative': [('True', 'When __CODE_relative__ is set to __CODE_True__, the value given to __CODE_Dcst__ is interpreted as a multiplier to the diffusion constant of the vesicle.')],
     'distributionMethod': [
         ('DistributionMethod.MULTINOMIAL', 
          """The distributing is weighted with the volume or area fraction of elements: bigger elements get a higher amount of molecules.
@@ -782,7 +790,7 @@ def generateDocumentation(dct, solverName, method, infos):
                 for val, descr in KWARGS_DOC[kwname]:
                     setValues.append((f'steps.utils.Params({setValue}, {kwname}={val})', finalize_descr(descr)))
             else:
-                warnings.warn('Undocumented keyword arg {kwname} in method {method}. Add documentation to the KWARGS_DOC dict in conf.py.')
+                warnings.warn(f'Undocumented keyword arg {kwname} in method {method}. Add documentation to the KWARGS_DOC dict in conf.py.')
 
     propDescr = f'<a href="#steps.API_2.sim.SimPath.{propName}">{propDescr}</a>'
     # Add unit if available

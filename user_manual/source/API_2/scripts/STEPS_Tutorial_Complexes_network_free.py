@@ -64,7 +64,7 @@ with mdl:
 
     IP3RSU = SubUnit.Create([R000, R100, R010, R001, R110, R101, R111, R011])
 
-    IP3R = Complex.Create([IP3RSU, IP3RSU, IP3RSU, IP3RSU], statesAsSpecies=True)
+    IP3R = Complex.Create([IP3RSU, IP3RSU, IP3RSU, IP3RSU], statesAsSpecies=False)
 
     ssys = SurfaceSystem.Create()
 

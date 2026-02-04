@@ -7,3 +7,6 @@
 .highlight-bash .highlight {
     background: #f4ebf6;
 }
+.highlight-output .highlight {
+    background: #eeeeee;
+}

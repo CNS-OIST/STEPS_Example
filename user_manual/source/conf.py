@@ -617,6 +617,13 @@ ALL_PROPERTIES = {
             'name of the current patch',
         ),
     },
+    'OnPath': {
+        '.*': (
+            '(path_name, current_pos)',
+            '(path_name, current_pos)',
+            'name of the path to which the vesicle is bound, along with its current position on the path',
+        ),
+    },
 }
 
 INVALID_EXAMPLES = [
@@ -712,6 +719,30 @@ IGNORE_METHODS = [
         'getPatchMaxV',
         'dumpDepGraphToFile',
         'setPetscOptions',
+        'getReactionSSAThreshold',
+        'setDiffusionTolerance',
+        'setDiffusionMinDtFactor',
+        'getDiffusionTime',
+        'getReactionTheta',
+        'getDiffusionDebugInfo',
+        'setReactionSSAThreshold',
+        'getReactionLComputePeriod',
+        'getDiffusionTolerance',
+        'getReactionSSASteps',
+        'setDiffusionNormalApproximationThreshold',
+        'setReactionTolerance',
+        'getReactionTime',
+        'getDiffusionNormalApproximationThreshold',
+        'getDiffusionMinDtFactor',
+        'getReactionTolerance',
+        'setReactionLComputePeriod',
+        'setDiffusionCrankNicolsonThreshold',
+        'setReactionTheta',
+        'setReactionSSASteps',
+        'getReactionDebugInfo',
+        'setDiffusionMaxDtSkips',
+        'getDiffusionCrankNicolsonThreshold',
+        'getDiffusionMaxDtSkips',
     ]),
 ]
 

@@ -36,3 +36,4 @@ Note that some functionalites of STEPS API, like `auto-naming <API_utils.rst#ste
    API_utils
    API_visual
    ../API_1/API_ref
+   API_stepsblender

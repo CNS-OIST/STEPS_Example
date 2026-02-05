@@ -52,6 +52,7 @@ extensions = [
     'sphinx.ext.inheritance_diagram',
     'nbsphinx',
     'autodoc_facade',
+    'sphinxarg.ext',
 ]
 
 #  Add any paths that contain templates here, relative to this directory.

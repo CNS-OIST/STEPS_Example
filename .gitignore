@@ -5,7 +5,6 @@
 *.csv
 *.ipynb_checkpoints
 user_manual/build/
-*.md
 *.pyc
 *.DS_Store
 *myeasylog.log
@@ -29,3 +28,4 @@ publication_models/API_2/Anwar_*/data
 publication_models/API_2/Anwar_*/meshes
 publication_models/API_2/Chen_FNeuroinf__2017/purkinje_model/result*
 publication_models/API_2/Hepburn_FMolNeuSic__2017/data
+user_manual/doc_env

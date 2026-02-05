@@ -1,0 +1,8 @@
+numpy
+jupyterlab
+sphinx
+nbsphinx
+sphinx_rtd_theme
+pyqtgraph
+pyqt5
+pyopengl

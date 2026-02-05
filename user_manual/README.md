@@ -21,8 +21,8 @@ If installing from source, follow the normal installation procedure, but make su
 Alternatively, one can build a source distribution locally and install it with pip (with `doc_env` activated):
 ```
 cd /path/to/STEPS
-pip3 install build
-python3 -m build --sdist .
+pip install build
+python -m build --sdist .
 cd /path/to/STEPS_Example/user_manual
 pip install /path/to/STEPS/dist/steps-5.1.0.tar.gz
 ```

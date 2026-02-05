@@ -2,7 +2,7 @@ numpy
 jupyterlab
 sphinx
 nbsphinx
-sphinx_rtd_theme
+sphinx_rtd_theme==3.0.0rc1 # Subsequent versions can only display STEPS version if hosted on read the docs.
 pyqtgraph
 pyqt5
 pyopengl

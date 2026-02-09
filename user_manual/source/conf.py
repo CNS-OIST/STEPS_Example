@@ -436,6 +436,13 @@ ALL_PROPERTIES = {
             'extent',
         ),
     },
+    'WeightedExtent': {
+        '.*': (
+            'val',
+            'val',
+            'weighted extent',
+        ),
+    },
     'I': {
         '.*': (
             'val',
@@ -483,13 +490,6 @@ ALL_PROPERTIES = {
             'idxs',
             'idxs',
             'indices',
-        ),
-    },
-    'SDiffD': {
-        '.*': (
-            'dcst',
-            'dcst',
-            'surface diffusion constant',
         ),
     },
     'Area': {

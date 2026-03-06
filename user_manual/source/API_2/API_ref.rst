@@ -24,6 +24,14 @@ Note that some functionalites of STEPS API, like `auto-naming <API_utils.rst#ste
 
 ----------
 
+.. automodule:: steps
+    :members:
+    :undoc-members:
+    :special-members:
+    :show-inheritance:
+
+----------
+
 .. toctree::
    :maxdepth: 1
    :caption: Contents:

@@ -25,6 +25,8 @@ import warnings
 from steps import stepslib
 from steps.API_2 import model, geom, utils, sim
 
+import numpy as np
+
 #  If extensions (or modules to document with autodoc) are in another directory,
 #  add these directories to sys.path here. If the directory is relative to the
 #  documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -665,7 +667,7 @@ IGNORE_METHODS = [
     # (solver regexp, [method regexp])
     ('.*', [
         '_.+',
-        '[gs]etBatch.+s',
+        '[gs]etBatch.+',
         'sumBatch.+s',
         '[gs]etROI.*s',
         '[gs]etROIT(et|ri).*',
@@ -744,6 +746,7 @@ IGNORE_METHODS = [
         'setDiffusionMaxDtSkips',
         'getDiffusionCrankNicolsonThreshold',
         'getDiffusionMaxDtSkips',
+        '[gs]etDiffusionLeapThreshold',
     ]),
 ]
 
@@ -1127,6 +1130,9 @@ def autodoc_skip_member(app, what, name, obj, skip, options):
                     mod_all = mod.__all__ if hasattr(mod, '__all__') else []
                     if ancestorCls.__name__ in mod_all or ancestorCls.__name__ in options.inherited_members:
                         return True
+        # Skip members that are defined in numpy.ndarray
+        if name in dir(np.ndarray) and obj.__doc__ == getattr(np.ndarray, name).__doc__:
+            return True
     return skip
 
 

@@ -19,13 +19,13 @@ Detailed documentation
 
 * Geometrical elements
 
-  * :py:class:`steps.API_2.geom.Compartment`
-  * :py:class:`steps.API_2.geom.Patch`
-  * :py:class:`steps.API_2.geom.Membrane`
-  * :py:class:`steps.API_2.geom.ROI`
-  * :py:class:`steps.API_2.geom.DiffBoundary`
-  * :py:class:`steps.API_2.geom.SDiffBoundary`
-  * :py:class:`steps.API_2.geom.EndocyticZone`
+ * :py:class:`steps.API_2.geom.Compartment`
+ * :py:class:`steps.API_2.geom.Patch`
+ * :py:class:`steps.API_2.geom.Membrane`
+ * :py:class:`steps.API_2.geom.ROI`
+ * :py:class:`steps.API_2.geom.DiffBoundary`
+ * :py:class:`steps.API_2.geom.SDiffBoundary`
+ * :py:class:`steps.API_2.geom.EndocyticZone`
 
 * Mesh partitioning
 
@@ -33,6 +33,7 @@ Detailed documentation
  * :py:class:`steps.API_2.geom.LinearMeshPartition`
  * :py:class:`steps.API_2.geom.MetisPartition`
  * :py:class:`steps.API_2.geom.MorphPartition`
+ * :py:class:`steps.API_2.geom.TetWeightPartition`
 
 * References
 

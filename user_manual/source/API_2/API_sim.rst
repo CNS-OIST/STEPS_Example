@@ -11,6 +11,9 @@ Simulation paths
 ================
 
 Values can be set and retrieved from the simulation by using `SimPaths <API_sim.rst#steps.API_2.sim.SimPath>`_ from the :py:class:`Simulation` object to the desired value.
+
+Using simulation paths, one can also add solver objects like vesicles or rafts in specific compartments or patches with :py:meth:`steps.API_2.sim.SimPath.addVesicle` and :py:meth:`steps.API_2.sim.SimPath.addRaft`.
+
 The following tool allows users to know which paths can be set or accessed:
 
 .. raw:: html
